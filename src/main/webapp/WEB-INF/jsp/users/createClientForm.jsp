@@ -13,14 +13,15 @@
     </h2>
     <form:form modelAttribute="client" class="form-horizontal" id="add-owner-form">
         <div class="form-group has-feedback">
-            <petclinic:inputField label="Name" name="name"/>
-            <petclinic:inputField label="Surname" name="surname"/>
+            <petclinic:inputField label="Name" name="firstName"/>
+            <petclinic:inputField label="Surname" name="lastName"/>
             <petclinic:inputField label="Document" name="document"/>
             <petclinic:selectField label="Document Type" name="documentType" size="3" names="${documentTypes}"/>
             <petclinic:inputField label="Health Insurance" name="healthInsurance"/>
             <petclinic:inputField label="Health Card Number" name="healthCardNumber"/>
             <petclinic:inputField label="Email" name="email"/>
-            <petclinic:inputField label="Password" name="password"/>
+            <petclinic:inputField label="Username" name="user.username" />
+            <petclinic:inputField label="Password" name="user.password"/>
             
         </div>
         <div class="form-group">

@@ -21,7 +21,7 @@ import org.springframework.beans.support.PropertyComparator;
 
 @Entity
 @Table(name = "professionals")
-public class Professional extends User {
+public class Professional extends Person {
 
 
 	@Column(name = "specialty")
