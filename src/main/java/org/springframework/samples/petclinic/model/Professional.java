@@ -11,8 +11,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -28,9 +29,13 @@ public class Professional extends Person {
 	@NotEmpty(message = "*")
 	private String	specialty;
 
-	@Column(name = "collegiateNumber")
+	@Column(name = "collegiate_number")
 	@NotEmpty(message = "*")
-	private Integer	collegiateNumber;
+	private String	collegiateNumber;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+	private User user;
 
 
 	public String getSpecialty() {
@@ -41,11 +46,11 @@ public class Professional extends Person {
 		this.specialty = specialty;
 	}
 
-	public Integer getCollegiateNumber() {
+	public String getCollegiateNumber() {
 		return this.collegiateNumber;
 	}
 
-	public void setCollegiateNumber(final Integer collegiateNumber) {
+	public void setCollegiateNumber(final String collegiateNumber) {
 		this.collegiateNumber = collegiateNumber;
 	}
 

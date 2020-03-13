@@ -5,15 +5,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
-import org.hibernate.annotations.Formula;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -22,28 +20,33 @@ public class Person extends BaseEntity {
 
 	// Attributes -------------------------------------------
 	
+	@Column(name = "first_name")
 	@NotEmpty(message = "*")
 	private String			firstName;
-
+	
+	@Column(name = "last_name")
 	@NotEmpty(message = "*")
 	private String			lastName;
-
+	
+	@Column(name = "email")
 	@NotEmpty(message = "*")
 	@Email(message = "Enter a valid email address.")
 	private String			email;
-
+	
+	@Column(name = "birth_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-//	@NotNull(message = "*")
 	@Past
 	private Date			birthDate;
 
+	@Column(name = "registration_date")
 	@Past
-//	@NotNull(message = "*")
 	private Date			registrationDate;
-
+	
+	@Column(name = "document")
 	@NotEmpty(message = "*")
 	private String			document;
-
+	
+	@Column(name = "document_type")
 	@NotNull(message = "*")
 	private DocumentType	documentType;
 

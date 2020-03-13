@@ -8,6 +8,26 @@ INSERT INTO authorities VALUES ('owner1','owner');
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
 INSERT INTO authorities VALUES ('vet1','veterinarian');
 
+-- Professional 1
+INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
+INSERT INTO authorities VALUES ('professional1','professional');
+-- Professional 2
+INSERT INTO users(username,password,enabled) VALUES ('professional2','professional2',TRUE);
+INSERT INTO authorities VALUES ('professional2','professional');
+-- Professional 3
+INSERT INTO users(username,password,enabled) VALUES ('professional3','professional3',TRUE);
+INSERT INTO authorities VALUES ('professional3','professional');
+--
+INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
+    'professional1', 'Pepe', 'Gotera', 'pepe.gotera@gmail.com', '13232123M', 1, 'dermatology', '123123122-F'
+);
+INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
+    'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, 'gynecology', '233123122-F'
+);
+INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
+    'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, 'dermatology', '413123122-K'
+);
+
 -- INSERT INTO vets VALUES (1, 'James', 'Carter');
 -- INSERT INTO vets VALUES (2, 'Helen', 'Leary');
 -- INSERT INTO vets VALUES (3, 'Linda', 'Douglas');

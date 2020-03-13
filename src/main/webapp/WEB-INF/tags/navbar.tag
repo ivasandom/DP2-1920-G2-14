@@ -21,6 +21,9 @@
             <li class="nav-item ${currentPage eq 'owners' ? 'active' : ''}">
                 <a class="nav-link" href="/owners/find">Find owners</a>
             </li>
+            <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
+                <a class="nav-link" href="/professionals/find">Find professionals</a>
+            </li>
 			<li class="nav-item ${currentPage eq 'vets' ? 'active' : ''}">
                 <a class="nav-link" href="/vets">Veterinarians</a>
             </li>
