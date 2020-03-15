@@ -2,14 +2,9 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WelcomeController {
@@ -20,4 +15,13 @@ public class WelcomeController {
 
 	    return "welcome";
 	  }
+	  
+	 @GetMapping("login")
+	 public String login(@RequestParam(value = "error", required = false) String error,
+			 Map<String, Object> model) {
+		 if (error != null) {
+			 model.put("error", "Invalid username or password");
+		 }
+		 return "users/login";
+	 }
 }

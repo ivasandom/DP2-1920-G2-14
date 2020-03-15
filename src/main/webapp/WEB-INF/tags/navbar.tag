@@ -34,7 +34,7 @@
         <ul class="navbar-nav">
             <sec:authorize access="!isAuthenticated()">
                 <li class="nav-item ${currentPage eq 'clients' ? 'active' : ''}">
-                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/clients">Área clientes</a>
+                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/login">Área clientes</a>
                 </li>
             </sec:authorize>
             <sec:authorize access="isAuthenticated()">

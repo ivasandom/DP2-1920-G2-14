@@ -34,6 +34,11 @@ public class ProfessionalService {
 	}
 	
 	@Transactional(readOnly = true)
+	public Iterable<Professional> findAll() throws DataAccessException {
+		return professionalRepository.findAll();
+	}
+	
+	@Transactional(readOnly = true)
 	public Iterable<Professional> findProfessionalBySpecialty(String specialty) throws DataAccessException {
 		if (specialty.equals("")) {
 			return professionalRepository.findAll();
