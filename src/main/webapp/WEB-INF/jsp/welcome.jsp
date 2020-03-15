@@ -12,7 +12,7 @@
 				featured content or information.</p>
 			<hr class="my-4" style="height:2px;background-color:rgba(255,255,255,0.1);">
 			<p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-			<a class="btn btn-primary btn-lg" href="#" role="button">> Citación online</a>
+			<a class="btn btn-primary btn-lg" href="/appointments/new" role="button">> Citación online</a>
 		</div>
     </div>
     <div class="container">
