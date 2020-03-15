@@ -35,8 +35,8 @@
 	                      	</div>
 	                    </c:if>
 						<div class="form-group">
-							<label for="username">Username <small>(document)</small></label>
-							<input type="text" class="form-control" id="username" name="username" placeholder="Nif, nie or password">
+							<label for="username">Username</label>
+							<input type="text" class="form-control" id="username" name="username">
 						</div>
 						<div class="form-group">
 							<label for="password">Password</label>
