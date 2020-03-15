@@ -28,6 +28,14 @@ INSERT INTO professionals (username, first_name, last_name, email, document, doc
     'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, 'dermatology', '413123122-K'
 );
 
+-- Specialties
+INSERT INTO specialties VALUES (1, 'radiology');
+INSERT INTO specialties VALUES (2, 'surgery');
+INSERT INTO specialties VALUES (3, 'dentistry');
+-- Centers
+INSERT INTO centers(address) VALUES ('SEVILLA');
+INSERT INTO centers(address) VALUES ('CADIZ')
+
 -- INSERT INTO vets VALUES (1, 'James', 'Carter');
 -- INSERT INTO vets VALUES (2, 'Helen', 'Leary');
 -- INSERT INTO vets VALUES (3, 'Linda', 'Douglas');

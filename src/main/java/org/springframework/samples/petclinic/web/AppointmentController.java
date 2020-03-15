@@ -19,13 +19,20 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.ProfessionalService;
+import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -34,22 +41,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AppointmentController {
 
 	private final AppointmentService appointmentService;
+	private final ProfessionalService professionalService;
+	private final SpecialtyService specialtyService;
 
 	@Autowired
-	public AppointmentController(AppointmentService appointmentService, UserService userService, AuthoritiesService authoritiesService) {
+	public AppointmentController(AppointmentService appointmentService, ProfessionalService professionalService, 
+			SpecialtyService specialtyService, AuthoritiesService authoritiesService) {
 		this.appointmentService = appointmentService;
+		this.professionalService = professionalService;
+		this.specialtyService = specialtyService;
 	}
+	
+	@ModelAttribute("centers")
+	public Iterable<Center> populateCenters() {
+		return this.appointmentService.listCenters();
+	}
+	
+	@ModelAttribute("professionals")
+	public Iterable<Professional> populateProfessionals() {
+		return this.professionalService.findProfessionalBySpecialty("");
+	}
+	
+	@ModelAttribute("specialties")
+	public Iterable<Specialty> populateSpecialties() {
+		return this.specialtyService.findAll();
+	}
+
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
 	
+	
 	@GetMapping()
 	public String listAppointments(Map<String, Object> model) {
 		Iterable<Appointment> appointments = this.appointmentService.listAppointments();
 		model.put("appointments", appointments);
 		return "appointments/list";
+	}
+	
+	
+	@GetMapping(value = "/new")
+	public String initCreationForm(ModelMap model) {
+		Appointment appointment = new Appointment();
+		model.put("appointment", appointment);
+		return "appointments/new";
 	}
 
 }
