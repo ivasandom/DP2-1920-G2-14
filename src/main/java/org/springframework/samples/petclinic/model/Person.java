@@ -1,10 +1,12 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -68,5 +70,9 @@ public class Person extends BaseEntity {
 //	@Formula("(TIMESTAMPDIFF(YEAR,birth_date,CURDATE()))")
 //	@NotEmpty(message = "*")
 //	private String			age;
+	
+	public String getFullName() {
+		return this.getFirstName() + " " + this.getLastName();
+	}
 
 }
