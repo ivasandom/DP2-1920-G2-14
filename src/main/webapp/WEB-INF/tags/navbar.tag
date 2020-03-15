@@ -7,7 +7,7 @@
 	description="Name of the active menu: home, owners, vets or error"%>
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #074b95 !important;">
-    <a class="navbar-brand" href="#">C O R O N A</a>
+    <a class="navbar-brand" href="#">A C M E</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
