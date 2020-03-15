@@ -26,7 +26,6 @@ import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
-import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -59,7 +58,7 @@ public class AppointmentController {
 	
 	@ModelAttribute("professionals")
 	public Iterable<Professional> populateProfessionals() {
-		return this.professionalService.findProfessionalBySpecialty("");
+		return this.professionalService.findAll();
 	}
 	
 	@ModelAttribute("specialties")
