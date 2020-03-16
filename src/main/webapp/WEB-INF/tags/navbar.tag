@@ -7,7 +7,7 @@
 	description="Name of the active menu: home, owners, vets or error"%>
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #074b95 !important;">
-    <a class="navbar-brand" href="#">C O R O N A</a>
+    <a class="navbar-brand" href="#">A C M E</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -21,6 +21,9 @@
             <li class="nav-item ${currentPage eq 'owners' ? 'active' : ''}">
                 <a class="nav-link" href="/owners/find">Find owners</a>
             </li>
+            <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
+                <a class="nav-link" href="/professionals/find">Find professionals</a>
+            </li>
 			<li class="nav-item ${currentPage eq 'vets' ? 'active' : ''}">
                 <a class="nav-link" href="/vets">Veterinarians</a>
             </li>
@@ -31,7 +34,7 @@
         <ul class="navbar-nav">
             <sec:authorize access="!isAuthenticated()">
                 <li class="nav-item ${currentPage eq 'clients' ? 'active' : ''}">
-                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/clients">Área clientes</a>
+                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/login">Área clientes</a>
                 </li>
             </sec:authorize>
             <sec:authorize access="isAuthenticated()">

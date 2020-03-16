@@ -63,11 +63,6 @@ public class ClientController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@GetMapping()
-	public String areaCliente(final Map<String, Object> model) {
-		return "users/areaCliente";
-	}
-
 	@GetMapping(value = "/new")
 	public String initCreationForm(final Map<String, Object> model) {
 		Client client = new Client();

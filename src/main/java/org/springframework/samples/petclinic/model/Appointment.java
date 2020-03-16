@@ -30,11 +30,10 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * Simple JavaBean domain object representing a Appointment.
- *
- * @author Ken Krebs
- */
+import lombok.Data;
+
+
+@Data
 @Entity
 @Table(name = "appointment")
 public class Appointment extends BaseEntity {
@@ -64,130 +63,10 @@ public class Appointment extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
-
-
-	/**
-	 * Holds value of property pet.
-	 */
-
-	/**
-	 * Creates a new instance of Appointment for the current date
-	 */
-	public Appointment() {
-		this.Date = LocalDate.now();
-	}
-
-	/**
-	 * Getter for property date.
-	 *
-	 * @return Value of property date.
-	 */
-	public LocalTime getStartTime() {
-		return this.startTime;
-	}
-
-	/**
-	 * Setter for property date.
-	 *
-	 * @param date
-	 *            New value of property date.
-	 */
-	public void setStartTime(final LocalTime startTime) {
-		this.startTime = startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return this.endTime;
-	}
-
-	public void setEndTime(final LocalTime endTime) {
-		this.endTime = endTime;
-	}
-	/**
-	 * Getter for property reason.
-	 *
-	 * @return Value of property reason.
-	 */
-	public String getReason() {
-		return this.reason;
-	}
-
-	/**
-	 * Setter for property description.
-	 *
-	 * @param description
-	 *            New value of property description.
-	 */
-	public void setReason(final String reason) {
-		this.reason = reason;
-	}
-
-	/**
-	 * Getter for property pet.
-	 *
-	 * @return Value of property pet.
-	 */
-	public Client getClient() {
-		return this.client;
-	}
-
-	/**
-	 * Setter for property pet.
-	 *
-	 * @param pet
-	 *            New value of property pet.
-	 */
-	public void setClient(final Client client) {
-		this.client = client;
-	}
-
-	public AppointmentType getType() {
-		return this.type;
-	}
-
-	public void setType(final AppointmentType type) {
-		this.type = type;
-	}
-
-	public Professional getProfessional() {
-		return this.professional;
-	}
-
-	public void setProfessional(final Professional professional) {
-		this.professional = professional;
-	}
-
-	public Center getCenter() {
-		return this.center;
-	}
-
-	public void setCenter(final Center center) {
-		this.center = center;
-	}
-
-	public LocalDate getDate() {
-		return this.Date;
-	}
-
-	public void setDate(final LocalDate date) {
-		this.Date = date;
-	}
-
-	public Diagnosis getDiagnosis() {
-		return this.diagnosis;
-	}
-
-	public void setDiagnosis(final Diagnosis diagnosis) {
-		this.diagnosis = diagnosis;
-	}
-
-	public Receipt getReceipt() {
-		return this.receipt;
-	}
-
-	public void setReceipt(final Receipt receipt) {
-		this.receipt = receipt;
-	}
+	
+	@ManyToOne
+	@JoinColumn(name = "specialty")
+	private Specialty specialty;
 
 	//Relations
 
