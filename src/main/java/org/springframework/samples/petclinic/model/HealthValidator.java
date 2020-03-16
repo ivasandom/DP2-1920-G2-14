@@ -14,7 +14,7 @@ public class HealthValidator implements org.springframework.validation.Validator
 
 	@Override
 	public void validate(final Object obj, final Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthCardNumber", "required");
+		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthCardNumber", "required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthInsurance", "required");
 		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthInsurances", "required");
 
@@ -24,10 +24,6 @@ public class HealthValidator implements org.springframework.validation.Validator
 				"'healthCardNumber'"
 			}, "mustEmpty");
 		} else if (!cli.getHealthInsurance().equals("I do not have insurance") && cli.getHealthCardNumber().isEmpty() || cli.getHealthInsurance().isEmpty()) {
-			errors.rejectValue("healthCardNumber", "required", new Object[] {
-				"'healthCardNumber'"
-			}, "required");
-		} else if (cli.getHealthCardNumber().isEmpty() || cli.getHealthInsurance().isEmpty() || cli.getHealthInsurance() == null) {
 			errors.rejectValue("healthCardNumber", "required", new Object[] {
 				"'healthCardNumber'"
 			}, "required");
