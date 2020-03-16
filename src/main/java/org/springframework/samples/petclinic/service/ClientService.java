@@ -13,31 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientService {
 
 	@Autowired
-	private ClientRepository clientRepository;
-	
+	private ClientRepository	clientRepository;
+
 	@Autowired
-	private UserService userService;
-	
+	private UserService			userService;
+
 	@Autowired
-	private AuthoritiesService authoritiesService;
+	private AuthoritiesService	authoritiesService;
 
 
 	@Transactional
 	public int clientCount() {
 		return (int) this.clientRepository.count();
 	}
-	
+
 	@Transactional
-	public void saveClient(Client client) throws DataAccessException {
+	public void saveClient(final Client client) throws DataAccessException {
 		//creating owner
-		clientRepository.save(client);		
+		this.clientRepository.save(client);
 		//creating user
 		UserPet user = new UserPet();
 		user.setPassword(client.getPassword());
 		user.setUsername(client.getEmail());
 		user.setEnabled(true);
-		userService.saveUser(user);
+		this.userService.saveUser(user);
 		//creating authorities
-		authoritiesService.saveAuthorities(client.getEmail(), "client");
-	}		
+		this.authoritiesService.saveAuthorities(client.getEmail(), "client");
+	}
 }

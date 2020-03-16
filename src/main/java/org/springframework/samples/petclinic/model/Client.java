@@ -13,25 +13,24 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 
-import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-
 @Entity
 @Table(name = "clients")
-
 public class Client extends User {
+
+	//	@Column(name = "is_health_insurance")
+	//	private Boolean			isHealthInsurance;
 
 	@Column(name = "health_insurance")
 	@NotEmpty(message = "*")
 	private String	healthInsurance;
 
 	@Column(name = "health_card_number")
-	@NotEmpty(message = "*")
+	//@NotEmpty(message = "*")
 	private String	healthCardNumber;
 
 
@@ -51,8 +50,15 @@ public class Client extends User {
 		this.healthCardNumber = healthCardNumber;
 	}
 
-
+	//	public Boolean getIsHealthInsurance() {
+	//		return this.isHealthInsurance;
+	//	}
+	//
+	//	public void setIsHealthInsurance(final Boolean isHealthInsurance) {
+	//		this.isHealthInsurance = isHealthInsurance;
+	//	}
 	//Relations
+
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
 	private Set<Appointment> appointments;

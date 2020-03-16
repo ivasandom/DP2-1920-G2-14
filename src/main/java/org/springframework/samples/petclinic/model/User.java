@@ -10,9 +10,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -35,13 +35,13 @@ public class User extends BaseEntity {
 
 	@Column(name = "birth_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@NotEmpty(message = "*")
+	//@NotEmpty(message = "*")
 	@Past
 	private Date			birthDate;
 
 	@Column(name = "registration_date")
 	@Past
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	private Date			registrationDate;
 
 	@Column(name = "document")
@@ -49,11 +49,11 @@ public class User extends BaseEntity {
 	private String			document;
 
 	@Column(name = "document_type")
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	private DocumentType	documentType;
 
 	@Column(name = "avatar")
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	private String			avatar;
 
 	@Column(name = "password")
@@ -61,22 +61,22 @@ public class User extends BaseEntity {
 	@Length(min = 5, max = 60)
 	private String			password;
 
-//	@Column(name = "age")
-//	@Formula("(TIMESTAMPDIFF(YEAR,birth_date,CURDATE()))")
-//	@NotEmpty(message = "*")
-//	private String			age;
+	//	@Column(name = "age")
+	//	@Formula("(TIMESTAMPDIFF(YEAR,birth_date,CURDATE()))")
+	//	@NotEmpty(message = "*")
+	//	private String			age;
 
 	@Column(name = "address")
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	private String			address;
 
 	@Column(name = "city")
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	private String			city;
 
 	@Column(name = "telephone")
-//	@NotEmpty(message = "*")
+	//	@NotEmpty(message = "*")
 	@Digits(fraction = 0, integer = 10)
 	private String			telephone;
-	
+
 }

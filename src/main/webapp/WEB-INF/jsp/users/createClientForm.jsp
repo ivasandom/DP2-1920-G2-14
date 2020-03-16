@@ -15,9 +15,9 @@
         <div class="form-group has-feedback">
             <petclinic:inputField label="Name" name="name"/>
             <petclinic:inputField label="Surname" name="surname"/>
-            <petclinic:inputField label="Document" name="document"/>
             <petclinic:selectField label="Document Type" name="documentType" size="3" names="${documentTypes}"/>
-            <petclinic:inputField label="Health Insurance" name="healthInsurance"/>
+            <petclinic:inputField label="Document" name="document"/>
+            <petclinic:selectField label="Health Insurance" name="healthInsurance" size="11" names="${healthInsurances}"/>
             <petclinic:inputField label="Health Card Number" name="healthCardNumber"/>
             <petclinic:inputField label="Email" name="email"/>
             <petclinic:inputField label="Password" name="password"/>
