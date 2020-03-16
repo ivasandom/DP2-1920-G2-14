@@ -13,6 +13,7 @@
     </h2>
     <form:form modelAttribute="client" class="form-horizontal" id="add-owner-form">
         <div class="form-group has-feedback">
+
         	<div class="row">
         		<div class="col-md-6">
         			<petclinic:inputField label="First name" name="firstName"/>
@@ -31,7 +32,7 @@
         	</div>
         	<div class="row">
         		<div class="col-md-6">
-        			<petclinic:inputField label="Health Insurance" name="healthInsurance"/>
+        			<petclinic:selectField label="Health Insurance" name="healthInsurance" size="11" names="${healthInsurances}"/>
         		</div>
         		<div class="col-md-6">
         			<petclinic:inputField label="Health Card Number" name="healthCardNumber"/>
@@ -40,6 +41,7 @@
             <petclinic:inputField label="Email" name="email" type="email"/>
             <petclinic:inputField label="Username" name="user.username"/>
             <petclinic:inputField label="Password" name="user.password" type="password"/>
+
             
         </div>
   

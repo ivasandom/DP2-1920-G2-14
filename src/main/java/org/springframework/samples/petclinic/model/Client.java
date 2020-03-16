@@ -20,6 +20,7 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 
+
 import lombok.Data;
 
 @Data
@@ -27,19 +28,48 @@ import lombok.Data;
 @Table(name = "clients")
 public class Client extends Person {
 
+	//	@Column(name = "is_health_insurance")
+	//	private Boolean			isHealthInsurance;
+
 	@Column(name = "health_insurance")
 	@NotEmpty(message = "*")
 	private String	healthInsurance;
 
 	@Column(name = "health_card_number")
-	@NotEmpty(message = "*")
+	//@NotEmpty(message = "*")
 	private String	healthCardNumber;
+
+	public String getHealthInsurance() {
+		return this.healthInsurance;
+	}
+
+	public void setHealthInsurance(final String healthInsurance) {
+		this.healthInsurance = healthInsurance;
+	}
+
+	public String getHealthCardNumber() {
+		return this.healthCardNumber;
+	}
+
+	public void setHealthCardNumber(final String healthCardNumber) {
+		this.healthCardNumber = healthCardNumber;
+	}
+
+	//	public Boolean getIsHealthInsurance() {
+	//		return this.isHealthInsurance;
+	//	}
+	//
+	//	public void setIsHealthInsurance(final Boolean isHealthInsurance) {
+	//		this.isHealthInsurance = isHealthInsurance;
+	//	}
+
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
 	private User user;
 
 	//Relations
+
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
 	private Set<Appointment> appointments;
