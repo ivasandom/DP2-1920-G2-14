@@ -4,7 +4,6 @@ package org.springframework.samples.petclinic.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Client;
-import org.springframework.samples.petclinic.model.UserPet;
 import org.springframework.samples.petclinic.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +27,12 @@ public class ClientService {
 	}
 
 	@Transactional
-	public void saveClient(final Client client) throws DataAccessException {
-		//creating owner
-		this.clientRepository.save(client);
+	public void saveClient(Client client) throws DataAccessException {
+		//creating client
+		clientRepository.save(client);		
 		//creating user
-		UserPet user = new UserPet();
-		user.setPassword(client.getPassword());
-		user.setUsername(client.getEmail());
-		user.setEnabled(true);
-		this.userService.saveUser(user);
+		userService.saveUser(client.getUser());
 		//creating authorities
-		this.authoritiesService.saveAuthorities(client.getEmail(), "client");
-	}
+		authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
+	}		
 }

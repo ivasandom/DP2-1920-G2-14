@@ -11,16 +11,22 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 
+
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "clients")
-public class Client extends User {
+public class Client extends Person {
 
 	//	@Column(name = "is_health_insurance")
 	//	private Boolean			isHealthInsurance;
@@ -32,7 +38,6 @@ public class Client extends User {
 	@Column(name = "health_card_number")
 	//@NotEmpty(message = "*")
 	private String	healthCardNumber;
-
 
 	public String getHealthInsurance() {
 		return this.healthInsurance;
@@ -57,6 +62,12 @@ public class Client extends User {
 	//	public void setIsHealthInsurance(final Boolean isHealthInsurance) {
 	//		this.isHealthInsurance = isHealthInsurance;
 	//	}
+
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+	private User user;
+
 	//Relations
 
 
