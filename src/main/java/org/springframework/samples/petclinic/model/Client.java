@@ -28,9 +28,7 @@ import lombok.Data;
 @Table(name = "clients")
 public class Client extends Person {
 
-	//	@Column(name = "is_health_insurance")
-	//	private Boolean			isHealthInsurance;
-
+	
 	@Column(name = "health_insurance")
 	@NotEmpty(message = "*")
 	private String	healthInsurance;

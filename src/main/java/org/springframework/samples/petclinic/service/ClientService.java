@@ -25,6 +25,11 @@ public class ClientService {
 	public int clientCount() {
 		return (int) this.clientRepository.count();
 	}
+	
+	@Transactional
+	public Client findClientByUsername(String username) throws DataAccessException {
+		return clientRepository.findClientByUsername(username);
+	}	
 
 	@Transactional
 	public void saveClient(Client client) throws DataAccessException {

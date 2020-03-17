@@ -31,7 +31,7 @@ public class Receipt extends BaseEntity {
 
 	@Column(name = "state")
 	@Enumerated
-	private State				state;
+	private BillStatus				state;
 
 	//Relations
 
@@ -54,11 +54,11 @@ public class Receipt extends BaseEntity {
 		this.price = price;
 	}
 
-	public State getState() {
+	public BillStatus getState() {
 		return this.state;
 	}
 
-	public void setState(final State state) {
+	public void setState(final BillStatus state) {
 		this.state = state;
 	}
 
