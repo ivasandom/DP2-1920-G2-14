@@ -132,29 +132,43 @@
 	            $("#row-dates").append("<th style='width:20%;'>" + getDayWithName(daysOfWeek[i]) + "</th>");
 	        }
 	
-	        var hora = 9;
-	        while (hora < 20) {
+	        var hora = 8;
+	        while (hora < 21) {
 	
-	            if (hora != 15 && hora != 16){
+
 	
-	                var horaAux = (hora < 10) ? "0" + hora : hora;
+	           var horaAux = (hora < 10) ? "0" + hora : hora;
 	
-	                $("#row-horas").append("<tr>" +
+	           $("#row-horas").append("<tr>" +
 	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[0]) + " " + horaAux + ":00:00,000000" + "' data-hora='" + horaAux + ":00'>" + horaAux + ":00</td>" +
 	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[1]) + " " + horaAux + ":00:00,000000" + "' data-hora='" + horaAux + ":00'>" + horaAux + ":00</td>" +
 	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[2]) + " " + horaAux + ":00:00,000000" + "' data-hora='" + horaAux + ":00'>" + horaAux + ":00</td>" +
 	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[3]) + " " + horaAux + ":00:00,000000" + "' data-hora='" + horaAux + ":00'>" + horaAux + ":00</td>" +
 	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[4]) + " " + horaAux + ":00:00,000000" + "' data-hora='" + horaAux + ":00'>" + horaAux + ":00</td>" +
 	                    "</tr>");
-	            } else {
-	                $("#row-horas").append("<tr>" +
-	                    "<td style='background-color: white;height:49px;cursor:not-allowed;'><i>Cerrado</i></td>" +
-	                    "<td style='background-color: white;height:49px;cursor:not-allowed;'><i>Cerrado</i></td>" +
-	                    "<td style='background-color: white;height:49px;cursor:not-allowed;'><i>Cerrado</i></td>" +
-	                    "<td style='background-color: white;height:49px;cursor:not-allowed;'><i>Cerrado</i></td>" +
-	                    "<td style='background-color: white;height:49px;cursor:not-allowed;'><i>Cerrado</i></td>" +
+	          if (horaAux != "20") {
+	           $("#row-horas").append("<tr>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[0]) + " " + horaAux + ":15:00,000000" + "' data-hora='" + horaAux + ":15'>" + horaAux + ":15</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[1]) + " " + horaAux + ":15:00,000000" + "' data-hora='" + horaAux + ":15'>" + horaAux + ":15</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[2]) + " " + horaAux + ":15:00,000000" + "' data-hora='" + horaAux + ":15'>" + horaAux + ":15</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[3]) + " " + horaAux + ":15:00,000000" + "' data-hora='" + horaAux + ":15'>" + horaAux + ":15</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[4]) + " " + horaAux + ":15:00,000000" + "' data-hora='" + horaAux + ":15'>" + horaAux + ":15</td>" +
 	                    "</tr>");
-	            }
+	           $("#row-horas").append("<tr>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[0]) + " " + horaAux + ":30:00,000000" + "' data-hora='" + horaAux + ":30'>" + horaAux + ":30</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[1]) + " " + horaAux + ":30:00,000000" + "' data-hora='" + horaAux + ":30'>" + horaAux + ":30</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[2]) + " " + horaAux + ":30:00,000000" + "' data-hora='" + horaAux + ":30'>" + horaAux + ":30</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[3]) + " " + horaAux + ":30:00,000000" + "' data-hora='" + horaAux + ":30'>" + horaAux + ":30</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[4]) + " " + horaAux + ":30:00,000000" + "' data-hora='" + horaAux + ":30'>" + horaAux + ":30</td>" +
+	                    "</tr>");
+	           $("#row-horas").append("<tr>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[0]) + " " + horaAux + ":45:00,000000" + "' data-hora='" + horaAux + ":45'>" + horaAux + ":45</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[1]) + " " + horaAux + ":45:00,000000" + "' data-hora='" + horaAux + ":45'>" + horaAux + ":45</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[2]) + " " + horaAux + ":45:00,000000" + "' data-hora='" + horaAux + ":45'>" + horaAux + ":45</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[3]) + " " + horaAux + ":45:00,000000" + "' data-hora='" + horaAux + ":45'>" + horaAux + ":45</td>" +
+	                    "<td class='hora-cita' data-datetime='" + dateToString(daysOfWeek[4]) + " " + horaAux + ":45:00,000000" + "' data-hora='" + horaAux + ":45'>" + horaAux + ":45</td>" +
+	                    "</tr>");
+	          }
 	            hora = hora + 1;
 	        }
 	

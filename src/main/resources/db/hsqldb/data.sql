@@ -5,8 +5,8 @@ INSERT INTO authorities VALUES ('admin1','admin');
 INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
 INSERT INTO authorities VALUES ('owner1','owner');
 -- One vet user, named vet1 with passwor v3t
-INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
-INSERT INTO authorities VALUES ('vet1','veterinarian');
+INSERT INTO users(username,password,enabled) VALUES ('user','password',TRUE);
+INSERT INTO authorities VALUES ('user','client');
 
 -- Professional 1
 INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
@@ -26,6 +26,10 @@ INSERT INTO professionals (username, first_name, last_name, email, document, doc
 );
 INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
     'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, 'dermatology', '413123122-K'
+);
+
+INSERT INTO clients (username, document, document_type, email, first_name, last_name, health_card_number, health_insurance) VALUES (
+    'user', '30405060K', 0, 'email@acmecosas.es', 'John', 'Cena', '30301K', 'Maphre' 
 );
 
 -- Specialties

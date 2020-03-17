@@ -1,7 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
-public enum State {
+public enum BillStatus {
 
 	PENDING, REFUNDED, PAID
 }
