@@ -15,33 +15,27 @@
  */
 package org.springframework.samples.petclinic.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.repository.UserRepository;
+import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Mostly used as a facade for all Petclinic controllers Also a placeholder
- * for @Transactional and @Cacheable annotations
- *
- * @author Michael Isvy
- */
 @Service
-public class UserService {
+public class SpecialtyService {
 
-	private UserRepository userRepository;
-
+	private SpecialtyRepository specialtyRepository;	
+	
+	
 	@Autowired
-	public UserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	public SpecialtyService(SpecialtyRepository specialtyRepository) {
+		this.specialtyRepository = specialtyRepository;
+	}
+	
+	@Transactional(readOnly = true)
+	public Iterable<Specialty> findAll() throws DataAccessException {
+		return this.specialtyRepository.findAll();
 	}
 
-	@Transactional
-	public void saveUser(User userPet) throws DataAccessException {
-		userPet.setEnabled(true);
-		userRepository.save(userPet);
-	}
 }

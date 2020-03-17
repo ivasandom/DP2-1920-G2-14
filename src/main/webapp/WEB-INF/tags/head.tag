@@ -26,7 +26,7 @@
     <spring:url value="/webjars/jquery-ui/1.11.4/jquery-ui.theme.min.css" var="jQueryUiThemeCss" />
     <link href="${jQueryUiThemeCss}" rel="stylesheet" /> --%>
 
-    <title>${not empty pageTitle ? pageTitle : "Clinicas Corona"}</title>
+    <title>${not empty pageTitle ? pageTitle : "Clinicas Acme"}</title>
 
 
 </head>
