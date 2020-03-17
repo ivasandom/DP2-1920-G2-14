@@ -17,38 +17,47 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
 @RequestMapping("appointments")
 public class AppointmentController {
-
+	
+	private final CenterService centerService;
 	private final AppointmentService appointmentService;
 	private final ProfessionalService professionalService;
 	private final SpecialtyService specialtyService;
 
 	@Autowired
 	public AppointmentController(AppointmentService appointmentService, ProfessionalService professionalService, 
-			SpecialtyService specialtyService, AuthoritiesService authoritiesService) {
+			SpecialtyService specialtyService, CenterService centerService, AuthoritiesService authoritiesService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
+		this.centerService = centerService;
 	}
 	
 	@ModelAttribute("centers")
@@ -65,6 +74,11 @@ public class AppointmentController {
 	public Iterable<Specialty> populateSpecialties() {
 		return this.specialtyService.findAll();
 	}
+	
+//	@ModelAttribute("center")
+//	public Center findCenter(@PathVariable("center") int centerId) {
+//		return this.centerService.findCenterById(centerId).get();
+//	}
 
 
 	@InitBinder
@@ -84,8 +98,23 @@ public class AppointmentController {
 	@GetMapping(value = "/new")
 	public String initCreationForm(ModelMap model) {
 		Appointment appointment = new Appointment();
+//		appointment.setReason("None");
 		model.put("appointment", appointment);
 		return "appointments/new";
+	}
+	
+	@PostMapping(value = "/new")
+	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("appointment", appointment);
+			System.out.println(result.getAllErrors());
+			return "appointments/new";
+		} else {
+			// Save appointment if valid
+			
+			this.appointmentService.saveAppointment(appointment);
+			return "redirect:/appointments";
+		}
 	}
 
 }

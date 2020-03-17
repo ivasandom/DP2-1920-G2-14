@@ -185,19 +185,19 @@
 				        <div class="form-group has-feedback">	           
 				           <div class="form-group">
 						        <label for="id-center">Center</label>
-						        <form:select class="form-control" id="center" path="${center}">
+						        <form:select class="form-control" id="center" path="center">
 						        	<form:options items="${centers}" itemLabel="address" itemValue="id" />
 						        </form:select> 
 						   </div>
 						   <div class="form-group">
 						        <label for="id-specialty">Specialty</label>
-						        <form:select class="form-control" id="specialty" path="${specialty}">
+						        <form:select class="form-control" id="specialty" path="specialty">
 						        	<form:options items="${specialties}" itemLabel="name" itemValue="id" />
 						        </form:select> 
 						   </div>
 						   <div class="form-group">
 						        <label for="id-professional">Professionals</label>
-						        <form:select class="form-control" id="professional" path="${professional}">
+						        <form:select class="form-control" id="professional" path="professional">
 						        	<form:options items="${professionals}" itemLabel="fullName" itemValue="id" />
 						        </form:select> 
 						   </div>

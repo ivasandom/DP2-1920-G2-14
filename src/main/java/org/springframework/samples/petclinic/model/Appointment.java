@@ -56,9 +56,9 @@ public class Appointment extends BaseEntity {
 	/**
 	 * Holds value of property reason.
 	 */
-	@NotEmpty
-	@Column(name = "reason")
-	private String			reason;
+//	@NotEmpty
+//	@Column(name = "reason")
+//	private String			reason;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
