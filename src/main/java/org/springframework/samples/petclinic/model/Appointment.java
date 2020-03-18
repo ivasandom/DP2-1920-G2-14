@@ -39,28 +39,23 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "appointment")
+@Table(name = "appointments")
 public class Appointment extends BaseEntity {
-
 	
 	@Column(name = "date")
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate		Date;
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private LocalDate		date;
 
 	@Column(name = "start_time")
 	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime		startTime;
 
-	@Column(name = "end_time")
-	@DateTimeFormat(pattern = "HH:mm:ss")
-	private LocalTime		endTime;
-
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
 	
-	//Relations
 	
+	// Relations
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
@@ -73,7 +68,7 @@ public class Appointment extends BaseEntity {
 	
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "specialty")
+	@JoinColumn(name = "specialty_id")
 	private Specialty specialty;
 	
 	@NotNull

@@ -28,27 +28,44 @@ INSERT INTO authorities VALUES ('professional2','professional');
 INSERT INTO users(username,password,enabled) VALUES ('professional3','professional3',TRUE);
 INSERT INTO authorities VALUES ('professional3','professional');
 --
-INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
-    'professional1', 'Pepe', 'Gotera', 'pepe.gotera@gmail.com', '13232123M', 1, 'dermatology', '123123122-F'
-);
-INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
-    'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, 'gynecology', '233123122-F'
-);
-INSERT INTO professionals (username, first_name, last_name, email, document, document_type, specialty, collegiate_number) VALUES (
-    'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, 'dermatology', '413123122-K'
-);
+
 
 INSERT INTO clients (username, document, document_type, email, first_name, last_name, health_card_number, health_insurance) VALUES (
     'user', '30405060K', 0, 'email@acmecosas.es', 'John', 'Cena', '30301K', 'Maphre' 
 );
 
 -- Specialties
-INSERT INTO specialties VALUES (1, 'radiology');
+INSERT INTO specialties VALUES (1, 'dermatology');
 INSERT INTO specialties VALUES (2, 'surgery');
 INSERT INTO specialties VALUES (3, 'dentistry');
 -- Centers
-INSERT INTO centers(address) VALUES ('SEVILLA');
-INSERT INTO centers(address) VALUES ('CADIZ')
+INSERT INTO centers(address) VALUES ('Sevilla');
+INSERT INTO centers(address) VALUES ('Cadiz');
+
+
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
+    1, 1, 'professional1', 'Pepe', 'Gotera', 'pepe.gotera@gmail.com', '13232123M', 1, '123123122-F'
+);
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
+    2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F'
+);
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
+    1, 3, 'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, '413123122-K'
+);
+
+
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:00');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '10:15');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '10:45');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '11:00');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '11:15');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '12:00');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '13:15');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '14:00');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '14:45');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '15:00');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '15:15');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '15:30');
 
 -- INSERT INTO vets VALUES (1, 'James', 'Carter');
 -- INSERT INTO vets VALUES (2, 'Helen', 'Leary');

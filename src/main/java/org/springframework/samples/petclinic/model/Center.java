@@ -28,13 +28,5 @@ public class Center extends NamedEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "center", fetch = FetchType.EAGER)
 	private Set<Schedule> schedules;
 
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "center", fetch = FetchType.EAGER)
-//	private Set<Appointment> appointments;
 	
-	public String toString() {
-		return this.getAddress();
-	}
-
-
-
 }
