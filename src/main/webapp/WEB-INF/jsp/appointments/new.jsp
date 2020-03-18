@@ -65,7 +65,7 @@
 							},
 							success: function (data) {
 								$("#startTime").empty();
-								for (var i = 8; i <= 20; i++) {
+								for (var i = 8; i < 20; i++) {
 									for (var k = 0; k < 4; k++) {
 										var hora = i < 10 ? "0" + i : i;
 										var minutos = k * 15 == 0 ? "0" + (k*15) : k*15;
@@ -99,6 +99,7 @@
     <jsp:body>
         <div class="container">
             <h2 class="my-5">New appointment</h2>
+            
             <form:form modelAttribute="appointment" method="post" action="/appointments/new">
                 <div class="form-group has-feedback">
                     <h4 class="mt-5">Type of appointment</h4>
@@ -133,13 +134,14 @@
                         </div>
                         <div class="form-group">
                             <label for="">Time</label>
-							<code>OK: Probar Sevilla, Dermatology, Pepe gotera, 12/12/2020. Muestra solo las horas disponibles.</code>
                             <select class="form-control" name="startTime" id="startTime">
 								<option disabled selected>Choose time</option>
                             </select>
                         </div>
                     </div>
+                    <code>Probar Sevilla, Dermatology, Pepe gotera, 12/12/2020. Muestra solo las horas disponibles.</code>
                 </div>
+                
                 <button type="submit" class="btn btn-primary">+ Create appointment</button>
             </form:form>
         </div>
