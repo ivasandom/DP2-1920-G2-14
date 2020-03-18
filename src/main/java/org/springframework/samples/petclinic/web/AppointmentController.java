@@ -31,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
