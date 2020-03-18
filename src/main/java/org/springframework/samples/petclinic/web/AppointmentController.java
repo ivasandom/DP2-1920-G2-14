@@ -26,6 +26,7 @@ import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
@@ -50,19 +51,21 @@ public class AppointmentController {
 	private final ProfessionalService professionalService;
 	private final SpecialtyService specialtyService;
 	private final ClientService clientService;
+	private final CenterService centerService;
 
 	@Autowired
 	public AppointmentController(AppointmentService appointmentService, ProfessionalService professionalService, 
-			SpecialtyService specialtyService, ClientService clientService, AuthoritiesService authoritiesService) {
+			SpecialtyService specialtyService, ClientService clientService, CenterService centerService, AuthoritiesService authoritiesService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.clientService = clientService;
+		this.centerService = centerService;
 	}
 	
 	@ModelAttribute("centers")
 	public Iterable<Center> populateCenters() {
-		return this.appointmentService.listCenters();
+		return this.centerService.findAll();
 	}
 	
 	@ModelAttribute("professionals")

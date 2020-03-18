@@ -41,7 +41,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "appointment")
 public class Appointment extends BaseEntity {
-
 	
 	@Column(name = "date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
@@ -59,8 +58,8 @@ public class Appointment extends BaseEntity {
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
 	
-	//Relations
 	
+	// Relations
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")

@@ -15,15 +15,23 @@ import org.springframework.stereotype.Service;
 public class CenterService {
 
 	@Autowired
-	private CenterRepository	centerRepository;
+	private CenterRepository centerRepository;
+	
 	
 	@Autowired
 	public CenterService(CenterRepository centerRepository) {
 		this.centerRepository = centerRepository;
 	}
 	
+	
+	@Transactional
+	public Iterable<Center> findAll() throws DataAccessException {
+		return centerRepository.findAll();
+	}
+	
 	@Transactional
 	public Optional<Center> findCenterById(final int id) throws DataAccessException {
 		return this.centerRepository.findById(id);
 	}
+	
 }

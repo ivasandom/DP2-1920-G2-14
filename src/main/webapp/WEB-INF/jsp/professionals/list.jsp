@@ -13,15 +13,23 @@
     
     <form:form modelAttribute="professional" action="/professionals" method="get" class="form-horizontal"
                id="search-owner-form">
-        <div class="form-group">
-            <div class="control-group" id="lastName">
-                <label class="col-sm-2 control-label">Specialty</label>
                 <div class="col-sm-10">
-                    <form:input class="form-control" path="specialty" size="30" maxlength="80"/>
-                    <span class="help-inline"><form:errors path="*"/></span>
+                   <div class="form-group">
+                        <label for="id-center">Center</label>
+                        <form:select class="form-control" id="center" path="center">
+                            <option disabled selected hidden>Choose a center</option>
+                            <form:options items="${centers}" itemLabel="address" itemValue="id" />
+                        </form:select>
+                    </div>
+                    <div class="form-group">
+                        <label for="id-specialty">Specialty</label>
+                        <form:select class="form-control" id="specialty" path="specialty">
+                            <option disabled selected hidden>Choose a specialty</option>
+                            <form:options items="${specialties}" itemLabel="name" itemValue="id" />
+                        </form:select>
+                    </div>
+                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
                 </div>
-            </div>
-        </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-primary">Find Professionals</button>
