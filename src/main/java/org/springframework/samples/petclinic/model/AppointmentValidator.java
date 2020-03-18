@@ -24,29 +24,38 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 
 		Appointment appointment = (Appointment) obj;
 		
-		if (appointment.getStartTime().getMinute() % 15 != 0) {
-			// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
-			errors.rejectValue("startTime", "startTimeInvalid");
+		if (!errors.hasFieldErrors("startTime")) {
+			if (appointment.getStartTime().getMinute() % 15 != 0) {
+				// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
+				errors.rejectValue("startTime", "startTimeInvalid");
+			}
+		
+			if (appointment.getStartTime() == null || appointment.getStartTime().getHour() < 8 || appointment.getStartTime().getHour() > 20) {
+				// Our clinics are open from 8 a.m to 8 p.m.
+				errors.rejectValue("startTime", "startTimeOfOutSchedule");
+			}
 		}
 		
-		if (appointment.getStartTime().getHour() < 8 || appointment.getStartTime().getHour() > 20) {
-			// Our clinics are open from 8 a.m to 8 p.m.
-			errors.rejectValue("startTime", "startTimeOfOutSchedule");
+		
+		if (!errors.hasFieldErrors("date")) {
+			if (appointment.getDate() == null || appointment.getDate().isBefore(LocalDate.now())) {
+				// Past dates are invalid
+				errors.rejectValue("date", "pastDate");
+			}
 		}
 		
-		if (appointment.getDate().isBefore(LocalDate.now())) {
-			// Past dates are invalid
-			errors.rejectValue("date", "pastDate");
+		if (!errors.hasFieldErrors("professional") && !errors.hasFieldErrors("center")) {
+			if (appointment.getProfessional().getCenter() != appointment.getCenter()) {
+				// Appointment center must be equal to professional center
+				errors.rejectValue("center", "centerInvalid");
+			}
 		}
 		
-		if (appointment.getProfessional().getCenter() != appointment.getCenter()) {
-			// Appointment center must be equal to professional center
-			errors.rejectValue("center", "centerInvalid");
-		}
-		
-		if (appointment.getProfessional().getSpecialty() != appointment.getSpecialty()) {
-			// Appointment specialty must be equal to professional specialty
-			errors.rejectValue("center", "specialty");
+		if (!errors.hasFieldErrors("professional") && !errors.hasFieldErrors("specialty")) {
+			if (appointment.getProfessional().getSpecialty() != appointment.getSpecialty()) {
+				// Appointment specialty must be equal to professional specialty
+				errors.rejectValue("center", "specialty");
+			}
 		}
 			
 		
