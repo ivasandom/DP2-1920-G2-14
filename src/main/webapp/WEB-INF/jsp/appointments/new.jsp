@@ -27,8 +27,10 @@
                         success: function (data) {
                             if (data.length > 0) {
                                 professionalSelect.empty();
-                                var option = new Option("option text hidden", "");
+                                var option = new Option("option text", "");
+                                option.hidden = true;
 								option.disabled = true;
+								option.selected = true;
                                 $(option).html("Choose professional");
                                 professionalSelect.append(option);
                                 for (var i in data) {
@@ -96,13 +98,13 @@
                         <p>Choose the date of your appointment.</p>
                         <div class="form-group">
                             <label for="">Date</label>
-                            <input type="text" class="form-control" id="datepicker" placeholder="Choose appointment date">
+                            <input type="text" class="form-control" id="datepicker" placeholder="Choose date">
                         </div>
                         <div class="form-group">
                             <label for="">Time</label>
 							<code>TODO: get available times by selected professional and selected date</code>
                             <select class="form-control">
-								<option disabled selected>Choose appointment time</option>
+								<option disabled selected>Choose time</option>
 								<option disabled>09:00</option>
 								<option>> 09:15</option>
 								<option>> 09:30</option>
