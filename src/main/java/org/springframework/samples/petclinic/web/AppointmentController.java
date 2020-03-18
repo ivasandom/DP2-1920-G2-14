@@ -29,6 +29,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
@@ -115,6 +116,9 @@ public class AppointmentController {
 	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		appointment.setClient(clientService.findClientByUsername(auth.getName()));
+		AppointmentValidator appointmentValidator = new AppointmentValidator();
+		appointmentValidator.validate(appointment, result);
+		
 		if (result.hasErrors()) {
 			model.put("appointment", appointment);
 			System.out.println(result.getAllErrors());
