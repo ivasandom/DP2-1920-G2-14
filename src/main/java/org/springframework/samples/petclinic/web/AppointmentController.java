@@ -15,11 +15,19 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Professional;
@@ -33,6 +41,7 @@ import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -41,6 +50,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -115,5 +126,29 @@ public class AppointmentController {
 			return "redirect:/appointments";
 		}
 	}
+	
+	@GetMapping(value = "busy")     
+	@ResponseBody
+	public ResponseEntity<Object> getBusyStartTimes(
+			@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate date,
+			@RequestParam(name = "professionalId", required = false) Integer professionalId,
+			Model model) {
+		
+		if (date != null && professionalId != null) {
+			Optional<Professional> professional = professionalService.findById(professionalId);
+			if (professional.isPresent()) {
+				Collection<LocalTime> busyStartTimes = appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
+			    return new ResponseEntity<Object>(busyStartTimes, HttpStatus.OK);
+			}
+		}
+		
+		// Invalid request
+		HashMap<String, String> response = new HashMap<String, String>();
+		response.put("error", "Invalid request");
+		return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+	
+	}
+	
+	
 
 }

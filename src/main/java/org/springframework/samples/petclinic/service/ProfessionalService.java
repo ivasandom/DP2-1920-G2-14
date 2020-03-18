@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Professional;
@@ -39,8 +41,15 @@ public class ProfessionalService {
 	}
 	
 	@Transactional(readOnly = true)
+	public Optional<Professional> findById(int id) throws DataAccessException {
+		return professionalRepository.findById(id);
+	}
+	
+	@Transactional(readOnly = true)
 	public Iterable<Professional> findProfessionalBySpecialtyAndCenter(int specialtyId, int centerId) throws DataAccessException {
 		return professionalRepository.findBySpecialtyAndCenter(specialtyId, centerId);
 	}
+	
+	
 
 }

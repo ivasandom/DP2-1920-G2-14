@@ -18,7 +18,7 @@
             function updateField(event) {
                 data[event.target.name + "Id"] = event.target.value;
                 if (data.centerId && data.specialtyId && event.target.name != "professional") {
-					data.professionalId = undefined;
+					delete data.professionalId;
 					appointmentDateGroup.hide();
 
                     $.ajax({
@@ -51,16 +51,19 @@
 
 				if (data.professionalId) {
 					appointmentDateGroup.show();
-					// Get date
+					if (data.dateId) {
+					}
 				}
             }
 
             $("#center").on('change', updateField);
             $("#specialty").on('change', updateField);
 			$("#professional").on('change', updateField);
+			// $("#date").on('change', updateField);
             var today = new Date(); 
-			$( "#datepicker" ).datepicker({
-				minDate: today
+			$( "#date" ).datepicker({
+				minDate: today,
+				dateFormat: 'dd/mm/yy'
 			});
 
         </script>
@@ -98,20 +101,13 @@
                         <p>Choose the date of your appointment.</p>
                         <div class="form-group">
                             <label for="">Date</label>
-                            <input type="text" class="form-control" id="datepicker" placeholder="Choose date">
+                            <input type="text" class="form-control" id="date" name="date" placeholder="Choose date">
                         </div>
                         <div class="form-group">
                             <label for="">Time</label>
 							<code>TODO: get available times by selected professional and selected date</code>
-                            <select class="form-control">
+                            <select class="form-control" name="startTime">
 								<option disabled selected>Choose time</option>
-								<option disabled>09:00</option>
-								<option>> 09:15</option>
-								<option>> 09:30</option>
-								<option disabled>09:45</option>
-								<option disabled>10:00</option>
-								<option>> 10:15</option>
-								<option>> 10:30</option>
                             </select>
                         </div>
                     </div>

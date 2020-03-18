@@ -104,7 +104,7 @@ public class ProfessionalController {
 	
 	@GetMapping("/professionals/filter")     
 	@ResponseBody
-	public ResponseEntity<Object> check(@RequestParam Optional<Integer> centerId, @RequestParam Optional<Integer> specialtyId, Model model) {
+	public ResponseEntity<Object> filterJSON(@RequestParam Optional<Integer> centerId, @RequestParam Optional<Integer> specialtyId, Model model) {
 		if (centerId.isPresent() && specialtyId.isPresent()) {
 			List<Map<String, Object>> entities = new ArrayList<>();
 		    for (Professional p : this.professionalService.findProfessionalBySpecialtyAndCenter(specialtyId.get(), centerId.get())) {
