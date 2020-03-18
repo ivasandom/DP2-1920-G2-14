@@ -36,6 +36,11 @@ public class AppointmentService {
 	}
 	
 	@Transactional
+	public Collection<Appointment> findAppointmentByUserId(int id) {
+		return appointmentRepository.findAppointmentByClientId(id);
+	}
+	
+	@Transactional
 	public void saveAppointment(Appointment appointment) throws DataAccessException {
 		appointmentRepository.save(appointment);
 	}

@@ -99,7 +99,9 @@ public class AppointmentController {
 	
 	@GetMapping()
 	public String listAppointments(Map<String, Object> model) {
-		Iterable<Appointment> appointments = this.appointmentService.listAppointments();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Client currentClient = clientService.findClientByUsername(auth.getName());
+		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
 		model.put("appointments", appointments);
 		return "appointments/list";
 	}
