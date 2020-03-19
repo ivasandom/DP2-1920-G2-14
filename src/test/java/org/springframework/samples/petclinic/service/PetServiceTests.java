@@ -38,6 +38,7 @@ import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.util.EntityUtils;
+import org.springframework.samples.petclinic.web.DuplicatedUserNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,7 +100,7 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldInsertPetIntoDatabaseAndGenerateId() {
+	public void shouldInsertPetIntoDatabaseAndGenerateId() throws DataAccessException, DuplicatedUserNameException {
 		Owner owner6 = this.ownerService.findOwnerById(6);
 		int found = owner6.getPets().size();
 

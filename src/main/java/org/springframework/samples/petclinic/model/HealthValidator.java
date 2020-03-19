@@ -14,9 +14,10 @@ public class HealthValidator implements org.springframework.validation.Validator
 
 	@Override
 	public void validate(final Object obj, final Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthCardNumber", "required");
+		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthCardNumber", "required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthInsurance", "required");
-		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthInsurances", "required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.username", "required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.password", "required");
 
 		Client cli = (Client) obj;
 		if (cli.getHealthInsurance().equals("I do not have insurance") && !cli.getHealthCardNumber().isEmpty()) {
@@ -27,10 +28,11 @@ public class HealthValidator implements org.springframework.validation.Validator
 			errors.rejectValue("healthCardNumber", "required", new Object[] {
 				"'healthCardNumber'"
 			}, "required");
-		} else if (cli.getHealthCardNumber().isEmpty() || cli.getHealthInsurance().isEmpty() || cli.getHealthInsurance() == null) {
-			errors.rejectValue("healthCardNumber", "required", new Object[] {
-				"'healthCardNumber'"
-			}, "required");
+		}
+		if (!cli.getUser().getPassword().isEmpty() && (cli.getUser().getPassword().length() < 6 || cli.getUser().getPassword().length() > 15)) {
+			errors.rejectValue("user.password", "length", new Object[] {
+				"'user.password'"
+			}, "length");
 		}
 
 		//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.required");
