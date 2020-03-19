@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class ClientServiceTests {
 
 	@Autowired
-	private ClientService clientService;
+	protected ClientService clientService;
 
 
 	@Test

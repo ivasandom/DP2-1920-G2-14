@@ -27,12 +27,6 @@ INSERT INTO authorities VALUES ('professional2','professional');
 -- Professional 3
 INSERT INTO users(username,password,enabled) VALUES ('professional3','professional3',TRUE);
 INSERT INTO authorities VALUES ('professional3','professional');
---
-
-
-INSERT INTO clients (username, document, document_type, email, first_name, last_name, health_card_number, health_insurance) VALUES (
-    'user', '30405060K', 0, 'email@acmecosas.es', 'John', 'Cena', '30301K', 'Maphre' 
-);
 
 -- Specialties
 INSERT INTO specialties VALUES (1, 'dermatology');
@@ -44,7 +38,7 @@ INSERT INTO centers(address) VALUES ('Cadiz');
 
 
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    1, 1, 'professional1', 'Pepe', 'Gotera', 'pepe.gotera@gmail.com', '13232123M', 1, '123123122-F'
+    1, 1, 'professional1', 'Guillermo', 'Díaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
 );
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
     2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F'
