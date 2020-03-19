@@ -29,7 +29,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -98,7 +100,9 @@ public class AppointmentController {
 	
 	@GetMapping()
 	public String listAppointments(Map<String, Object> model) {
-		Iterable<Appointment> appointments = this.appointmentService.listAppointments();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Client currentClient = clientService.findClientByUsername(auth.getName());
+		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
 		model.put("appointments", appointments);
 		return "appointments/list";
 	}
@@ -115,6 +119,9 @@ public class AppointmentController {
 	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		appointment.setClient(clientService.findClientByUsername(auth.getName()));
+		AppointmentValidator appointmentValidator = new AppointmentValidator();
+		appointmentValidator.validate(appointment, result);
+		
 		if (result.hasErrors()) {
 			model.put("appointment", appointment);
 			System.out.println(result.getAllErrors());
