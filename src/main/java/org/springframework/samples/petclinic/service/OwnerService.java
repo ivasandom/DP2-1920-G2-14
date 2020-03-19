@@ -59,7 +59,7 @@ public class OwnerService {
 	}
 
 	@Transactional
-	public void saveOwner(final Owner owner) throws DataAccessException {
+	public void saveOwner(final Owner owner) {
 		//creating owner
 		this.ownerRepository.save(owner);
 		//creating user
