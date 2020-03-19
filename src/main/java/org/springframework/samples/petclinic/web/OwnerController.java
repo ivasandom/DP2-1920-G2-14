@@ -69,7 +69,7 @@ public class OwnerController {
 	}
 
 	@PostMapping(value = "/owners/new")
-	public String processCreationForm(@Valid final Owner owner, final BindingResult result) throws DataAccessException, DuplicatedUserNameException {
+	public String processCreationForm(@Valid final Owner owner, final BindingResult result) throws DataAccessException {
 		if (result.hasErrors()) {
 			return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		} else {
@@ -119,7 +119,7 @@ public class OwnerController {
 	}
 
 	@PostMapping(value = "/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid final Owner owner, final BindingResult result, @PathVariable("ownerId") final int ownerId) throws DataAccessException, DuplicatedUserNameException {
+	public String processUpdateOwnerForm(@Valid final Owner owner, final BindingResult result, @PathVariable("ownerId") final int ownerId) throws DataAccessException {
 		if (result.hasErrors()) {
 			return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		} else {
