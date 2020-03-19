@@ -16,6 +16,7 @@ import lombok.Data;
 public class User {
 
 	@Id
+	@NotEmpty(message = "*")
 	String			username;
 
 	@NotEmpty(message = "*")
@@ -23,18 +24,5 @@ public class User {
 	private String	password;
 
 	boolean			enabled;
-
-	//	public User getUserWithIdDifferent(String username, final Integer id) {
-	//		username = username.toLowerCase();
-	//		Users users = new Users();
-	//		for (User user : users.getUserList()) {
-	//			String compName = user.getUsername();
-	//			compName = compName.toLowerCase();
-	//			if (compName.equals(username) && user.getId() != id) {
-	//				return user;
-	//			}
-	//		}
-	//		return null;
-	//	}
 
 }

@@ -22,63 +22,56 @@ import java.time.LocalTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import com.sun.istack.NotNull;
+
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "appointment")
+@Table(name = "appointments")
 public class Appointment extends BaseEntity {
-
-	/**
-	 * Holds value of property date.
-	 */
+	
 	@Column(name = "date")
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate		Date;
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	private LocalDate		date;
 
 	@Column(name = "start_time")
 	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime		startTime;
 
-	@Column(name = "end_time")
-	@DateTimeFormat(pattern = "HH:mm:ss")
-	private LocalTime		endTime;
-
-	/**
-	 * Holds value of property reason.
-	 */
-	@NotEmpty
-	@Column(name = "reason")
-	private String			reason;
-
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
 	
-	@ManyToOne
-	@JoinColumn(name = "specialty")
-	private Specialty specialty;
-
-	//Relations
-
-
-	@ManyToOne
+	
+	// Relations
+	
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
 	private Client			client;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "professional_id")
 	private Professional	professional;
-
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "specialty_id")
+	private Specialty specialty;
+	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "center_id")
 	private Center			center;

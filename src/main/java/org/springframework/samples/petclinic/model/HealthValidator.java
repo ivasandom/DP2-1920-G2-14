@@ -33,6 +33,7 @@ public class HealthValidator implements org.springframework.validation.Validator
 			errors.rejectValue("user.password", "length", new Object[] {
 				"'user.password'"
 			}, "length");
+
 		}
 
 		//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.required");

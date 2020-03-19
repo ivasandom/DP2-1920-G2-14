@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 public class ClientServiceTests {
 
 	@Autowired
-	private ClientService clientService;
+	protected ClientService clientService;
 
 
 	@Test
 	public void testCountWithInitialData() {
 		int count = this.clientService.clientCount();
-		Assertions.assertEquals(count, 1);
+		Assertions.assertEquals(count, 2);
 	}
 
 }
