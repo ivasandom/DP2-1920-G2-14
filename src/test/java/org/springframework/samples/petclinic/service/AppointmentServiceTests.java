@@ -66,7 +66,6 @@ public class AppointmentServiceTests {
 		appointment.setDate(LocalDate.of(2020, 11, 11));
 		appointment.setSpecialty(specialty);
 		appointment.setStartTime(LocalTime.of(10, 15));
-		appointment.setId(13);
 		
 		this.appointmentService.saveAppointment(appointment);
 		Assertions.assertThat(appointment.getId().longValue()).isNotEqualTo(0);
