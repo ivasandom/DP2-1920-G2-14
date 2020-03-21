@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
@@ -50,20 +51,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ProfessionalController {
 
-	private final ProfessionalService professionalService;
-	private final SpecialtyService specialtyService;
-	private final CenterService centerService;
+	private final ProfessionalService	professionalService;
+	private final SpecialtyService		specialtyService;
+	private final CenterService			centerService;
+
 
 	@Autowired
-	public ProfessionalController(ProfessionalService professionalService, SpecialtyService specialtyService, CenterService centerService,
-			AuthoritiesService authoritiesService) {
+	public ProfessionalController(final ProfessionalService professionalService, final SpecialtyService specialtyService, final CenterService centerService, final AuthoritiesService authoritiesService) {
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.centerService = centerService;
 	}
 
 	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
+	public void setAllowedFields(final WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
 
@@ -71,49 +72,47 @@ public class ProfessionalController {
 	public Iterable<Specialty> populateSpecialties() {
 		return this.specialtyService.findAll();
 	}
-	
+
 	@ModelAttribute("centers")
 	public Iterable<Center> populateCenters() {
 		return this.centerService.findAll();
 	}
-	
+
 	@GetMapping(value = "/professionals/find")
-	public String initFindForm(Map<String, Object> model) {
+	public String initFindForm(final Map<String, Object> model) {
 		model.put("professional", new Professional());
 		return "professionals/find";
 	}
 
 	@GetMapping(value = "/professionals")
-	public String processFindForm(Professional professional, BindingResult result, Map<String, Object> model) {
+	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		model.put("professional", professional);
 
-		Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(
-				professional.getSpecialty().getId(), professional.getCenter().getId());
-		
+		Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
+
 		if (!results.iterator().hasNext()) {
 			// no owners found
 			result.rejectValue("specialty", "notFound", "not found");
 			return "professionals/find";
-		}
-		else {
+		} else {
 			// multiple owners found
 			model.put("selections", results);
 			return "professionals/list";
 		}
 	}
-	
-	@GetMapping("/professionals/filter")     
+
+	@GetMapping("/professionals/filter")
 	@ResponseBody
-	public ResponseEntity<Object> filterJSON(@RequestParam Optional<Integer> centerId, @RequestParam Optional<Integer> specialtyId, Model model) {
+	public ResponseEntity<Object> filterJSON(@RequestParam final Optional<Integer> centerId, @RequestParam final Optional<Integer> specialtyId, final Model model) {
 		if (centerId.isPresent() && specialtyId.isPresent()) {
 			List<Map<String, Object>> entities = new ArrayList<>();
-		    for (Professional p : this.professionalService.findProfessionalBySpecialtyAndCenter(specialtyId.get(), centerId.get())) {
-		    	HashMap<String, Object> professional = new HashMap<String, Object>();
-		        professional.put("id", p.getId());
-		        professional.put("fullName", p.getFullName());
-		        entities.add(professional);
-		    }
-		    return new ResponseEntity<Object>(entities, HttpStatus.OK);
+			for (Professional p : this.professionalService.findProfessionalBySpecialtyAndCenter(specialtyId.get(), centerId.get())) {
+				HashMap<String, Object> professional = new HashMap<String, Object>();
+				professional.put("id", p.getId());
+				professional.put("fullName", p.getFullName());
+				entities.add(professional);
+			}
+			return new ResponseEntity<Object>(entities, HttpStatus.OK);
 		} else {
 			HashMap<String, String> response = new HashMap<String, String>();
 			response.put("error", "Invalid request");
