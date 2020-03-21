@@ -35,13 +35,12 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Entity
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {
-	
+
 	@Column(name = "date")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate		date;
@@ -50,13 +49,16 @@ public class Appointment extends BaseEntity {
 	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime		startTime;
 
+	@Column(name = "reason")
+	//@NotEmpty(message = "*")
+	private String			reason;
+
 	@ManyToOne
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
-	
-	
+
 	// Relations
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
 	private Client			client;
@@ -65,12 +67,12 @@ public class Appointment extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "professional_id")
 	private Professional	professional;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "specialty_id")
-	private Specialty specialty;
-	
+	private Specialty		specialty;
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "center_id")

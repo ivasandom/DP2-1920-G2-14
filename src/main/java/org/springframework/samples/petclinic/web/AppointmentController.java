@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
@@ -50,112 +51,123 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("appointments")
 public class AppointmentController {
-	
-	private final AppointmentService appointmentService;
-	private final ProfessionalService professionalService;
-	private final SpecialtyService specialtyService;
-	private final ClientService clientService;
-	private final CenterService centerService;
+
+	private final AppointmentService	appointmentService;
+	private final ProfessionalService	professionalService;
+	private final SpecialtyService		specialtyService;
+	private final ClientService			clientService;
+	private final CenterService			centerService;
+
 
 	@Autowired
-	public AppointmentController(AppointmentService appointmentService, ProfessionalService professionalService, 
-			SpecialtyService specialtyService, ClientService clientService, CenterService centerService, AuthoritiesService authoritiesService) {
+	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
+		final AuthoritiesService authoritiesService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.clientService = clientService;
 		this.centerService = centerService;
 	}
-	
+
 	@ModelAttribute("centers")
 	public Iterable<Center> populateCenters() {
 		return this.centerService.findAll();
 	}
-	
+
 	@ModelAttribute("professionals")
 	public Iterable<Professional> populateProfessionals() {
 		return this.professionalService.findAll();
 	}
-	
-	
+
 	@ModelAttribute("specialties")
 	public Iterable<Specialty> populateSpecialties() {
 		return this.specialtyService.findAll();
 	}
 
 	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
+	public void setAllowedFields(final WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
-	
-	
+
 	@GetMapping()
-	public String listAppointments(Map<String, Object> model) {
+	public String listAppointments(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Client currentClient = clientService.findClientByUsername(auth.getName());
+		Client currentClient = this.clientService.findClientByUsername(auth.getName());
 		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
 		model.put("appointments", appointments);
 		return "appointments/list";
 	}
-	
-	
+
+	@GetMapping("/pro")
+	public String listAppointmentsPro(final Map<String, Object> model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Professional currentPro = this.professionalService.findProByUsername(auth.getName());
+		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByProfessionalId(currentPro.getId());
+		model.put("appointments", appointments);
+		return "appointments/pro";
+	}
+
 	@GetMapping(value = "/new")
-	public String initCreationForm(ModelMap model) {
+	public String initCreationForm(final ModelMap model) {
 		Appointment appointment = new Appointment();
 		model.put("appointment", appointment);
 		return "appointments/new";
 	}
-	
+
 	@PostMapping(value = "/new")
 	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		appointment.setClient(clientService.findClientByUsername(auth.getName()));
+		appointment.setClient(this.clientService.findClientByUsername(auth.getName()));
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
-		
+
 		if (result.hasErrors()) {
 			model.put("appointment", appointment);
 			System.out.println(result.getAllErrors());
 			return "appointments/new";
 		} else {
 			// Save appointment if valid
-			
+
 			this.appointmentService.saveAppointment(appointment);
 			return "redirect:/appointments";
 		}
 	}
-	
-	@GetMapping(value = "busy")     
+
+	@GetMapping(value = "busy")
 	@ResponseBody
-	public ResponseEntity<Object> getBusyStartTimes(
-			@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate date,
-			@RequestParam(name = "professionalId", required = false) Integer professionalId,
-			Model model) {
-		
+	public ResponseEntity<Object> getBusyStartTimes(@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") final LocalDate date, @RequestParam(name = "professionalId", required = false) final Integer professionalId,
+		final Model model) {
+
 		if (date != null && professionalId != null) {
-			Optional<Professional> professional = professionalService.findById(professionalId);
+			Optional<Professional> professional = this.professionalService.findById(professionalId);
 			if (professional.isPresent()) {
-				Collection<LocalTime> busyStartTimes = appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
-			    return new ResponseEntity<Object>(busyStartTimes, HttpStatus.OK);
+				Collection<LocalTime> busyStartTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
+				return new ResponseEntity<Object>(busyStartTimes, HttpStatus.OK);
 			}
 		}
-		
+
 		// Invalid request
 		HashMap<String, String> response = new HashMap<String, String>();
 		response.put("error", "Invalid request");
 		return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
-	
+
 	}
-	
-	
+
+	@GetMapping("/{appointmentId}")
+	public ModelAndView showAppointment(@PathVariable("appointmentId") final int appointmentId) {
+		ModelAndView mav = new ModelAndView("appointments/consultationPro");
+		mav.addObject(this.appointmentService.findAppointmentById(appointmentId));
+		return mav;
+	}
 
 }

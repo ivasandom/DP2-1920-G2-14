@@ -12,11 +12,13 @@ import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Professional;
 
 public interface AppointmentRepository extends CrudRepository<Appointment, Integer> {
-	
+
 	@Query("SELECT a.startTime FROM Appointment a WHERE a.date = :date and a.professional = :professional")
-	public Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(@Param("date") LocalDate date, @Param("professional") Professional professional);
+	Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(@Param("date") LocalDate date, @Param("professional") Professional professional);
 
 	@Query("SELECT a FROM Appointment a WHERE a.client.id = :id")
-	public Collection<Appointment> findAppointmentByClientId(@Param("id") int clientId);
+	Collection<Appointment> findAppointmentByClientId(@Param("id") int clientId);
 
+	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id")
+	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);
 }

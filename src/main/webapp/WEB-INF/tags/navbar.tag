@@ -27,6 +27,9 @@
 			<li class="nav-item ${currentPage eq 'vets' ? 'active' : ''}">
                 <a class="nav-link" href="/vets">Veterinarians</a>
             </li>
+            <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
+                <a class="nav-link" href="/appointments/pro">Pro appointments</a>
+            </li>
 			<li class="nav-item ${currentPage eq 'error' ? 'active' : ''}">
                 <a class="nav-link" href="/oups">Error</a>
             </li>

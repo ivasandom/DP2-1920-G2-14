@@ -36,4 +36,10 @@ public class CrashController {
 		//return "owners/findOwners";
 	}
 
+	//	@GetMapping(value = "/appointments/pro")
+	//	public String triggerException2() {
+	//		throw new RuntimeException("Expected: controller used to showcase what " + "happens when an exception is thrown2");
+	//		//return "owners/findOwners";
+	//	}
+
 }

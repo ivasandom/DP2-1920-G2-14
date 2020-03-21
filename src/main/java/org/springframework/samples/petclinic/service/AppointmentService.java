@@ -19,30 +19,40 @@ public class AppointmentService {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
-	
+
 	@Autowired
-	public AppointmentService(AppointmentRepository appointmentRepository) {
+	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Iterable<Appointment> listAppointments() throws DataAccessException {
-		return appointmentRepository.findAll();
+		return this.appointmentRepository.findAll();
 	}
-	
+
 	@Transactional
-	public  Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(LocalDate date, Professional professional) {
-		return appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+	public Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(final LocalDate date, final Professional professional) {
+		return this.appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 	}
-	
+
 	@Transactional
-	public Collection<Appointment> findAppointmentByUserId(int id) {
-		return appointmentRepository.findAppointmentByClientId(id);
+	public Collection<Appointment> findAppointmentByUserId(final int id) {
+		return this.appointmentRepository.findAppointmentByClientId(id);
 	}
-	
+
 	@Transactional
-	public void saveAppointment(Appointment appointment) throws DataAccessException {
-		appointmentRepository.save(appointment);
+	public Collection<Appointment> findAppointmentByProfessionalId(final int id) {
+		return this.appointmentRepository.findAppointmentByProfessionalId(id);
 	}
-	
+
+	@Transactional
+	public Appointment findAppointmentById(final int id) {
+		return this.appointmentRepository.findById(id).get();
+	}
+
+	@Transactional
+	public void saveAppointment(final Appointment appointment) throws DataAccessException {
+		this.appointmentRepository.save(appointment);
+	}
+
 }
