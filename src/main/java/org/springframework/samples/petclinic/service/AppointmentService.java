@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AppointmentService {
 
+	
+	@Autowired
+	private DiagnosisService			diagnosisService;
+
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
@@ -57,7 +61,13 @@ public class AppointmentService {
 
 	@Transactional
 	public void saveAppointment(final Appointment appointment) throws DataAccessException {
-		this.appointmentRepository.save(appointment);
+		appointmentRepository.save(appointment);
+		
+		if (appointment.getDiagnosis() != null) {
+			this.diagnosisService.saveDiagnosis(appointment.getDiagnosis());
+		}
+
+		
 	}
 
 }

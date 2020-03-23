@@ -18,7 +18,6 @@
             <th>Date</th>
             <th>Start Time</th>
             <th>Type</th>
-            <th>Medicine</th>
             <th></th>
         </tr>
         </thead>
@@ -29,10 +28,9 @@
                <td>${appointment.date}</td>
                <td>${appointment.startTime}</td>
                <td>${appointment.type.name}</td>
-      		   <td>${appointment.medicine.name}</td>
                
               <td>
-                    <spring:url value="/appointments/{appointmentId}/edit" var="appointmentUrl">
+                    <spring:url value="/appointments/{appointmentId}/consultation" var="appointmentUrl">
                         <spring:param name="appointmentId" value="${appointment.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(appointmentUrl)}"><c:out value="Go to consultation"/></a>

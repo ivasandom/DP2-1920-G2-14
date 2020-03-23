@@ -35,6 +35,7 @@ import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
+import org.springframework.samples.petclinic.model.Diagnosis;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
@@ -175,27 +176,30 @@ public class AppointmentController {
 
 	}
 
-	@GetMapping("/{appointmentId}/edit")
+	@GetMapping("/{appointmentId}/consultation")
 	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		Iterable<Desease> deseases = this.deseaseService.findAll();
-		model.put("medicines", medicines);
+		System.out.println(appointment.getDiagnosis());
+		// Diagnosis
+		model.put("medicineList", medicines);
 		model.put("appointment", appointment);
-		model.put("deseases", deseases);
+		model.put("deseaseList", deseases);
 		return "appointments/consultationPro";
 	}
 
-	@PostMapping(value = "/{appointmentId}/edit")
+	@PostMapping(value = "/{appointmentId}/consultation")
 	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws DataAccessException {
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		if (result.hasErrors()) {
 			model.put("medicines", medicines);
 			model.put("appointment", appointment);
 			return "appointments/consultationPro";
 		} else {
-			appointment.setId(appointmentId);
-			this.appointmentService.saveAppointment(appointment);
+			a.setDiagnosis(appointment.getDiagnosis());
+			this.appointmentService.saveAppointment(a);
 			return "redirect:/appointments/pro";
 		}
 	}
