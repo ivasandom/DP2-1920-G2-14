@@ -107,17 +107,18 @@
                     </form:select>
                 </div>
                 <hr class="my-5">
-                <h3 class="mb-3">Bill</h3>
+                <!--  <h3 class="mb-3">Bill</h3>
                 <div class="form-group">
                     <label>Amount</label>
-                    <input class="form-control" type="number" placeholder="100.00">
-                    <small class="form-text text-muted">Añada el coste de la consulta si procede.</small>
+                    <input class="form-control" type="number" placeholder="0.00">
+                    <small class="form-text text-muted">Add the cost of the consultation.</small>
                 </div>
+                -->
             </div>
             <div
                 style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
                 <div class="text-right">
-                    <button class="btn btn-outline-danger" type="submit">MARK ABSENT</button>
+                    <a href="/appointments/pro" class="btn btn-outline-secondary">BACK</a>
                     <button class="btn btn-primary" type="submit">SAVE & NEXT CONSULTATION</button>
                 </div>
             </div>
