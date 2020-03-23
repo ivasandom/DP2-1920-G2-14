@@ -203,11 +203,7 @@
                     </div>
                     <code>Probar Sevilla, Dermatology, Pepe gotera, 12/12/2020. Muestra solo las horas disponibles.</code>
                 </div>
-                 <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default" type="submit">Update Appointment</button>
-            </div>
-        </div>
+                <button type="submit" class="btn btn-primary">+ Create appointment</button>
             </form:form>
         </div>
     </jsp:body>
