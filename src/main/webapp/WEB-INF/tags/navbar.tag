@@ -7,37 +7,35 @@
 	description="Name of the active menu: home, owners, vets or error"%>
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #074b95 !important;">
-    <a class="navbar-brand" href="#">A C M E</a>
-    <%-- <a class="navbar-brand" href="#">A C M E <strong style="
-    margin-left: 1px;
-    letter-spacing: 7px;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    font-style: oblique;
-    color: gold;
-">Staff</strong></a> --%>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+
+	    <a class="navbar-brand" href="/">
+	    	A C M E 
+	    		<sec:authorize access="hasAnyAuthority('admin', 'professional')">
+	    			<strong style="
+					    margin-left: 1px;
+					    letter-spacing: 7px;
+					    text-transform: uppercase;
+					    font-size: 0.9rem;
+					    font-style: oblique;
+					    color: gold;
+					">Staff</strong>
+				</sec:authorize></a>
+	
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item ${currentPage eq 'home' ? 'active' : ''}">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item ${currentPage eq 'owners' ? 'active' : ''}">
-                <a class="nav-link" href="/owners/find">Find owners</a>
-            </li>
             <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
                 <a class="nav-link" href="/professionals/find">Find professionals</a>
             </li>
-			<li class="nav-item ${currentPage eq 'vets' ? 'active' : ''}">
-                <a class="nav-link" href="/vets">Veterinarians</a>
-            </li>
-            <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
-                <a class="nav-link" href="/appointments/pro">Pro appointments</a>
-            </li>
+            <sec:authorize access="hasAuthority('professional')">
+	            <li class="nav-item ${currentPage eq 'professionals' ? 'active' : ''}">
+	                <a class="nav-link" href="/appointments/pro">Consultation mode</a>
+	            </li>
+            </sec:authorize>
 			<li class="nav-item ${currentPage eq 'error' ? 'active' : ''}">
                 <a class="nav-link" href="/oups">Error</a>
             </li>
@@ -45,7 +43,7 @@
         <ul class="navbar-nav">
             <sec:authorize access="!isAuthenticated()">
                 <li class="nav-item ${currentPage eq 'clients' ? 'active' : ''}">
-                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/login">ï¿½rea clientes</a>
+                    <a class="nav-link btn btn-sm btn-primary mr-2" href="/login">Área clientes</a>
                 </li>
             </sec:authorize>
             <sec:authorize access="isAuthenticated()">
