@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,9 +32,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.AppointmentStatus;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
@@ -41,6 +44,7 @@ import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
+import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
@@ -70,17 +74,19 @@ public class AppointmentController {
 	private final ClientService			clientService;
 	private final CenterService			centerService;
 	private final MedicineService		medicineService;
+	private final DeseaseService 	deseaseService;
 
 
 	@Autowired
 	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
-		final AuthoritiesService authoritiesService, final MedicineService medicineService) {
+		final AuthoritiesService authoritiesService, final MedicineService medicineService, final DeseaseService deseaseService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.clientService = clientService;
 		this.centerService = centerService;
 		this.medicineService = medicineService;
+		this.deseaseService = deseaseService;
 	}
 
 	@ModelAttribute("centers")
@@ -113,11 +119,21 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/pro")
-	public String listAppointmentsPro(final Map<String, Object> model) {
+	public String listAppointmentsProfessional(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Professional currentPro = this.professionalService.findProByUsername(auth.getName());
-		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByProfessionalId(currentPro.getId());
-		model.put("appointments", appointments);
+		Appointment nextAppointment = null;
+		Iterator<Appointment> todayPendingAppointments = this.appointmentService.findTodayPendingByProfessionalId(currentPro.getId()).iterator();
+		System.out.println(todayPendingAppointments);
+		Collection<Appointment> todayCompletedAppointments = this.appointmentService.findTodayCompletedByProfessionalId(currentPro.getId());
+		
+		if (todayPendingAppointments.hasNext()) {
+			nextAppointment = todayPendingAppointments.next();
+		}
+		
+		model.put("nextAppointment", nextAppointment);
+		model.put("pendingAppointments", todayPendingAppointments);
+		model.put("completedAppointments", todayCompletedAppointments);
 		return "appointments/pro";
 	}
 
@@ -145,7 +161,7 @@ public class AppointmentController {
 			return "appointments/new";
 		} else {
 			// Save appointment if valid
-
+			appointment.setStatus(AppointmentStatus.PENDING);
 			this.appointmentService.saveAppointment(appointment);
 			return "redirect:/appointments";
 		}
@@ -171,27 +187,41 @@ public class AppointmentController {
 
 	}
 
-	@GetMapping("/{appointmentId}/edit")
+	@PostMapping("/{appointmentId}/absent")
+	public String markAbsent(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		if (appointment.getStatus() != AppointmentStatus.COMPLETED) {
+			appointment.setStatus(AppointmentStatus.ABSENT);
+		}
+		appointmentService.saveAppointment(appointment);
+		return "redirect:/appointments/pro";
+	}
+	
+	@GetMapping("/{appointmentId}/consultation")
 	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
-		model.put("medicines", medicines);
+		Iterable<Desease> deseases = this.deseaseService.findAll();
+		System.out.println(appointment.getDiagnosis());
+		// Diagnosis
+		model.put("medicineList", medicines);
 		model.put("appointment", appointment);
-		//ModelAndView mav = new ModelAndView("appointments/consultationPro");
-		//mav.addObject(this.appointmentService.findAppointmentById(appointmentId));
+		model.put("deseaseList", deseases);
 		return "appointments/consultationPro";
 	}
 
-	@PostMapping(value = "/{appointmentId}/edit")
+	@PostMapping(value = "/{appointmentId}/consultation")
 	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws DataAccessException {
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		if (result.hasErrors()) {
 			model.put("medicines", medicines);
 			model.put("appointment", appointment);
 			return "appointments/consultationPro";
 		} else {
-			appointment.setId(appointmentId);
-			this.appointmentService.saveAppointment(appointment);
+			a.setDiagnosis(appointment.getDiagnosis());
+			a.setStatus(AppointmentStatus.COMPLETED);
+			this.appointmentService.saveAppointment(a);
 			return "redirect:/appointments/pro";
 		}
 	}
