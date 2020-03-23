@@ -34,6 +34,7 @@ import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
@@ -41,6 +42,7 @@ import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
+import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
@@ -70,17 +72,19 @@ public class AppointmentController {
 	private final ClientService			clientService;
 	private final CenterService			centerService;
 	private final MedicineService		medicineService;
+	private final DeseaseService 	deseaseService;
 
 
 	@Autowired
 	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
-		final AuthoritiesService authoritiesService, final MedicineService medicineService) {
+		final AuthoritiesService authoritiesService, final MedicineService medicineService, final DeseaseService deseaseService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.clientService = clientService;
 		this.centerService = centerService;
 		this.medicineService = medicineService;
+		this.deseaseService = deseaseService;
 	}
 
 	@ModelAttribute("centers")
@@ -175,10 +179,10 @@ public class AppointmentController {
 	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		Iterable<Desease> deseases = this.deseaseService.findAll();
 		model.put("medicines", medicines);
 		model.put("appointment", appointment);
-		//ModelAndView mav = new ModelAndView("appointments/consultationPro");
-		//mav.addObject(this.appointmentService.findAppointmentById(appointmentId));
+		model.put("deseases", deseases);
 		return "appointments/consultationPro";
 	}
 
