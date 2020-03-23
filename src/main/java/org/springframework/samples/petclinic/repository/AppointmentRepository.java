@@ -4,7 +4,9 @@ package org.springframework.samples.petclinic.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +23,7 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id")
 	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);
+
+	@Query("SELECT DISTINCT type.name FROM AppointmentType type ORDER BY type.name")
+	List<String> findAppointmentTypes() throws DataAccessException;
 }

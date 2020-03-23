@@ -26,6 +26,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +34,14 @@ import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
+import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.security.core.Authentication;
@@ -56,7 +59,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("appointments")
@@ -67,16 +69,18 @@ public class AppointmentController {
 	private final SpecialtyService		specialtyService;
 	private final ClientService			clientService;
 	private final CenterService			centerService;
+	private final MedicineService		medicineService;
 
 
 	@Autowired
 	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
-		final AuthoritiesService authoritiesService) {
+		final AuthoritiesService authoritiesService, final MedicineService medicineService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.clientService = clientService;
 		this.centerService = centerService;
+		this.medicineService = medicineService;
 	}
 
 	@ModelAttribute("centers")
@@ -120,6 +124,8 @@ public class AppointmentController {
 	@GetMapping(value = "/new")
 	public String initCreationForm(final ModelMap model) {
 		Appointment appointment = new Appointment();
+		Collection<String> types = this.appointmentService.findAppointmentByTypes();
+		model.put("types", types);
 		model.put("appointment", appointment);
 		return "appointments/new";
 	}
@@ -132,6 +138,8 @@ public class AppointmentController {
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
+			Collection<String> types = this.appointmentService.findAppointmentByTypes();
+			model.put("types", types);
 			model.put("appointment", appointment);
 			System.out.println(result.getAllErrors());
 			return "appointments/new";
@@ -163,11 +171,29 @@ public class AppointmentController {
 
 	}
 
-	@GetMapping("/{appointmentId}")
-	public ModelAndView showAppointment(@PathVariable("appointmentId") final int appointmentId) {
-		ModelAndView mav = new ModelAndView("appointments/consultationPro");
-		mav.addObject(this.appointmentService.findAppointmentById(appointmentId));
-		return mav;
+	@GetMapping("/{appointmentId}/edit")
+	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		model.put("medicines", medicines);
+		model.put("appointment", appointment);
+		//ModelAndView mav = new ModelAndView("appointments/consultationPro");
+		//mav.addObject(this.appointmentService.findAppointmentById(appointmentId));
+		return "appointments/consultationPro";
+	}
+
+	@PostMapping(value = "/{appointmentId}/edit")
+	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws DataAccessException {
+		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		if (result.hasErrors()) {
+			model.put("medicines", medicines);
+			model.put("appointment", appointment);
+			return "appointments/consultationPro";
+		} else {
+			appointment.setId(appointmentId);
+			this.appointmentService.saveAppointment(appointment);
+			return "redirect:/appointments/pro";
+		}
 	}
 
 }

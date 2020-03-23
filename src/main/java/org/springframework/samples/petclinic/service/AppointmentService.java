@@ -46,6 +46,11 @@ public class AppointmentService {
 	}
 
 	@Transactional
+	public Collection<String> findAppointmentByTypes() throws DataAccessException {
+		return this.appointmentRepository.findAppointmentTypes();
+	}
+
+	@Transactional
 	public Appointment findAppointmentById(final int id) {
 		return this.appointmentRepository.findById(id).get();
 	}
