@@ -170,6 +170,10 @@
 					</spring:bind>
 
                     <div id="appointment-date-group" style="display: none;">
+                   		<petclinic:inputField label="Reason" name="reason"/>
+           		         <div class="control-group">
+                   		 <petclinic:selectField name="type.name" label="Type" names="${types}" size="7"/>
+                		 </div>
                         <h4 class="mt-5">Choose date:</h4>
                         <p>Choose the date of your appointment.</p>
 						<spring:bind path="date">
@@ -199,8 +203,11 @@
                     </div>
                     <code>Probar Sevilla, Dermatology, Pepe gotera, 12/12/2020. Muestra solo las horas disponibles.</code>
                 </div>
-                
-                <button type="submit" class="btn btn-primary">+ Create appointment</button>
+                 <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-default" type="submit">Update Appointment</button>
+            </div>
+        </div>
             </form:form>
         </div>
     </jsp:body>
