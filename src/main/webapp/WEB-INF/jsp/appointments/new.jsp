@@ -210,7 +210,7 @@
                         </spring:bind>
                     </div>
                 </div>
-                <button class="btn btn-primary" type="submit">Create Appointment</button>
+                <button type="submit" class="btn btn-primary">+ Create appointment</button>
             </form:form>
         </div>
     </jsp:body>
