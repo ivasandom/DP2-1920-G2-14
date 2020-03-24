@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AppointmentService {
 
+	
+	@Autowired
+	private DiagnosisService			diagnosisService;
+
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
@@ -51,13 +55,33 @@ public class AppointmentService {
 	}
 
 	@Transactional
+	public Collection<Appointment> findTodayPendingByProfessionalId(final int id) {
+		return this.appointmentRepository.findTodayPendingByProfessionalId(id);
+	}
+	
+	@Transactional
+	public Collection<Appointment> findTodayCompletedByProfessionalId(final int id) {
+		return this.appointmentRepository.findTodayCompletedByProfessionalId(id);
+	}
+	
+	@Transactional
 	public Appointment findAppointmentById(final int id) {
 		return this.appointmentRepository.findById(id).get();
 	}
 
+	
+	
+	
+	
+	
 	@Transactional
 	public void saveAppointment(final Appointment appointment) throws DataAccessException {
-		this.appointmentRepository.save(appointment);
+		appointmentRepository.save(appointment);
+		
+		if (appointment.getDiagnosis() != null) {
+			this.diagnosisService.saveDiagnosis(appointment.getDiagnosis());
+		}
+		
 	}
 
 }

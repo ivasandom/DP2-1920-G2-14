@@ -26,6 +26,8 @@
     <%-- <spring:url value="/webjars/jquery-ui/1.11.4/jquery-ui.theme.min.css" var="jQueryUiThemeCss" />
     <link href="${jQueryUiThemeCss}" rel="stylesheet" /> --%>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
     <title>${not empty pageTitle ? pageTitle : "Clinicas Acme"}</title>
 
 

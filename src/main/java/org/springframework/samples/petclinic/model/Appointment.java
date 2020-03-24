@@ -22,6 +22,8 @@ import java.time.LocalTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -78,7 +80,7 @@ public class Appointment extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "center_id")
 	private Center			center;
-
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "diagnosis_id")
 	private Diagnosis		diagnosis;
@@ -86,26 +88,8 @@ public class Appointment extends BaseEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "receipt_id")
 	private Receipt			receipt;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "medicine_id")
-	private Medicine		medicine;
-
-	//	protected Set<Medicine> getAppointmentsInternal() {
-	//		if (this.medicines == null) {
-	//			this.medicines = new HashSet<>();
-	//		}
-	//		return this.medicines;
-	//	}
-	//
-	//	public void setMedicines(final Set<Medicine> medicines) {
-	//		this.medicines = medicines;
-	//	}
-	//
-	//	public List<Medicine> getAppointments() {
-	//		List<Medicine> sortedMedicines = new ArrayList<>(this.getAppointmentsInternal());
-	//		PropertyComparator.sort(sortedMedicines, new MutableSortDefinition("name", true, true));
-	//		return Collections.unmodifiableList(sortedMedicines);
-	//	}
+	
+	@Column(length = 32, columnDefinition = "varchar(32) default 'PENDING'")
+	@Enumerated(value = EnumType.STRING)
+	private AppointmentStatus status;
 }
