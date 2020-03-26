@@ -7,44 +7,121 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:layout currentPage="appointments">
-	<div class="container">
-    <h2 class="my-5">Consultation </h2>
-    
+<petclinic:staffLayout currentPage="dashboard">
+    <jsp:attribute name="customScript">
+        <script>
+            // https://stackoverflow.com/questions/24021276/select2-search-options/47697371#47697371
+            $('.select-multiple-search').select2({
+                matcher: function (params, data) {
+                    // If there are no search terms, return all of the data
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
 
-    <table class="table table-striped">
-	        <tr>
-	            <th>Name</th>
-	            <td><b><c:out value="${appointment.client.firstName} ${appointment.client.lastName}"/></b></td>
-	        </tr>
-	        <tr>
-	            <th>Date</th>
-	            <td><c:out value="${appointment.date}"/></td>
-	        </tr>
-	        <tr>
-	            <th>Start Time</th>
-	            <td><c:out value="${appointment.startTime}"/></td>
-	        </tr>
-	        <tr>
-	            <th>Type</th>
-	            <td><c:out value="${appointment.type.name}"/></td>
-	        </tr>
-	        <tr>
-	            <th>Reason</th>
-	            <td><c:out value="${appointment.reason}"/></td>
-	        </tr>
-	        <tr>
-	        	<th>Type</th>
-                <td><c:out value="${appointment.type}"/></td>
-            </tr>
-            <tr>
-	        	<td><petclinic:selectField name="medicines" label="Medicine " names="${medicines}" size="${fn:length(medicines)}"/></td>
-            </tr>
-	    </table>
-    </div>
-    <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-            <button class="btn btn-primary container-fluid" type="submit">Update</button>
-             </div>
-              </div>
-</petclinic:layout>
+                    // Do not display the item if there is no 'text' property
+                    if (typeof data.text === 'undefined') {
+                        return null;
+                    }
+
+                    // `params.term` is the user's search term
+                    // `data.id` should be checked against
+                    // `data.text` should be checked against
+                    var q = params.term.toLowerCase();
+                    if (data.text.toLowerCase().indexOf(q) > -1 || data.id.toLowerCase().indexOf(q) > -1) {
+                        return $.extend({}, data, true);
+                    }
+
+                    // Return `null` if the term should not be displayed
+                    return null;
+                }
+            });
+
+        </script>
+    </jsp:attribute>
+    <jsp:body>
+        <form:form modelAttribute="appointment" action="" method="post">
+            <div class="container" style="padding-bottom:80px;">
+                <h1 class="mt-5">Consultation <span class="badge badge-secondary">
+                        <c:out value="${ appointment.startTime }" /></span> </h1>
+                <hr>
+                <h3 class="mt-5 mb-4">Appointment Information</h3>
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Name</th>
+                                <td>
+                                    <b>
+                                        <c:out value="${appointment.client.fullName}" /></b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Date</th>
+                                <td>
+                                    <c:out value="${appointment.date}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Start Time</th>
+                                <td>
+                                    <c:out value="${appointment.startTime}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td>
+                                    <c:out value="${appointment.type.name}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Reason</th>
+                                <td>
+                                    <c:out value="${appointment.reason}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-3" style="background-image:url;">
+                        <img src="https://a.wattpad.com/cover/194784944-256-k712290.jpg" height="246px">
+                    </div>
+                </div>
+                <hr class="my-5">
+                <h3>Diagnosis</h3>
+                <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
+                <div class="form-group">
+                    <label>Description</label>
+                    <form:textarea class="form-control" path="diagnosis.description"></form:textarea>
+                    <small class="form-text text-muted">Add a description of client symptoms and the reason of selected
+                        deseases and medicines</small>
+                </div>
+                <div class="form-group">
+                    <label>Deseases</label>
+                    <form:select class="form-control select-multiple-search" path="diagnosis.deseases" multiple="true">
+                        <form:options items="${deseaseList}" itemLabel="name" itemValue="id"/>
+                    </form:select>
+                </div>
+                <div class="form-group">
+                    <label>Medicines</label>
+                    <form:select class="form-control select-multiple-search" path="diagnosis.medicines" multiple="true">
+                        <form:options items="${medicineList}" itemLabel="name" itemValue="id"/>
+                    </form:select>
+                </div>
+                <hr class="my-5">
+                <!--  <h3 class="mb-3">Bill</h3>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input class="form-control" type="number" placeholder="0.00">
+                    <small class="form-text text-muted">Add the cost of the consultation.</small>
+                </div>
+                -->
+            </div>
+            <div
+                style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
+                <div class="text-right">
+                    <a href="/appointments/pro" class="btn btn-outline-secondary">BACK</a>
+                    <button class="btn btn-primary" type="submit">SAVE & NEXT CONSULTATION</button>
+                </div>
+            </div>
+        </form:form>
+    </jsp:body>
+</petclinic:staffLayout>

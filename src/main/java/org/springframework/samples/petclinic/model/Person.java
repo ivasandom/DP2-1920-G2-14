@@ -21,33 +21,33 @@ public class Person extends BaseEntity {
 	// Attributes -------------------------------------------
 	
 	@Column(name = "first_name")
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	private String			firstName;
 	
 	@Column(name = "last_name")
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	private String			lastName;
 	
 	@Column(name = "email")
-	@NotEmpty(message = "*")
-	@Email(message = "Enter a valid email address.")
+	@NotEmpty(message = "must not be empty")
+	@Email(message = "choose the correct format")
 	private String			email;
 	
 	@Column(name = "birth_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Past
+	@Past(message = "the date must be in past")
 	private Date			birthDate;
 
 	@Column(name = "registration_date")
-	@Past
+	@Past(message = "the date must be in past")
 	private Date			registrationDate;
 	
 	@Column(name = "document")
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	private String			document;
 	
 	@Column(name = "document_type")
-	@NotNull(message = "*")
+	@NotNull(message = "must not be null")
 	private DocumentType	documentType;
 
 //	@NotEmpty(message = "*")
