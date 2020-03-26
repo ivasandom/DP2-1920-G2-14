@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class CenterServiceTests {
@@ -23,18 +26,20 @@ public class CenterServiceTests {
 	@Autowired
 	protected CenterService centerService;
 	
-	@Test
-	void shouldFindCenter() {
+	@ParameterizedTest
+	@CsvSource({"Sevilla"})
+	@Transactional
+	void shouldFindCenter(final String name) {
 		Collection<Center> centers = (Collection<Center>) this.centerService.findAll();
-		String name = "Sevilla";
 		List<String> addresses = centers.stream().map(x-> x.getAddress()).collect(Collectors.toList());
 		assertThat(addresses, hasItem(name));
 	}
 	
-	@Test
-	void shouldNotFindCenter() {
+	@ParameterizedTest
+	@CsvSource({"Córdoba"})
+	@Transactional
+	void shouldNotFindCenter(final String name) {
 		Collection<Center> centers = (Collection<Center>) this.centerService.findAll();
-		String name = "Córdoba";
 		List<String> addresses = centers.stream().map(x-> x.getAddress()).collect(Collectors.toList());
 		assertThat(addresses, not(hasItem(name)));
 	}
@@ -45,10 +50,12 @@ public class CenterServiceTests {
 		Assertions.assertEquals(centers.size(), 2);
 	}
 	
-	@Test
-	public void shouldFindCenterById() {
+	@ParameterizedTest
+	@CsvSource({"Sevilla"})
+	@Transactional
+	public void shouldFindCenterById(final String name) {
 		Center center = this.centerService.findCenterById(1).get();
-		Assertions.assertTrue(center.getAddress().equals("Sevilla"));
+		Assertions.assertTrue(center.getAddress().equals(name));
 		Assertions.assertTrue(center.getSchedules().isEmpty());
 	}
 }

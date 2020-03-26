@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -58,7 +59,6 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 			}
 		}
 			
-		
 //		if (appointmentService.existsAppointment(center, specialty, professional, date, startTime)) {
 //			// It cannot exist 2 appointment with the same values
 //			errors.rejectValue("date", "Appointment already taken.");

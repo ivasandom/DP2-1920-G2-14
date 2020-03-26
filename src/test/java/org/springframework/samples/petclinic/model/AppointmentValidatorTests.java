@@ -41,15 +41,12 @@ public class AppointmentValidatorTests {
 		AppointmentType appointmentType = new AppointmentType();
 		appointmentType.setName("revision");
 		appointment.setType(appointmentType);
+		
+		appointment.setStatus(AppointmentStatus.COMPLETED);
 
 		Center center = new Center();
 		center.setAddress("Sevilla");
 		appointment.setCenter(center);
-
-		Medicine medicine = new Medicine();
-		medicine.setName("ibuprofeno");
-		medicine.setPrice(10.0);
-		appointment.setMedicine(medicine);
 
 		Specialty specialty = new Specialty();
 		specialty.setName("dermatology");

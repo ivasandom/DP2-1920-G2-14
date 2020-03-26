@@ -45,6 +45,7 @@ INSERT INTO types VALUES (5, 'vaccination');
 INSERT INTO types VALUES (6, 'periodic consultation');
 INSERT INTO types VALUES (7, 'another case');
 
+INSERT INTO diagnosis VALUES (1, '2020-02-02', 'description 1');
 
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
     1, 1, 'professional1', 'Guillermo', 'Díaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
