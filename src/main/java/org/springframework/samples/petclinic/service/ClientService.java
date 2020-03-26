@@ -30,7 +30,12 @@ public class ClientService {
 	public Client findClientByUsername(String username) throws DataAccessException {
 		return clientRepository.findClientByUsername(username);
 	}	
-
+	
+	@Transactional
+	public Iterable<Client> findAll() throws DataAccessException {
+		return clientRepository.findAll();
+	}
+	
 	@Transactional
 	public void saveClient(Client client) throws DataAccessException {
 		//creating client
