@@ -25,19 +25,23 @@ public class ClientService {
 	public int clientCount() {
 		return (int) this.clientRepository.count();
 	}
-	
-	@Transactional
-	public Client findClientByUsername(String username) throws DataAccessException {
-		return clientRepository.findClientByUsername(username);
-	}	
+	@Transactional(readOnly = true)
+	public Client findClientById(final int id) throws DataAccessException {
+		return this.clientRepository.findById(id);
+	}
 
 	@Transactional
-	public void saveClient(Client client) throws DataAccessException {
+	public Client findClientByUsername(final String username) throws DataAccessException {
+		return this.clientRepository.findClientByUsername(username);
+	}
+
+	@Transactional
+	public void saveClient(final Client client) throws DataAccessException {
 		//creating client
-		clientRepository.save(client);		
+		this.clientRepository.save(client);
 		//creating user
-		userService.saveUser(client.getUser());
+		this.userService.saveUser(client.getUser());
 		//creating authorities
-		authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
-	}		
+		this.authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
+	}
 }
