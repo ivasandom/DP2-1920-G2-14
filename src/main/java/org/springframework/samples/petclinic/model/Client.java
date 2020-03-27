@@ -30,7 +30,7 @@ public class Client extends Person {
 
 	
 	@Column(name = "health_insurance")
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	private String	healthInsurance;
 
 	@Column(name = "health_card_number")

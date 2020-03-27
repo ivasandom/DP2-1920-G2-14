@@ -17,6 +17,7 @@
             <th>Center</th>
             <th>Professional</th>
             <th>Specialty</th>
+            <th>Type</th>
             <th></th>
         </tr>
         </thead>
@@ -27,6 +28,7 @@
                <td>${appointment.center.address}</td>
                <td>${appointment.professional.fullName}</td>
                <td>${appointment.specialty.name}</td>
+               <td>${appointment.type.name}</td>
                <td><a href="#">View more</a></td>             
             </tr>
         </c:forEach>

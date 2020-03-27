@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.samples.petclinic.model;
 
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import javax.persistence.Table;
  * @author Juergen Hoeller Can be Cat, Dog, Hamster...
  */
 @Entity
-@Table(name = "types")
+@Table(name = "p_types")
 public class PetType extends NamedEntity {
 
 }

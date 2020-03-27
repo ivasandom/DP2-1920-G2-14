@@ -31,12 +31,17 @@ public class ClientService {
 	}
 
 	@Transactional
-	public Client findClientByUsername(final String username) throws DataAccessException {
-		return this.clientRepository.findClientByUsername(username);
-	}
-
+	public Client findClientByUsername(String username) throws DataAccessException {
+		return clientRepository.findClientByUsername(username);
+	}	
+	
 	@Transactional
-	public void saveClient(final Client client) throws DataAccessException {
+	public Iterable<Client> findAll() throws DataAccessException {
+		return clientRepository.findAll();
+	}
+	
+	@Transactional
+	public void saveClient(Client client) throws DataAccessException {
 		//creating client
 		this.clientRepository.save(client);
 		//creating user
