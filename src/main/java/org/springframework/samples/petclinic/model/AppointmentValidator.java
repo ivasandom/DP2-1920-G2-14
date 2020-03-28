@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -54,11 +55,10 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 		if (!errors.hasFieldErrors("professional") && !errors.hasFieldErrors("specialty")) {
 			if (appointment.getProfessional().getSpecialty() != appointment.getSpecialty()) {
 				// Appointment specialty must be equal to professional specialty
-				errors.rejectValue("center", "appointment specialty must be equal to professional specialty");
+				errors.rejectValue("specialty", "appointment specialty must be equal to professional specialty");
 			}
 		}
 			
-		
 //		if (appointmentService.existsAppointment(center, specialty, professional, date, startTime)) {
 //			// It cannot exist 2 appointment with the same values
 //			errors.rejectValue("date", "Appointment already taken.");

@@ -51,6 +51,10 @@ public class AuthoritiesService {
 		authority.setAuthority(role);
 		authoritiesRepository.save(authority);
 	}
-
+	
+	@Transactional
+	public Iterable<Authorities> findAll() throws DataAccessException {
+		return authoritiesRepository.findAll();
+	}
 
 }

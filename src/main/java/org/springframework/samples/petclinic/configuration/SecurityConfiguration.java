@@ -34,11 +34,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll().antMatchers(HttpMethod.GET, "/", "/oups").permitAll().antMatchers("/clients/**").permitAll().antMatchers("/admin/**").hasAnyAuthority("admin")
-			.antMatchers("/owners/**").hasAnyAuthority("owner", "admin").antMatchers("/professionals/**").permitAll().antMatchers("/appointments/").hasAnyAuthority("client", "admin").antMatchers("/appointments/new").hasAnyAuthority("client", "admin")
-			.antMatchers("/appointments/pro").hasAnyAuthority("professional", "admin").antMatchers("/appointments/*/consultation").hasAnyAuthority("professional", "admin").antMatchers("/appointments/*/absent").hasAnyAuthority("professional")
-			.antMatchers("/vets/**").authenticated().anyRequest().denyAll().and().formLogin().loginProcessingUrl("/signin").loginPage("/login").permitAll().and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-			.logoutSuccessUrl("/login");
+
+		http.authorizeRequests()
+			.antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/", "/oups").permitAll()
+			.antMatchers("/clients/**").permitAll()
+			.antMatchers("/admin/**").hasAnyAuthority("admin")
+			.antMatchers("/owners/**").hasAnyAuthority("owner", "admin")
+			.antMatchers("/professionals/**").permitAll()
+			.antMatchers("/appointments/pro").hasAnyAuthority("professional")
+			.antMatchers("/appointments/*/consultation").hasAnyAuthority("professional")
+			.antMatchers("/appointments/*/absent").hasAnyAuthority("professional")
+			.antMatchers("/appointments/**").hasAnyAuthority("client")
+			.antMatchers("/vets/**")
+			.authenticated().anyRequest().denyAll()
+			.and()
+				.formLogin()
+				.loginProcessingUrl("/signin")
+				.loginPage("/login").permitAll()
+			.and()
+				.logout()
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessUrl("/login");
+
 		// Configuración para que funcione la consola de administración
 		// de la BD H2 (deshabilitar las cabeceras de protección contra
 		// ataques de tipo csrf y habilitar los framesets si su contenido

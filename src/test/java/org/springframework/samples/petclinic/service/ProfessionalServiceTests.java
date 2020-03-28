@@ -6,11 +6,14 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 public class ProfessionalServiceTests {
@@ -27,7 +30,7 @@ public class ProfessionalServiceTests {
 	@Test
 	public void shouldFindProfessionalById() {
 		Professional professional = this.professionalService.findById(1).get();
-		Assertions.assertTrue(professional.getAppointments().size() == 12);
+		Assertions.assertTrue(professional.getAppointments().size() == 1);
 		Assertions.assertTrue(professional.getBirthDate() == null);
 		Assertions.assertTrue(professional.getCenter().getId().equals(1));
 		Assertions.assertTrue(professional.getCollegiateNumber().equals("123123122-F"));
@@ -45,5 +48,14 @@ public class ProfessionalServiceTests {
 	void shouldFindProfessionalBySpecialtyAndCenter() {
 		Collection<Professional> professional = (Collection<Professional>) this.professionalService.findProfessionalBySpecialtyAndCenter(1, 1);
 		Assertions.assertEquals(professional.iterator().next().getFullName(), "Guillermo Díaz");
+	}
+	
+	@ParameterizedTest
+	@CsvSource({"professional1", "professional2", "professional3"})
+	@Transactional
+	void shouldFindProfessionalByUsername(final String username) {
+		Professional professional = this.professionalService.findProByUsername(username);
+		Collection<Professional> professionals = (Collection<Professional>) this.professionalService.findAll();
+		Assertions.assertTrue(professionals.contains(professional));
 	}
 }
