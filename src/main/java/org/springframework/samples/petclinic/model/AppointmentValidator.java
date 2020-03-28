@@ -55,7 +55,7 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 		if (!errors.hasFieldErrors("professional") && !errors.hasFieldErrors("specialty")) {
 			if (appointment.getProfessional().getSpecialty() != appointment.getSpecialty()) {
 				// Appointment specialty must be equal to professional specialty
-				errors.rejectValue("center", "appointment specialty must be equal to professional specialty");
+				errors.rejectValue("specialty", "appointment specialty must be equal to professional specialty");
 			}
 		}
 			

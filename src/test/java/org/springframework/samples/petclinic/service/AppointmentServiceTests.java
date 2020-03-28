@@ -130,7 +130,8 @@ public class AppointmentServiceTests {
 		// Set status to pending
 		appointment.setStatus(AppointmentStatus.PENDING);
 		appointment.setStartTime(LocalTime.of(10, 15));
-
+		
+		this.appointmentService.saveAppointment(appointment);
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findTodayPendingByProfessionalId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(1);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.now());
@@ -153,7 +154,8 @@ public class AppointmentServiceTests {
 		appointment.setStatus(AppointmentStatus.COMPLETED);
 		appointment.setStartTime(LocalTime.of(10, 15));
 
-		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findTodayPendingByProfessionalId(1);
+		this.appointmentService.saveAppointment(appointment);
+		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findTodayCompletedByProfessionalId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(1);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.now());
 	}

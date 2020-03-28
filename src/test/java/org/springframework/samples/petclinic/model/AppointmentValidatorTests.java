@@ -217,16 +217,19 @@ public class AppointmentValidatorTests {
 		center2.setAddress("Cádiz");
 		this.appointment.getProfessional().setCenter(center2);
 		
-		System.out.println(this.appointment.getCenter());
-		System.out.println(this.appointment.getProfessional().getCenter());
+		appointmentValidator.validate(this.appointment, errors);
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("center").getCode()).isEqualTo("appointment center must be equal to professional center");
 	}
 	
-	@Test
-	void shouldNotValidateWhenAppointmentSpecialtyIsNotEqualsToProfessionalSpecialty() {
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"dermatology",//
+			"dentistry"
+	})
+	void shouldNotValidateWhenAppointmentSpecialtyIsNotEqualsToProfessionalSpecialty(final String specialty) {
 		Specialty specialty1 = new Specialty();
-		specialty1.setName("dermatology");
+		specialty1.setName(specialty);
 		this.appointment.setSpecialty(specialty1);
 
 		Specialty specialty2 = new Specialty();
@@ -235,6 +238,7 @@ public class AppointmentValidatorTests {
 
 		System.out.println(this.appointment.getSpecialty());
 		System.out.println(this.appointment.getProfessional().getSpecialty());
+		appointmentValidator.validate(this.appointment, errors);
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("specialty").getCode()).isEqualTo("appointment specialty must be equal to professional specialty");
 	}
