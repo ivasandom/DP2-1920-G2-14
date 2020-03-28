@@ -61,4 +61,9 @@ public class ProfessionalService {
 		return this.professionalRepository.findBySpecialtyAndCenter(specialtyId, centerId);
 	}
 
+	@Transactional(readOnly = true)
+	public Object findProfessionalById(final int id) throws DataAccessException {
+		return this.professionalRepository.findById(id);
+	}
+
 }

@@ -106,8 +106,8 @@ class ClientControllerTests {
 	void testProcessCreationFormHasErrors() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders.post("/clients/new").with(SecurityMockMvcRequestPostProcessors.csrf())
 			//Unicos parametros que recibe
-			.param("firstName", "George")
-			.param("lastName", "Franklin")
+			.param("firstName", "Pepe")
+			.param("lastName", "Gotera")
 			.param("birthdate", "2250-07-23")
 			.param("registrationDate", "2250-07-23")
 			.param("document", ""))

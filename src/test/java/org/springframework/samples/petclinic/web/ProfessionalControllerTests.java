@@ -82,8 +82,7 @@ class ProfessionalControllerTests {
 		this.pepe.setRegistrationDate(registrationDate);
 		this.pepe.setDocument("10203040T");
 		this.pepe.setDocumentType(DocumentType.nif);
-//		BDDMockito.given(this.clinicService.findProfessionalById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(this.pepe);
-//		BDDMockito.given(this.appointmentService.findAppointmentById(ClientControllerTests.TEST_APPOINMENT_ID)).willReturn(new Appointment());
+		BDDMockito.given(this.clinicService.findProfessionalById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(this.pepe);
 	}
 
 	@WithMockUser(value = "spring")
