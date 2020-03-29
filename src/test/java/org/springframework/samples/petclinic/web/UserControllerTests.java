@@ -1,6 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
 
-public class UserControllerTest {
+public class UserControllerTests {
 
 }
