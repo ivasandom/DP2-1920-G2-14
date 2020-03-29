@@ -93,11 +93,14 @@ class ClientControllerTests {
 			.param("lastName", "Gotera").with(SecurityMockMvcRequestPostProcessors.csrf())
 			.param("email", "pepegotera@gmail.com")
 			.param("birthdate", "1955-12-4")
-			.param("registrationDate", "2015-07-23")
+//			.param("registrationDate", "2015-07-23")
 			.param("document", "10203040T")
 			.param("documentType", "nif")
 			.param("healthInsurance", "Mafre")
-			.param("healthCardNumber", "1234567890")).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+			.param("healthCardNumber", "1234567890")
+			.param("user.username", "1234567890")
+			.param("user.password", "1234567890"))
+		.andExpect(MockMvcResultMatchers.status().is3xxRedirection())
 			.andExpect(view().name("redirect:/"));
 	}
 
@@ -107,20 +110,24 @@ class ClientControllerTests {
 		this.mockMvc.perform(MockMvcRequestBuilders.post("/clients/new").with(SecurityMockMvcRequestPostProcessors.csrf())
 			//Unicos parametros que recibe
 			.param("firstName", "Pepe")
-			.param("lastName", "Gotera")
-			.param("birthdate", "2250-07-23")
-			.param("registrationDate", "2250-07-23")
-			.param("document", ""))
+			.param("lastName", "Gotera").with(SecurityMockMvcRequestPostProcessors.csrf())
+			.param("email", "pepegoteragmail.com")
+			.param("birthdate", "1955-12-4")
+//			.param("registrationDate", "2015-07-23")
+			.param("document", "")
+			.param("healthInsurance", "")
+			.param("healthCardNumber", "123456789")
+			.param("user.username", "1234567890")
+			.param("user.password", "1234"))
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			//Comprobamos error de validacion
-			.andExpect(MockMvcResultMatchers.model().attributeHasNoErrors("client"))
+			.andExpect(MockMvcResultMatchers.model().attributeHasErrors("client"))
 			//Parametros dentro de los errores del modelo
 			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "email"))
-			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "birthdate"))
-			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "registrationDate"))
 			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "document"))
 			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "documentType"))
+			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "user.password"))
 			.andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("client", "healthInsurance"))
-			.andExpect(MockMvcResultMatchers.view().name("clients/createClientForm"));
+			.andExpect(MockMvcResultMatchers.view().name("users/createClientForm"));
 	}
 }
