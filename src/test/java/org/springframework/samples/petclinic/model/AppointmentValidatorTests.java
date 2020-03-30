@@ -40,14 +40,13 @@ public class AppointmentValidatorTests {
 
 		AppointmentType appointmentType = new AppointmentType();
 		appointmentType.setName("revision");
-		appointment.setType(appointmentType);
-		
-		appointment.setStatus(AppointmentStatus.COMPLETED);
+		this.appointment.setType(appointmentType);
+
+		this.appointment.setStatus(AppointmentStatus.COMPLETED);
 
 		Center center = new Center();
 		center.setAddress("Sevilla");
 		this.appointment.setCenter(center);
-
 
 		Specialty specialty = new Specialty();
 		specialty.setName("dermatology");
@@ -217,32 +216,32 @@ public class AppointmentValidatorTests {
 		Center center2 = new Center();
 		center2.setAddress("Cádiz");
 		this.appointment.getProfessional().setCenter(center2);
-		
-		appointmentValidator.validate(this.appointment, errors);
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("center").getCode()).isEqualTo("appointment center must be equal to professional center");
+
+		this.appointmentValidator.validate(this.appointment, this.errors);
+		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
+		Assertions.assertThat(this.errors.getFieldError("center").getCode()).isEqualTo("appointment center must be equal to professional center");
 	}
-	
+
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"dermatology",//
-			"dentistry"
+		"dermatology",//
+		"dentistry"
 	})
-	void shouldNotValidateWhenAppointmentSpecialtyIsNotEqualsToProfessionalSpecialty(final String specialty) {
+	void shouldNotValidateWhenAppointmentSpecialtyIsNotEqualsToProfessionalSpecialty() {
 
 		Specialty specialty1 = new Specialty();
-		specialty1.setName(specialty);
+		specialty1.setName("dermatology");
 		this.appointment.setSpecialty(specialty1);
 
 		Specialty specialty2 = new Specialty();
 		specialty2.setName("surgery");
 		this.appointment.getProfessional().setSpecialty(specialty2);
 
-		System.out.println(this.appointment.getSpecialty());
-		System.out.println(this.appointment.getProfessional().getSpecialty());
-		appointmentValidator.validate(this.appointment, errors);
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("specialty").getCode()).isEqualTo("appointment specialty must be equal to professional specialty");
+		System.out.println(this.appointment.getSpecialty().getName());
+		System.out.println(this.appointment.getProfessional().getSpecialty().getName());
+		this.appointmentValidator.validate(this.appointment, this.errors);
+		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
+		Assertions.assertThat(this.errors.getFieldError("specialty").getCode()).isEqualTo("appointment specialty must be equal to professional specialty");
 
 	}
 }
