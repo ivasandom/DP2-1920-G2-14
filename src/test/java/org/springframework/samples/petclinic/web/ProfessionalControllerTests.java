@@ -1,15 +1,11 @@
+
 package org.springframework.samples.petclinic.web;
 
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -20,19 +16,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.model.Appointment;
-import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.AppointmentType;
+import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.DocumentType;
-import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
-import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -40,11 +36,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(controllers = ProfessionalController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 class ProfessionalControllerTests {
 
-	private static final int	TEST_PROFESSIONAL_ID		= 1;
+	private static final int		TEST_PROFESSIONAL_ID	= 1;
 
-	private static final int	TEST_APPOINMENT_ID	= 1;
-	
-	private static final int	TEST_SPECIALTY_ID	= 1;
+	private static final int		TEST_APPOINMENT_ID		= 1;
+
+	private static final int		TEST_SPECIALTY_ID		= 1;
 
 	@Autowired
 	private ProfessionalController	professionalController;
@@ -53,22 +49,44 @@ class ProfessionalControllerTests {
 	private ProfessionalService		clinicService;
 
 	@MockBean
-	private UserService			userService;
+	private UserService				userService;
 
 	@MockBean
-	private AppointmentService	appointmentService;
+	private AppointmentService		appointmentService;
 
 	@MockBean
-	private AuthoritiesService	authoritiesService;
+	private AuthoritiesService		authoritiesService;
 
 	@Autowired
-	private MockMvc				mockMvc;
+	private MockMvc					mockMvc;
 
-	private Professional				pepe;
+	private Professional			pepe;
+
+	private Appointment				app;
+
+	private Professional			pro;
+
+	private Medicine				med;
+
+	private AppointmentType			typ;
+
+	private Desease					des;
+
+	private Specialty				spe;
 
 
 	@BeforeEach
 	void setup() {
+
+		this.spe.setId(ProfessionalControllerTests.TEST_SPECIALTY_ID);
+		this.spe.setName("Especial");
+		this.pro.setSpecialty(spe);
+
+		User user = new User();
+		user.setEnabled(true);
+		user.setUsername("frankcuesta");
+		user.setPassword("frankcuesta");
+		this.pro.setUser(user);
 
 		this.pepe = new Professional();
 		this.pepe.setId(ProfessionalControllerTests.TEST_PROFESSIONAL_ID);
@@ -82,25 +100,36 @@ class ProfessionalControllerTests {
 		this.pepe.setDocument("10203040T");
 		this.pepe.setDocumentType(DocumentType.nif);
 		Specialty sp = new Specialty();
-		sp.setId(ProfessionalControllerTests.TEST_SPECIALTY_ID);
-		sp.setName("Especial");
+
 		this.pepe.setSpecialty(sp);
+
+		this.app = new Appointment();
+		this.app.setId(1);
+		String par = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.app.setDate(LocalDate.parse(par, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		this.app.setReason("my head hurts");
+		this.app.setStartTime(LocalTime.of(10, 15, 00));
+
+		this.app.setReceipt(null);
+		this.app.setDiagnosis(null);
+		this.app.setClient(null);
+
 		BDDMockito.given(this.clinicService.findProfessionalById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(this.pepe);
 		BDDMockito.given(this.appointmentService.findAppointmentById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(new Appointment());
 	}
 
 	@WithMockUser(value = "spring")
-    @Test
-    void testInitFindForm() throws Exception {
-		mockMvc.perform(get("/professionals/find")).andExpect(status().isOk()).andExpect(model().attributeExists("professional"))
-			.andExpect(view().name("professionals/find"));
+	@Test
+	void testInitFindForm() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/find")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("professional"))
+			.andExpect(MockMvcResultMatchers.view().name("professionals/find"));
 	}
 
 	@WithMockUser(value = "spring")
-    @Test
-    void testProcessFindFormSuccess() throws Exception {
-		given(this.clinicService.findProByUsername("")).willReturn(pepe, new Professional());
+	@Test
+	void testProcessFindFormSuccess() throws Exception {
+		BDDMockito.given(this.clinicService.findProByUsername("")).willReturn(this.pepe, new Professional());
 
-		mockMvc.perform(get("/professionals")).andExpect(status().isOk()).andExpect(view().name("professionals/list"));
-}
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("professionals/list"));
+	}
 }
