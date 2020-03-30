@@ -74,7 +74,7 @@ public class AppointmentController {
 	private final ClientService			clientService;
 	private final CenterService			centerService;
 	private final MedicineService		medicineService;
-	private final DeseaseService 	deseaseService;
+	private final DeseaseService 		deseaseService;
 
 
 	@Autowired
