@@ -184,8 +184,8 @@ public class AppointmentControllerTest {
 		SecurityContextHolder.setContext(securityContext);
 		Mockito.when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(authentication);
 
-		BDDMockito.given(this.clientService.findClientByUsername(authentication.getName())).willReturn(new Client());
-		BDDMockito.given(this.professionalService.findProByUsername(authentication.getName())).willReturn(new Professional());
+		BDDMockito.given(this.clientService.findClientByUsername("client")).willReturn(client);
+		BDDMockito.given(this.professionalService.findProByUsername("professional")).willReturn(professional);
 
 		BDDMockito.given(this.appointmentService.findAppointmentByUserId(client.getId())).willReturn(Lists.newArrayList(this.app));
 		BDDMockito.given(this.appointmentService.findTodayPendingByProfessionalId(professional.getId())).willReturn(Lists.newArrayList(this.app));
@@ -255,20 +255,22 @@ public class AppointmentControllerTest {
 			.andExpect(MockMvcResultMatchers.view().name("appointments/new"));
 	}
 
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "client")
 	@Test
 	void testlistAppointments() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments")).andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/oups"));
-		//		.andExpect(MockMvcResultMatchers.status().isOk())
-		//		.andExpect(MockMvcResultMatchers.view().name("appointments/list"));
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.view().name("appointments/list"));
 	}
 
 	@WithMockUser(value = "professional")
 	@Test
 	void testListAppointmentsProfessional() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/pro")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("appointments/pro"));
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/pro"))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.view().name("appointments/pro"));
 	}
 
 	@WithMockUser(value = "spring")
