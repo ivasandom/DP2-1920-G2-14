@@ -1,10 +1,6 @@
 
 package org.springframework.samples.petclinic.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,13 +13,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
+import lombok.Getter;
+import lombok.Setter;
 
-
-import lombok.Data;
-
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "clients")
 public class Client extends Person {
@@ -37,30 +31,6 @@ public class Client extends Person {
 	//@NotEmpty(message = "*")
 	private String	healthCardNumber;
 
-	public String getHealthInsurance() {
-		return this.healthInsurance;
-	}
-
-	public void setHealthInsurance(final String healthInsurance) {
-		this.healthInsurance = healthInsurance;
-	}
-
-	public String getHealthCardNumber() {
-		return this.healthCardNumber;
-	}
-
-	public void setHealthCardNumber(final String healthCardNumber) {
-		this.healthCardNumber = healthCardNumber;
-	}
-
-	//	public Boolean getIsHealthInsurance() {
-	//		return this.isHealthInsurance;
-	//	}
-	//
-	//	public void setIsHealthInsurance(final Boolean isHealthInsurance) {
-	//		this.isHealthInsurance = isHealthInsurance;
-	//	}
-
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
@@ -68,25 +38,11 @@ public class Client extends Person {
 
 	//Relations
 
-
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
 	private Set<Appointment> appointments;
-
-
-	protected Set<Appointment> getAppointmentsInternal() {
-		if (this.appointments == null) {
-			this.appointments = new HashSet<>();
-		}
-		return this.appointments;
-	}
-
-	public void setAppointments(final Set<Appointment> appointments) {
-		this.appointments = appointments;
-	}
-
-	public List<Appointment> getAppointments() {
-		List<Appointment> sortedAppointments = new ArrayList<>(this.getAppointmentsInternal());
-		PropertyComparator.sort(sortedAppointments, new MutableSortDefinition("type", true, true));
-		return Collections.unmodifiableList(sortedAppointments);
-	}
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
+	private Set<PaymentMethod> paymentMethods;
+	
+	
 }
