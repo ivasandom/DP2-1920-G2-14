@@ -10,6 +10,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "transactions")
 public class Transaction extends BaseEntity {
@@ -25,44 +30,18 @@ public class Transaction extends BaseEntity {
 	@Column(name = "token")
 	@NotEmpty
 	private String			token;
+	
+	@Column(name = "success")
+	private Boolean 		success;
+	
+	@Column(name = "status")
+	@NotEmpty
+	private String			status;
 
 	//Relations
 
 	@ManyToOne
 	@JoinColumn(name = "receipt_id")
 	private Receipt			receipt;
-
-
-	public TransactionType getType() {
-		return this.type;
-	}
-
-	public void setType(final TransactionType type) {
-		this.type = type;
-	}
-
-	public Double getAmount() {
-		return this.amount;
-	}
-
-	public void setAmount(final Double amount) {
-		this.amount = amount;
-	}
-
-	public String getToken() {
-		return this.token;
-	}
-
-	public void setToken(final String token) {
-		this.token = token;
-	}
-
-	public Receipt getReceipt() {
-		return this.receipt;
-	}
-
-	public void setReceipt(final Receipt receipt) {
-		this.receipt = receipt;
-	}
 
 }
