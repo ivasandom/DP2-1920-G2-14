@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.stripe.Stripe;
+import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.Refund;
+import com.stripe.model.SetupIntent;
 
 @Service
 public class StripeService {
@@ -36,7 +38,32 @@ public class StripeService {
 		return paymentMethod;
 	}
 	
-	public PaymentIntent charge(String paymentMethodToken, Double amount, String currency) throws Exception {
+	public SetupIntent setupIntent(String customerId) throws Exception {
+		/**
+		 * Create a setup intent to confirm the payment method when adding it.
+		 */
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("customer", customerId);
+		
+		SetupIntent intent = SetupIntent.create(params);
+		return intent;
+	}
+	
+	
+	public Customer createCustomer(String email) throws Exception {
+		/**
+		 * Create a customer from client email
+		 */
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("email", email);
+		
+		Customer customer = Customer.create(params);
+		return customer;
+	}
+	
+	
+	public PaymentIntent charge(String paymentMethodToken, Double amount, String customerId) throws Exception {
 		/**
 		 * This method charges an amount to a payment method.
 		 * A payment method can be a card or a bank account associated to the clinic client.
@@ -47,7 +74,10 @@ public class StripeService {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("amount", validAmount);
-		params.put("curreny", currency);
+		params.put("currency", "EUR");
+		params.put("customer", customerId);
+		params.put("confirm", true);
+		params.put("off_session", true);
 		params.put("payment_method", paymentMethodToken);
 		
 		PaymentIntent intent = PaymentIntent.create(params);

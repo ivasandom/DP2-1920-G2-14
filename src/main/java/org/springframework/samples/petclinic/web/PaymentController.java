@@ -68,7 +68,7 @@ public class PaymentController {
 
 	
 	@GetMapping(value = "/methods")
-	public String paymentMethodList(final Map<String, Object> model) throws DataAccessException {
+	public String paymentMethodList(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
 		
@@ -78,8 +78,13 @@ public class PaymentController {
 	}
 	
 	@GetMapping(value = "/new-method")
-	public String paymentMethodForm(final Map<String, Object> model) throws DataAccessException {
+	public String paymentMethodForm(final Map<String, Object> model) throws Exception {
 		org.springframework.samples.petclinic.model.PaymentMethod method = new org.springframework.samples.petclinic.model.PaymentMethod();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Client currentClient = this.clientService.findClientByUsername(auth.getName());
+		
+		String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId()).getClientSecret();
+		model.put("intentClientSecret", intentClientSecret);
 		model.put("paymentMethod", method);
 		model.put("apiKey", API_PUBLIC_KEY);
 		

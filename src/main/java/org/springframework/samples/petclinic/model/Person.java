@@ -12,9 +12,11 @@ import javax.validation.constraints.Past;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @MappedSuperclass
 public class Person extends BaseEntity {
 

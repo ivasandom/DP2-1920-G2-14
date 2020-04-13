@@ -30,6 +30,9 @@ public class Client extends Person {
 	@Column(name = "health_card_number")
 	//@NotEmpty(message = "*")
 	private String	healthCardNumber;
+	
+	@Column(name = "stripe_id")
+	private String stripeId;
 
 	
 	@OneToOne(cascade = CascadeType.ALL)
