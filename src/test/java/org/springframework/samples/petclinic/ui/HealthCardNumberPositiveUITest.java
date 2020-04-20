@@ -42,7 +42,7 @@ public class HealthCardNumberPositiveUITest {
     driver.findElement(By.linkText("Regístrate")).click();
     driver.findElement(By.id("firstName")).click();
     driver.findElement(By.id("firstName")).clear();
-    driver.findElement(By.id("firstName")).sendKeys("Pe");
+    driver.findElement(By.id("firstName")).sendKeys("P");
     driver.findElement(By.id("firstName")).sendKeys(Keys.DOWN);
     driver.findElement(By.id("firstName")).sendKeys(Keys.TAB);
     driver.findElement(By.id("lastName")).clear();
@@ -51,6 +51,7 @@ public class HealthCardNumberPositiveUITest {
     driver.findElement(By.id("lastName")).sendKeys(Keys.TAB);
     driver.findElement(By.id("document")).clear();
     driver.findElement(By.id("document")).sendKeys("2");
+    driver.findElement(By.id("document")).click();
     driver.findElement(By.id("document")).sendKeys(Keys.DOWN);
     driver.findElement(By.id("document")).sendKeys(Keys.TAB);
     driver.findElement(By.id("healthInsurance")).click();
@@ -64,13 +65,12 @@ public class HealthCardNumberPositiveUITest {
     driver.findElement(By.id("email")).sendKeys("pepegotera@gmail.com");
     driver.findElement(By.id("user.username")).click();
     driver.findElement(By.id("user.username")).clear();
-    driver.findElement(By.id("user.username")).sendKeys("pepegotera2");
-    driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[6]")).click();
+    driver.findElement(By.id("user.username")).sendKeys("pepegotera3");
     driver.findElement(By.id("user.password")).click();
     driver.findElement(By.id("user.password")).clear();
     driver.findElement(By.id("user.password")).sendKeys("pepegotera");
     driver.findElement(By.xpath("//button[@type='submit']")).click();
-    assertEquals("Área clientes", driver.findElement(By.linkText("Área clientes")).getText());
+    assertEquals("> Citación online", driver.findElement(By.linkText("> Citación online")).getText());
   }
 
   @AfterEach
