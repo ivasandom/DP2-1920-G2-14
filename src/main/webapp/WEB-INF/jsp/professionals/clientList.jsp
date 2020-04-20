@@ -15,10 +15,10 @@
     <table id="clientsTable" class="table table-striped">
         <thead>
         <tr>
-            <th style="width: 150px;">Name</th>
-            <th style="width: 200px;">Email</th>
-            <th>Document</th>
-            <th style="width: 120px;">Birthdate</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Document - Type</th>
+            <th>Birthdate</th>
             <th>Health Insurance</th>
         </tr>
         </thead>
@@ -31,24 +31,29 @@
                     </spring:url>
                     <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a>
                 </td>
+                
                 <td>
                     <c:out value="${client.email}"/>
                 </td>
+                
                 <td>
-                    <c:out value="${client.documentType} ${client.document}"/>
+                    <c:out value="${client.document} - ${client.documentType}"/>
                 </td>
+                
                 <td>
                     <c:out value="${client.birthDate}"/>
                 </td>
+                
                 <td>
                     <c:out value="${client.healthInsurance} ${client.healthCardNumber}"/>
                 </td>     
 <!--
                 <td> 
-                    <c:out value="${owner.user.username}"/> 
+                    <c:out value="${client.user.username}"/> 
                 </td>
+                
                 <td> 
-                   <c:out value="${owner.user.password}"/> 
+                   <c:out value="${client.user.password}"/> 
                 </td> 
 -->
                 
