@@ -18,7 +18,6 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -37,10 +36,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Juergen Hoeller
@@ -106,41 +103,21 @@ public class ClientController {
 		}
 	}
 
-
-	
-
-
-//	@GetMapping(value = "/clients/{ownerId}/edit")
-//	public String initUpdateOwnerForm(@PathVariable("ownerId") final int ownerId, final Model model) {
-//		Owner owner = this.ownerService.findOwnerById(ownerId);
-//		model.addAttribute(owner);
-//		return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-//	}
-//
-//	@PostMapping(value = "/clients/{ownerId}/edit")
-//	public String processUpdateOwnerForm(@Valid final Owner owner, final BindingResult result, @PathVariable("ownerId") final int ownerId) throws DataAccessException {
-//		if (result.hasErrors()) {
-//			return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-//		} else {
-//			owner.setId(ownerId);
-//			this.ownerService.saveOwner(owner);
-//			return "redirect:/clients/{ownerId}";
-//		}
-//	}
-	
-	
-	@GetMapping("/clients/{clientId}")
-	public ModelAndView showClient(@PathVariable("clientId") final int clientId) {
-		ModelAndView mav = new ModelAndView("clients/clientDetails");
-		mav.addObject(this.clientService.findClientById(clientId));
-		return mav;
-	}
-	
-	
-	@GetMapping(value = { "/clients" })
-	public String showClientsList(Map<String, Object> model) {
-		Collection<Client> clients = this.clientService.findClients();
-		model.put("clients", clients);
-		return "clients/clientList";
-	}
+	//	@GetMapping(value = "/clients/{ownerId}/edit")
+	//	public String initUpdateOwnerForm(@PathVariable("ownerId") final int ownerId, final Model model) {
+	//		Owner owner = this.ownerService.findOwnerById(ownerId);
+	//		model.addAttribute(owner);
+	//		return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	//	}
+	//
+	//	@PostMapping(value = "/clients/{ownerId}/edit")
+	//	public String processUpdateOwnerForm(@Valid final Owner owner, final BindingResult result, @PathVariable("ownerId") final int ownerId) throws DataAccessException {
+	//		if (result.hasErrors()) {
+	//			return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	//		} else {
+	//			owner.setId(ownerId);
+	//			this.ownerService.saveOwner(owner);
+	//			return "redirect:/clients/{ownerId}";
+	//		}
+	//	}
 }

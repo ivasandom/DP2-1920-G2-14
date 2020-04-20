@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
+import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.stereotype.Controller;
@@ -39,8 +42,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Juergen Hoeller
@@ -54,13 +59,15 @@ public class ProfessionalController {
 	private final ProfessionalService	professionalService;
 	private final SpecialtyService		specialtyService;
 	private final CenterService			centerService;
+	private final ClientService			clientService;
 
 
 	@Autowired
-	public ProfessionalController(final ProfessionalService professionalService, final SpecialtyService specialtyService, final CenterService centerService, final AuthoritiesService authoritiesService) {
+	public ProfessionalController(final ProfessionalService professionalService, final SpecialtyService specialtyService, final CenterService centerService, final ClientService clientService, final AuthoritiesService authoritiesService) {
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
 		this.centerService = centerService;
+		this.clientService = clientService;
 	}
 
 	@InitBinder
@@ -119,5 +126,28 @@ public class ProfessionalController {
 			return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	//
+	//ClientService
+	//
+	
+	//Show de cliente para profesional
+	@GetMapping("/professionals/{clientId}")
+	public ModelAndView showClient(@PathVariable("clientId") final int clientId) {
+		ModelAndView mav = new ModelAndView("professionals/clientShow");
+		mav.addObject(this.clientService.findClientById(clientId));
+		return mav;
+	}
+	
+	//List de clientes para profesional
+	@GetMapping(value = { "/professionals/clientList" })
+	public String showClientsList(Map<String, Object> model) {
+		Collection<Client> clients = this.clientService.findAll();
+		model.put("clients", clients);
+		return "professionals/clientList";
+	}
+	
+	
+	
 
 }

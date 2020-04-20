@@ -18,5 +18,6 @@ public interface ClientRepository extends CrudRepository<Client, Integer> {
 	Client findById(int id) throws DataAccessException;
 
 	@Override
+	@Query("SELECT c FROM Client c")
 	Collection<Client> findAll() throws DataAccessException;
 }

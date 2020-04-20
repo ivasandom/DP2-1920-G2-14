@@ -38,7 +38,7 @@ public class ClientService {
 	}
 
 	@Transactional
-	public Iterable<Client> findAll() throws DataAccessException {
+	public Collection<Client> findAll() throws DataAccessException {
 		return this.clientRepository.findAll();
 	}
 
@@ -50,9 +50,5 @@ public class ClientService {
 		this.userService.saveUser(client.getUser());
 		//creating authorities
 		this.authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
-	}
-	@Transactional(readOnly = true)
-	public Collection<Client> findClients() throws DataAccessException {
-		return this.clientRepository.findAll();
 	}
 }

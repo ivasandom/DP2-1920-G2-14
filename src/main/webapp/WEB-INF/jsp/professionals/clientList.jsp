@@ -8,7 +8,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<petclinic:layout currentPage="clients">
+<petclinic:layout currentPage="professionals">
 	<div class="container">
     <h2 class="my-5">Clients</h2>
 
@@ -23,10 +23,10 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${selections}" var="client">
+        <c:forEach items="${clients}" var="client">
             <tr>
                 <td>
-                    <spring:url value="/clients/{clientId}" var="clientUrl">
+                    <spring:url value="/professionals/{clientId}" var="clientUrl">
                         <spring:param name="clientId" value="${client.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a>
