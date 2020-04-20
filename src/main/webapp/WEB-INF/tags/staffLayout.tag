@@ -70,7 +70,7 @@ body {
 	 
 	    <div class="bg-light border-right" id="sidebar-wrapper">
 	      <div class="list-group list-group-flush">
-	        <a href="/admin" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+	        <a href="/admin/dashboard" class="list-group-item list-group-item-action bg-light">Dashboard</a>
 	        <a href="/admin/clients" class="list-group-item list-group-item-action bg-light">Clients</a>
 	        <a href="/admin/professionals" class="list-group-item list-group-item-action bg-light">Professionals</a>
 	        <a href="/admin/settings" class="list-group-item list-group-item-action bg-light">Settings</a>
