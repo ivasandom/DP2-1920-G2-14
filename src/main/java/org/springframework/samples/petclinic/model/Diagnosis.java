@@ -37,4 +37,5 @@ public class Diagnosis extends BaseEntity {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "diagnosis_deseases", joinColumns = @JoinColumn(name = "diagnosis_id"), inverseJoinColumns = @JoinColumn(name = "desease_id"))
 	private Set<Desease>	deseases;
+
 }

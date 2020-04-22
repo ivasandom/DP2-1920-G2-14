@@ -45,7 +45,10 @@ INSERT INTO types VALUES (5, 'vaccination');
 INSERT INTO types VALUES (6, 'periodic consultation');
 INSERT INTO types VALUES (7, 'another case');
 
-INSERT INTO diagnosis VALUES (1, '2020-02-02', 'description 1');
+INSERT INTO diagnosis (id, date, description) VALUES (1, '2020-02-02', 'description 1');
+INSERT INTO diagnosis (id, date, description) VALUES (2, '2020-02-02', 'description 2');
+INSERT INTO diagnosis (id, date, description) VALUES (3, '2020-02-02', 'description 3');
+INSERT INTO diagnosis (id, date, description) VALUES (4, '2020-02-02', 'description 4');
 
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
     1, 1, 'professional1', 'Guillermo', 'Díaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
@@ -58,8 +61,8 @@ INSERT INTO professionals (center_id, specialty_id, username, first_name, last_n
 );
 
 -- Medicines
-INSERT INTO medicines (name, price) VALUES ('ibuprofeno', '10.0');
-INSERT INTO medicines (name, price) VALUES ('paracetamol', '9.0');
+INSERT INTO medicines (id, name, price) VALUES (1, 'ibuprofeno', '10.0');
+INSERT INTO medicines (id, name, price) VALUES (2, 'paracetamol', '9.0');
 INSERT INTO medicines (name, price) VALUES ('AAS-500-Mg-20-Comprimidos', '20.0');
 INSERT INTO medicines (name, price) VALUES ('AAS-100-100-Mg-30-Comprimidos', '20.0');
 INSERT INTO medicines (name, price) VALUES ('ABACAT-1000-4-10-Mg-10-Sobres-Granulado-Solucion-Oral', '20.0');
@@ -102,8 +105,8 @@ INSERT INTO medicines (name, price) VALUES ('EBASTINA-ALTER-EFG-10-Mg-20-Comprim
 INSERT INTO medicines (name, price) VALUES ('EBASTINA-ALTER-EFG-20-Mg-20-Comprimidos-Recubiertos', '20.0');
 
 -- Deseases
-INSERT INTO deseases (name) VALUES ('Acidez de estómago');
-INSERT INTO deseases (name) VALUES ('Acné');
+INSERT INTO deseases (id, name) VALUES (1, 'Acidez de estómago');
+INSERT INTO deseases (id, name) VALUES (2, 'Acné');
 INSERT INTO deseases (name) VALUES ('Adenoma hipofisiario');
 INSERT INTO deseases (name) VALUES ('Aerofagia');
 INSERT INTO deseases (name) VALUES ('Aftas bucales');
@@ -247,12 +250,24 @@ INSERT INTO deseases (name) VALUES ('Vegetaciones');
 INSERT INTO deseases (name) VALUES ('Vértigo');
 INSERT INTO deseases (name) VALUES ('Vigorexia');
 
+INSERT INTO diagnosis_medicines (diagnosis_id, medicine_id) VALUES (1,2);
+INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (1,1);
+
+INSERT INTO diagnosis_medicines (diagnosis_id, medicine_id) VALUES (2,1);
+INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (2,2);
+
+INSERT INTO diagnosis_medicines (diagnosis_id, medicine_id) VALUES (3,1);
+INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (3,2);
+
+INSERT INTO diagnosis_medicines (diagnosis_id, medicine_id) VALUES (4,2);
+INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (4,1);
+
 
 -- Para probar citas cogidas 2020-12-12
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-12-12', '08:00', 'test',1); 
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 3, '2020-12-12', '08:15', 'test',2); 
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 3, 3, '2020-12-12', '08:30', 'test',1); 
-
+INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, 1, '2020-12-12', '08:00', 'test',1); 
+INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 2, 1, 3, '2020-12-12', '08:15', 'test',2); 
+INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 3, 3, 3, '2020-12-12', '08:30', 'test',1); 
+INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 4, 3, 3, '2020-12-12', '08:30', 'test',1); 
 
 --INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (2, 1, 3, 3, '2020-12-12', '08:45'); 
 -- INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:00'); 

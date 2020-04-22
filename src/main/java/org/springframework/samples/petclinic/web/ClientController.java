@@ -102,22 +102,4 @@ public class ClientController {
 			return "redirect:/";
 		}
 	}
-
-	//	@GetMapping(value = "/clients/{ownerId}/edit")
-	//	public String initUpdateOwnerForm(@PathVariable("ownerId") final int ownerId, final Model model) {
-	//		Owner owner = this.ownerService.findOwnerById(ownerId);
-	//		model.addAttribute(owner);
-	//		return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-	//	}
-	//
-	//	@PostMapping(value = "/clients/{ownerId}/edit")
-	//	public String processUpdateOwnerForm(@Valid final Owner owner, final BindingResult result, @PathVariable("ownerId") final int ownerId) throws DataAccessException {
-	//		if (result.hasErrors()) {
-	//			return OwnerController.VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-	//		} else {
-	//			owner.setId(ownerId);
-	//			this.ownerService.saveOwner(owner);
-	//			return "redirect:/clients/{ownerId}";
-	//		}
-	//	}
 }
