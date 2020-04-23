@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.User;
@@ -34,6 +35,14 @@ public class ClientServiceTests {
 	public void testCountWithInitialData() {
 		int count = this.clientService.clientCount();
 		Assertions.assertEquals(count, 2);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({"Gotera"})
+	@Transactional
+	public void shouldFindClientById(final String name) {
+		Client cli = this.clientService.findClientById(1);
+		Assertions.assertTrue(cli.getLastName().equals(name));
 	}
 
 	@ParameterizedTest

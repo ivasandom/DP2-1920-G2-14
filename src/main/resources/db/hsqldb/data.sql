@@ -34,8 +34,8 @@ INSERT INTO specialties VALUES (1, 'dermatology');
 INSERT INTO specialties VALUES (2, 'surgery');
 INSERT INTO specialties VALUES (3, 'dentistry');
 -- Centers
-INSERT INTO centers(address) VALUES ('Sevilla');
-INSERT INTO centers(address) VALUES ('Cadiz');
+INSERT INTO centers(id, address) VALUES (1, 'Sevilla');
+INSERT INTO centers(id, address) VALUES (2, 'Cadiz');
 -- Types
 INSERT INTO types VALUES (1, 'checking');
 INSERT INTO types VALUES (2, 'analisis');
