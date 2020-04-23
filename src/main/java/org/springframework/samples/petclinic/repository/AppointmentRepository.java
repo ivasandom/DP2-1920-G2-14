@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Desease;
+import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 
 public interface AppointmentRepository extends CrudRepository<Appointment, Integer> {
@@ -23,13 +25,19 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id")
 	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);
-	
+
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id AND a.date = current_date() AND a.status != 'COMPLETED' ORDER BY a.status DESC,  a.startTime ASC")
 	Collection<Appointment> findTodayPendingByProfessionalId(@Param("id") int professionalId);
-	
+
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id AND a.date = current_date() AND a.status = 'COMPLETED'")
 	Collection<Appointment> findTodayCompletedByProfessionalId(@Param("id") int professionalId);
 
 	@Query("SELECT DISTINCT type.name FROM AppointmentType type ORDER BY type.name")
 	List<String> findAppointmentTypes() throws DataAccessException;
+
+	@Query("SELECT DISTINCT a.diagnosis.medicines FROM Appointment a WHERE a.client.id = :id")
+	Collection<Medicine> findMedicines(@Param("id") int clientId);
+
+	@Query("SELECT DISTINCT a.diagnosis.deseases FROM Appointment a WHERE a.client.id = :id")
+	Collection<Desease> findDeseases(@Param("id") int clientId);
 }

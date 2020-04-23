@@ -13,8 +13,8 @@ public interface ProfessionalRepository extends CrudRepository<Professional, Int
 	@Query("SELECT professional FROM Professional professional WHERE professional.center.id = :centerId and professional.specialty.id = :specialtyId")
 	Collection<Professional> findBySpecialtyAndCenter(@Param("specialtyId") int specialtyId, @Param("centerId") int centerId);
 
-	//	@Query("SELECT professional FROM Professional professional WHERE professional.id = :id")
-	//	Professional findProById(@Param("id") int id);
+	@Query("SELECT professional FROM Professional professional WHERE professional.id = :id")
+	Professional findProfessionalById(@Param("id") int id);
 
 	@Query("SELECT professional FROM Professional professional WHERE professional.user.username =:username")
 	Professional findProByUsername(@Param("username") String username);
