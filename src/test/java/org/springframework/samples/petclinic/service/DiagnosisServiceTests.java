@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.service;
 
 import java.time.LocalDate;
@@ -6,6 +7,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,11 @@ public class DiagnosisServiceTests {
 	@Autowired
 	protected DiagnosisService diagnosisService;
 
+
 	@ParameterizedTest
-	@CsvSource({"2020-02-03, diagnosis description"})
+	@CsvSource({
+		"2020-02-03, diagnosis description"
+	})
 	@Transactional
 	public void shouldSaveDiagnosis(final LocalDate date, final String description) {
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
@@ -46,5 +51,11 @@ public class DiagnosisServiceTests {
 
 		diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
 		Assertions.assertThat(diagnosisCollection.size()).isEqualTo(found + 1);
+	}
+
+	@Test
+	public void testCountWithInitialData() {
+		Collection<Diagnosis> diagnosis = (Collection<Diagnosis>) this.diagnosisService.findAll();
+		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 7);
 	}
 }
