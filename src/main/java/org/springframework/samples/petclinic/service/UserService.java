@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Mostly used as a facade for all Petclinic controllers Also a placeholder
@@ -42,5 +43,10 @@ public class UserService {
 	public void saveUser(final User user) throws DataAccessException {
 		user.setEnabled(true);
 		this.userRepository.save(user);
+	}
+
+	@Transactional(readOnly = true)
+	public Iterable<User> listUsers() throws DataAccessException {
+		return this.userRepository.findAll();
 	}
 }
