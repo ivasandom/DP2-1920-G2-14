@@ -43,7 +43,7 @@ public class CenterElectionPositiveUITest {
 	}
 
 	@Test
-	public void testHealthCardNumberPositiveUI() throws Exception {
+	public void testCenterElectionPositiveUI() throws Exception {
 		driver.get("http://localhost:"+ this.port);
 		driver.findElement(By.linkText("> Citación online")).click();
 		driver.findElement(By.id("username")).click();

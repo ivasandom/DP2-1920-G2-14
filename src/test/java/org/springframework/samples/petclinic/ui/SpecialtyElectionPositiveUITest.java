@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CenterElectionNegativeUITest {
+public class SpecialtyElectionPositiveUITest {
 	private WebDriver driver;
 	private String baseUrl;
 	private boolean acceptNextAlert = true;
@@ -43,21 +42,24 @@ public class CenterElectionNegativeUITest {
 	}
 
 	@Test
-	public void testCenterElectionNegativeUI() throws Exception {
+	public void testSpecialtyElectionNegativeUI() throws Exception {
 		driver.get("http://localhost:"+ this.port);
-		driver.findElement(By.linkText("> Citación online")).click();
-		driver.findElement(By.id("username")).click();
-		driver.findElement(By.id("username")).clear();
-		driver.findElement(By.id("username")).sendKeys("elenanito");
-		driver.findElement(By.id("password")).clear();
-		driver.findElement(By.id("password")).sendKeys("elenanito");
-		driver.findElement(By.id("command")).submit();
-		driver.findElement(By.id("specialty")).click();
-		new Select(driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
-		driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.xpath("//form[@id='appointment']/div/div/div")).click();
-		assertEquals("center must no be empty.appointment.center", driver.findElement(By.xpath("//form[@id='appointment']/div/div/div")).getText());
+		driver.findElement(By.linkText("Área clientes")).click();
+	    driver.findElement(By.id("username")).click();
+	    driver.findElement(By.id("username")).clear();
+	    driver.findElement(By.id("username")).sendKeys("pepegotera");
+	    driver.findElement(By.id("password")).clear();
+	    driver.findElement(By.id("password")).sendKeys("pepegotera");
+	    driver.findElement(By.id("command")).submit();
+	    driver.findElement(By.linkText("> Citación online")).click();
+	    driver.findElement(By.id("center")).click();
+	    new Select(driver.findElement(By.id("center"))).selectByVisibleText("Sevilla");
+	    driver.findElement(By.xpath("//option[@value='1']")).click();
+	    driver.findElement(By.id("specialty")).click();
+	    new Select(driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
+	    driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
+	    driver.findElement(By.xpath("//div/div")).click();
+	    assertEquals("Professional", driver.findElement(By.xpath("//form[@id='appointment']/div/div[3]/label")).getText());
 	}
 
 	@AfterEach
