@@ -23,12 +23,13 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.HealthValidator;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ClientService;
-import org.springframework.samples.petclinic.service.UserService;
+import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -51,11 +52,14 @@ public class ClientController {
 	private static final String	VIEWS_CLIENTS_SIGN_UP	= "users/createClientForm";
 
 	private final ClientService	clientService;
+	
+	private final StripeService stripeService;
 
 
 	@Autowired
-	public ClientController(final ClientService clientService, final UserService userService, final AuthoritiesService authoritiesService) {
+	public ClientController(final ClientService clientService, final StripeService stripeService, final AuthoritiesService authoritiesService) {
 		this.clientService = clientService;
+		this.stripeService = stripeService;
 	}
 
 	@InitBinder
@@ -64,7 +68,7 @@ public class ClientController {
 	}
 
 	@GetMapping(value = "/new")
-	public String initCreationForm(final Map<String, Object> model) {
+	public String initCreationForm(final Map<String, Object> model) throws DataAccessException {
 		Client client = new Client();
 		java.util.List<String> lista = new ArrayList<>();
 		HealthInsurance[] h = HealthInsurance.values();
@@ -78,9 +82,11 @@ public class ClientController {
 	}
 
 	@PostMapping(value = "/new")
-	public String processCreationForm(@Valid final Client client, final BindingResult result, final ModelMap model) {
+	public String processCreationForm(@Valid final Client client, final BindingResult result, final ModelMap model) throws Exception {
 		HealthValidator healthValidator = new HealthValidator();
+		//UserValidator userValidator = new UserValidator();
 		healthValidator.validate(client, result);
+		//userValidator.validate(client.getUser(), result);
 		java.util.List<String> lista = new ArrayList<>();
 		HealthInsurance[] h = HealthInsurance.values();
 		for (HealthInsurance hi : h) {
@@ -94,10 +100,11 @@ public class ClientController {
 			return ClientController.VIEWS_CLIENTS_SIGN_UP;
 		} else {
 			//creating owner, user and authorities
+			String customerId = this.stripeService.createCustomer(client.getEmail()).getId();
+			client.setStripeId(customerId);
 			this.clientService.saveClient(client);
 
 			return "redirect:/";
 		}
 	}
-
 }

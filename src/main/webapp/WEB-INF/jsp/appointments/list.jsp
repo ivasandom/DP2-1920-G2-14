@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout currentPage="owners">
+<petclinic:layout currentPage="appointments">
 	<div class="container">
     <h2 class="my-5">My appointments <a class="btn btn-sm btn-primary" href="/appointments/new">+ New appointment</a></h2>
     
@@ -17,6 +17,7 @@
             <th>Center</th>
             <th>Professional</th>
             <th>Specialty</th>
+            <th>Type</th>
             <th></th>
         </tr>
         </thead>
@@ -27,6 +28,7 @@
                <td>${appointment.center.address}</td>
                <td>${appointment.professional.fullName}</td>
                <td>${appointment.specialty.name}</td>
+               <td>${appointment.type.name}</td>
                <td><a href="#">View more</a></td>             
             </tr>
         </c:forEach>

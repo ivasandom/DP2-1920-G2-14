@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.samples.petclinic.service;
 
 import java.util.Optional;
@@ -27,29 +28,42 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProfessionalService {
 
-	private ProfessionalRepository professionalRepository;	
-	
-	
+	private ProfessionalRepository professionalRepository;
+
+
 	@Autowired
-	public ProfessionalService(ProfessionalRepository professionalRepository) {
+	public ProfessionalService(final ProfessionalRepository professionalRepository) {
 		this.professionalRepository = professionalRepository;
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Iterable<Professional> findAll() throws DataAccessException {
-		return professionalRepository.findAll();
+		return this.professionalRepository.findAll();
 	}
-	
+
 	@Transactional(readOnly = true)
-	public Optional<Professional> findById(int id) throws DataAccessException {
-		return professionalRepository.findById(id);
+	public Optional<Professional> findById(final int id) throws DataAccessException {
+		return this.professionalRepository.findById(id);
 	}
-	
+
+	@Transactional
+	public Professional findProByUsername(final String username) throws DataAccessException {
+		return this.professionalRepository.findProByUsername(username);
+	}
+
+	//	@Transactional(readOnly = true)
+	//	public Collection<Appointment> findProfessionalByUsername(final String username) throws DataAccessException {
+	//		return this.professionalRepository.findByUsername(username);
+	//	}
+
 	@Transactional(readOnly = true)
-	public Iterable<Professional> findProfessionalBySpecialtyAndCenter(int specialtyId, int centerId) throws DataAccessException {
-		return professionalRepository.findBySpecialtyAndCenter(specialtyId, centerId);
+	public Iterable<Professional> findProfessionalBySpecialtyAndCenter(final int specialtyId, final int centerId) throws DataAccessException {
+		return this.professionalRepository.findBySpecialtyAndCenter(specialtyId, centerId);
 	}
-	
-	
+
+	@Transactional(readOnly = true)
+	public Object findProfessionalById(final int id) throws DataAccessException {
+		return this.professionalRepository.findById(id);
+	}
 
 }

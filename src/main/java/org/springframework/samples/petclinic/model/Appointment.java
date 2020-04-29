@@ -22,6 +22,8 @@ import java.time.LocalTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,13 +37,12 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Entity
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {
-	
+
 	@Column(name = "date")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate		date;
@@ -50,13 +51,17 @@ public class Appointment extends BaseEntity {
 	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime		startTime;
 
-	@ManyToOne
+	@Column(name = "reason")
+	//@NotEmpty(message = "*")
+	private String			reason;
+
+	@NotNull
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "type_id")
 	private AppointmentType	type;
-	
-	
+
 	// Relations
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
 	private Client			client;
@@ -65,17 +70,17 @@ public class Appointment extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "professional_id")
 	private Professional	professional;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "specialty_id")
-	private Specialty specialty;
-	
+	private Specialty		specialty;
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "center_id")
 	private Center			center;
-
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "diagnosis_id")
 	private Diagnosis		diagnosis;
@@ -83,5 +88,8 @@ public class Appointment extends BaseEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "receipt_id")
 	private Receipt			receipt;
-
+	
+	@Column(length = 32, columnDefinition = "varchar(32) default 'PENDING'")
+	@Enumerated(value = EnumType.STRING)
+	private AppointmentStatus status;
 }

@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "medicines")
 public class Medicine extends NamedEntity {
@@ -16,13 +21,19 @@ public class Medicine extends NamedEntity {
 
 	//Relations
 
-	//	@ManyToMany(fetch = FetchType.EAGER)
-	//	@JoinTable(name = "diagnosis_id")
-	//	private Set<Diagnosis>	diagnosis;
+	//	@ManyToOne
+	//	@JoinColumn(name = "appointment_id")
+	//	private Appointment		appointment;
+	//		@ManyToMany(fetch = FetchType.EAGER)
+	//		@JoinTable(name = "diagnosis_id")
+	//		private Set<Diagnosis>	diagnosis;
 	//
 	//	@ManyToMany(fetch = FetchType.EAGER)
 	//	@JoinTable(name = "desease_id")
 	//	private Set<Desease>	deseases;
+
+	//	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "medicines")
+	//	private Set<Diagnosis>	diagnosis;
 
 
 	public Double getPrice() {

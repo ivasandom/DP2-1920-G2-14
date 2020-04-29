@@ -22,30 +22,29 @@ import lombok.Setter;
 @Entity
 @Table(name = "professionals")
 public class Professional extends Person {
-	
+
 	@Column(name = "collegiate_number")
 	@NotEmpty(message = "*")
-	private String	collegiateNumber;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "username", referencedColumnName = "username")
-	private User user;
+	private String				collegiateNumber;
 
-	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "username", referencedColumnName = "username")
+	private User				user;
+
 	//Relations
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
-	private Set<Schedule> schedules;
-	
+	private Set<Schedule>		schedules;
+
 	@ManyToOne
 	@JoinColumn(name = "center_id")
-	private Center center;
-	
+	private Center				center;
+
 	@ManyToOne
 	@JoinColumn(name = "specialty_id")
-	private Specialty specialty;
+	private Specialty			specialty;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
-	private Set<Appointment> appointments;
+	private Set<Appointment>	appointments;
 
 }

@@ -16,12 +16,13 @@ import lombok.Data;
 public class User {
 
 	@Id
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	String			username;
 
-	@NotEmpty(message = "*")
+	@NotEmpty(message = "must not be empty")
 	@Length(min = 5, max = 60)
 	private String	password;
 
 	boolean			enabled;
+
 }
