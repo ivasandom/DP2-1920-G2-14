@@ -79,6 +79,7 @@ public class AppointmentServiceTests {
 		Professional professional = this.professionalService.findById(1).get();
 		LocalDate date = LocalDate.of(2020, 12, 12);
 		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+
 		Assertions.assertThat(startTimes.size()).isEqualTo(2);
 	}
 
@@ -96,7 +97,8 @@ public class AppointmentServiceTests {
 
 	@Test
 	void shouldFindAppointmentsByClientId() {
-		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
+
+		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findAppointmentByUserId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(6);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
@@ -108,7 +110,8 @@ public class AppointmentServiceTests {
 
 	@Test
 	void shouldFindAppointmentsByProfessionalId() {
-		Collection<Appointment> appointments = this.appointmentService.findAppointmentByProfessionalId(3);
+		
+		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findAppointmentByProfessionalId(3);
 		Assertions.assertThat(appointments.size()).isEqualTo(7);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 15));

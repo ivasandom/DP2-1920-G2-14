@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,19 +101,24 @@ public class ProfessionalController {
 	}
 
 	@GetMapping(value = "/professionals")
-	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
-		model.put("professional", professional);
-
-		Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
-
-		if (!results.iterator().hasNext()) {
-			// no owners found
-			result.rejectValue("specialty", "notFound", "not found");
+	public String processFindForm(@Valid final Professional professional, final BindingResult result, final ModelMap model) {
+		
+		
+		if (result.hasErrors()) {
+			model.put("professional", professional);
 			return "professionals/find";
 		} else {
-			// multiple owners found
-			model.put("selections", results);
-			return "professionals/list";
+			Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
+	
+			if (!results.iterator().hasNext()) {
+				// no owners found
+				result.rejectValue("specialty", "notFound", "not found");
+				return "professionals/find";
+			} else {
+				// multiple owners found
+				model.put("selections", results);
+				return "professionals/list";
+			}
 		}
 	}
 
