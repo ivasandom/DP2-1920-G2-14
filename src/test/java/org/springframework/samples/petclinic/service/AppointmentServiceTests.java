@@ -46,7 +46,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAllAppointments() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
-		Assertions.assertThat(appointments.size()).isEqualTo(3);
+		Assertions.assertThat(appointments.size()).isEqualTo(11);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class AppointmentServiceTests {
 		Professional professional = this.professionalService.findById(1).get();
 		LocalDate date = LocalDate.of(2020, 12, 12);
 		Collection<LocalTime> startTimes = appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
-		Assertions.assertThat(startTimes.size()).isEqualTo(1);
+		Assertions.assertThat(startTimes.size()).isEqualTo(2);
 	}
 	
 	@ParameterizedTest
@@ -72,7 +72,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsByClientId() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findAppointmentByUserId(1);
-		Assertions.assertThat(appointments.size()).isEqualTo(2);
+		Assertions.assertThat(appointments.size()).isEqualTo(6);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
@@ -84,12 +84,12 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsByProfessionalId() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.findAppointmentByProfessionalId(3);
-		Assertions.assertThat(appointments.size()).isEqualTo(2);
+		Assertions.assertThat(appointments.size()).isEqualTo(7);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 15));
 
 		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 45));
 
 	}
 
