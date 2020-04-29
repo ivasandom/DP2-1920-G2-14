@@ -20,6 +20,7 @@
             var appointmentDateGroup = $("#appointment-date-group");
 
             function loadProfessionals() {
+            	$(".error-msg").hide();
                 $.ajax({
                     url: "/professionals/filter",
                     data: {
@@ -43,7 +44,8 @@
                             professionalGroup.show();
                         } else {
                             professionalGroup.hide();
-                            alert("No hay profesionales con esos parámetros");
+                            $(".error-msg").text("No hay profesionales con esos parámetros.")
+                            $(".error-msg").show();
                         }
                     },
                 });
@@ -210,6 +212,7 @@
                         </spring:bind>
                     </div>
                 </div>
+                <p class="error-msg" style="color:red;display:none"></p>
                 <button type="submit" class="btn btn-primary">+ Create appointment</button>
             </form:form>
         </div>

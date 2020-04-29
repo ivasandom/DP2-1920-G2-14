@@ -20,7 +20,7 @@
 
             $("#add-button").on("click", function (event) {
                 event.preventDefault()
-
+				$(".error-msg").hide();
 
                 stripe.confirmCardSetup("${intentClientSecret}", {
                     payment_method: {
@@ -28,9 +28,9 @@
                     },
                 }).then(function (result) {
                     if (result.error) {
-                        alert("error processing payment method");
+                    	$(".error-msg").text("Error adding payment method, try again.")
+                        $(".error-msg").show();
                     } else {
-                    	console.log(result.setupIntent);
 						$("#token").val(result.setupIntent.payment_method);
 						$("#payment-method-form").submit();
                     };
@@ -91,7 +91,7 @@
 
                 <!-- Used to display form errors. -->
                 <div id="card-errors" role="alert"></div>
-
+				<p class="error-msg" style="color:red;display:none"></p>
                 <hr />
                 <button id="add-button" class="btn btn-primary">Add card</button>
             </form:form>

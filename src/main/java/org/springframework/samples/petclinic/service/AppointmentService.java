@@ -8,6 +8,8 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Desease;
+import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
@@ -79,6 +81,16 @@ public class AppointmentService {
 	@Transactional
 	public Appointment findAppointmentById(final int id) {
 		return this.appointmentRepository.findById(id).get();
+	}
+	
+	@Transactional
+	public Collection<Medicine> findMedicines(final int id) {
+		return this.appointmentRepository.findMedicines(id);
+	}
+	
+	@Transactional
+	public Collection<Desease> findDeseases(final int id) {
+		return this.appointmentRepository.findDeseases(id);
 	}
 
 	

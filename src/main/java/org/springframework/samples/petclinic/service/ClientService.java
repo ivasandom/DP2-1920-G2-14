@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Client;
@@ -31,17 +33,17 @@ public class ClientService {
 	}
 
 	@Transactional
-	public Client findClientByUsername(String username) throws DataAccessException {
-		return clientRepository.findClientByUsername(username);
-	}	
-	
-	@Transactional
-	public Iterable<Client> findAll() throws DataAccessException {
-		return clientRepository.findAll();
+	public Client findClientByUsername(final String username) throws DataAccessException {
+		return this.clientRepository.findClientByUsername(username);
 	}
-	
+
 	@Transactional
-	public void saveClient(Client client) throws DataAccessException {
+	public Collection<Client> findAll() throws DataAccessException {
+		return this.clientRepository.findAll();
+	}
+
+	@Transactional
+	public void saveClient(final Client client) throws DataAccessException {
 		//creating client
 		this.clientRepository.save(client);
 		//creating user

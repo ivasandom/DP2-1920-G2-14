@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.repository;
 
+import java.util.Collection;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -14,4 +16,8 @@ public interface ClientRepository extends CrudRepository<Client, Integer> {
 
 	@Query("SELECT client FROM Client client WHERE client.id = :id")
 	Client findById(int id) throws DataAccessException;
+
+	@Override
+	@Query("SELECT c FROM Client c")
+	Collection<Client> findAll() throws DataAccessException;
 }
