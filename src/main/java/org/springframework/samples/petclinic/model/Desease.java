@@ -8,4 +8,7 @@ import javax.persistence.Table;
 @Table(name = "deseases")
 public class Desease extends NamedEntity {
 
+	//	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "deseases")
+	//	private Set<Diagnosis>	diagnosis;
+
 }

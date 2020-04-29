@@ -74,7 +74,7 @@ public class AppointmentController {
 	private final ClientService			clientService;
 	private final CenterService			centerService;
 	private final MedicineService		medicineService;
-	private final DeseaseService 	deseaseService;
+	private final DeseaseService 		deseaseService;
 
 
 	@Autowired
@@ -211,7 +211,7 @@ public class AppointmentController {
 	}
 
 	@PostMapping(value = "/{appointmentId}/consultation")
-	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws DataAccessException {
+	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
 		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		if (result.hasErrors()) {
@@ -220,8 +220,10 @@ public class AppointmentController {
 			return "appointments/consultationPro";
 		} else {
 			a.setDiagnosis(appointment.getDiagnosis());
-			a.setStatus(AppointmentStatus.COMPLETED);
+			a.setReceipt(appointment.getReceipt());
+			a.setStatus(AppointmentStatus.COMPLETED);			
 			this.appointmentService.saveAppointment(a);
+			this.appointmentService.chargeAppointment(a);
 			return "redirect:/appointments/pro";
 		}
 	}

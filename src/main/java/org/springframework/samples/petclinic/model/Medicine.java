@@ -3,8 +3,6 @@ package org.springframework.samples.petclinic.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,20 +17,23 @@ public class Medicine extends NamedEntity {
 
 	@Column(name = "price")
 	@NotNull
-	private Double		price;
+	private Double price;
 
 	//Relations
 
-	@ManyToOne
-	@JoinColumn(name = "appointment_id")
-	private Appointment	appointment;
-	//	@ManyToMany(fetch = FetchType.EAGER)
-	//	@JoinTable(name = "diagnosis_id")
-	//	private Set<Diagnosis>	diagnosis;
+	//	@ManyToOne
+	//	@JoinColumn(name = "appointment_id")
+	//	private Appointment		appointment;
+	//		@ManyToMany(fetch = FetchType.EAGER)
+	//		@JoinTable(name = "diagnosis_id")
+	//		private Set<Diagnosis>	diagnosis;
 	//
 	//	@ManyToMany(fetch = FetchType.EAGER)
 	//	@JoinTable(name = "desease_id")
 	//	private Set<Desease>	deseases;
+
+	//	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "medicines")
+	//	private Set<Diagnosis>	diagnosis;
 
 
 	public Double getPrice() {

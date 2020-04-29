@@ -34,18 +34,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
+
 		http.authorizeRequests()
 			.antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/", "/oups").permitAll()
 			.antMatchers("/clients/**").permitAll()
 			.antMatchers("/admin/**").hasAnyAuthority("admin")
 			.antMatchers("/owners/**").hasAnyAuthority("owner", "admin")
-			.antMatchers("/professionals/**").permitAll()
-			.antMatchers("/appointments/").hasAnyAuthority("client")
-			.antMatchers("/appointments/new").hasAnyAuthority("client")
+			.antMatchers("/professionals/filter").permitAll()
+			.antMatchers("/professionals").permitAll()
+			.antMatchers("/professionals/find").permitAll()
+			.antMatchers("/professionals/**").hasAnyAuthority("professional", "admin")
 			.antMatchers("/appointments/pro").hasAnyAuthority("professional")
 			.antMatchers("/appointments/*/consultation").hasAnyAuthority("professional")
 			.antMatchers("/appointments/*/absent").hasAnyAuthority("professional")
+			.antMatchers("/appointments/**").hasAnyAuthority("client")
+			.antMatchers("/payments/**").permitAll()
 			.antMatchers("/vets/**")
 			.authenticated().anyRequest().denyAll()
 			.and()
@@ -56,6 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 				.logoutSuccessUrl("/login");
+
 		// Configuración para que funcione la consola de administración
 		// de la BD H2 (deshabilitar las cabeceras de protección contra
 		// ataques de tipo csrf y habilitar los framesets si su contenido
