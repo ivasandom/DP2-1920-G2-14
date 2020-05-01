@@ -27,7 +27,7 @@ public class Diagnosis extends BaseEntity {
 	private LocalDate		date;
 
 	@Column(name = "description")
-	@NotEmpty
+	@NotEmpty(message = "must not be empty")
 	private String			description;
 
 	@ManyToMany(fetch = FetchType.EAGER)

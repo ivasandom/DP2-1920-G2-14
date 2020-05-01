@@ -176,16 +176,21 @@
 
                             <div class="form-group">
                                 <label>Amount to charge</label>
-                                <form:input class="form-control" type="number" placeholder="0.00 EUR" path="receipt.price"/>
+                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" placeholder="0.00 EUR" path="receipt.price"/>
                                 <small class="form-text text-muted">Add the cost of the consultation.</small>
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label>Payment method</label>
-                                <select class="form-control" disabled>
-                                    <option>Efectivo</option>
-                                    <option>Tarjeta</option>
-                                    <option>IBAN</option>
-                                </select>
+                                <form:select
+                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                id="paymentMethod" path="client.paymentMethods">
+                                <form:options items="${appointment.client.paymentMethods}" itemLabel="brand" itemValue="id" />
+                            </form:select>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-summary" role="tabpanel"
@@ -195,6 +200,7 @@
                   
                 </div>
 
+                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
 
 
             </div>
