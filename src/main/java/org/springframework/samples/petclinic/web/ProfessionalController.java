@@ -32,6 +32,7 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
+import org.springframework.samples.petclinic.model.ProValidator;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -101,15 +102,16 @@ public class ProfessionalController {
 	}
 
 	@GetMapping(value = "/professionals")
-	public String processFindForm(@Valid final Professional professional, final BindingResult result, final ModelMap model) {
-		
-		
-		if (result.hasErrors()) {
+	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
+		ProValidator proValidator = new ProValidator();
+		proValidator.validate(professional, result);
+		System.out.println(result.getFieldError("center") + "======================================" + result.hasFieldErrors("specialty"));
+		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {
 			model.put("professional", professional);
 			return "professionals/find";
 		} else {
 			Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
-	
+
 			if (!results.iterator().hasNext()) {
 				// no owners found
 				result.rejectValue("specialty", "notFound", "not found");
@@ -158,11 +160,13 @@ public class ProfessionalController {
 	}
 
 	//List de clientes para profesional
-	@GetMapping(value = {"/professionals/clientList"})
+	@GetMapping(value = {
+		"/professionals/clientList"
+	})
 	public String showClientsList(final Map<String, Object> model) {
 		Collection<Client> clients = this.clientService.findAll();
 		model.put("clients", clients);
 		return "professionals/clientList";
 	}
-	
+
 }

@@ -28,7 +28,6 @@
                             <form:options items="${specialties}" itemLabel="name" itemValue="id" />
                         </form:select>
                     </div>
-                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
                 </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
