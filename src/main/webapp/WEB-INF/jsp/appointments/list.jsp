@@ -14,6 +14,7 @@
         <thead>
         <tr>
             <th>Date</th>
+            <th>Time</th>
             <th>Center</th>
             <th>Professional</th>
             <th>Specialty</th>
@@ -24,6 +25,7 @@
         <tbody>
         <c:forEach items="${appointments}" var="appointment">
             <tr>
+               <td>${appointment.date}</td>
                <td>${appointment.startTime}</td>
                <td>${appointment.center.address}</td>
                <td>${appointment.professional.fullName}</td>
