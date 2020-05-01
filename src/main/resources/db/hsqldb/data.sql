@@ -7,6 +7,7 @@ INSERT INTO authorities VALUES ('owner1','owner');
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('user','password',TRUE);
 INSERT INTO authorities VALUES ('user','client');
+
 -- Cliente 1
 INSERT INTO users(username,password,enabled) VALUES ('pepegotera','pepegotera',TRUE);
 INSERT INTO authorities VALUES ('pepegotera','client');
@@ -25,7 +26,9 @@ INSERT INTO authorities VALUES ('miguelperez','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME")
 VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'Santander', 'miguelperez');
 
-
+ 
+INSERT INTO payment_methods(id, token, client_id) VALUES (1,'test_tok', 1);
+ 
 -- Professional 1
 INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
 INSERT INTO authorities VALUES ('professional1','professional');
