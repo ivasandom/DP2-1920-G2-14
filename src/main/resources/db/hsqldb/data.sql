@@ -287,8 +287,8 @@ INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (7,78);
 
 
 -- Para probar citas cogidas 2020-12-12
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-12-12', '08:00', 'test',1); 
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 1, 3, '2020-12-12', '08:15', 'test',2); 
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-05-03', '08:00', 'test',1); 
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 3, '2020-12-12', '08:15', 'test',2); 
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test',1); 
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 1, 3, '2020-12-12', '08:45', 'test',1); 
 
