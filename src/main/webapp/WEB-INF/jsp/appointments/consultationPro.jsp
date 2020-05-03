@@ -1,4 +1,4 @@
-<%@ page session="false" trimDirectiveWhitespaces="true" %>
+0<%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -140,6 +140,11 @@
                                 <small class="form-text text-muted">Add a description of client symptoms and the
                                     reason of selected
                                     deseases and medicines</small>
+                                     <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label>Deseases</label>
@@ -147,14 +152,23 @@
                                     multiple="true">
                                     <form:options items="${deseaseList}" itemLabel="name" itemValue="id" />
                                 </form:select>
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label>Medicines</label>
-                                <form:select class="form-control select-multiple-search" path="diagnosis.medicines"
+                                <form:select class="form-control select-multiple-search ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" path="diagnosis.medicines"
                                     multiple="true">
                                     <form:options items="${medicineList}" itemLabel="name" itemValue="id" />
                                 </form:select>
-
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        <small class="form-text text-muted">${status.errorMessage}</small>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-billing" role="tabpanel"
@@ -162,16 +176,21 @@
 
                             <div class="form-group">
                                 <label>Amount to charge</label>
-                                <form:input class="form-control" type="number" placeholder="0.00 EUR" path="receipt.price"/>
+                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" placeholder="0.00 EUR" path="receipt.price"/>
                                 <small class="form-text text-muted">Add the cost of the consultation.</small>
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label>Payment method</label>
-                                <select class="form-control" disabled>
-                                    <option>Efectivo</option>
-                                    <option>Tarjeta</option>
-                                    <option>IBAN</option>
-                                </select>
+                                <form:select
+                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                id="paymentMethod" path="client.paymentMethods">
+                                <form:options items="${appointment.client.paymentMethods}" itemLabel="brand" itemValue="id" />
+                            </form:select>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-summary" role="tabpanel"
@@ -181,6 +200,7 @@
                   
                 </div>
 
+                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
 
 
             </div>

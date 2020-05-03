@@ -19,9 +19,15 @@ INSERT INTO users(username,password,enabled) VALUES ('elenanito','elenanito',TRU
 INSERT INTO authorities VALUES ('elenanito','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME")
 VALUES (2, '1982-03-02', '27334465', 1, 'elenanito@gmail.com', 'Elena', 'Nito', '2020-01-03', '00002', 'Santander', 'elenanito');
+
+-- Cliente 3
+INSERT INTO users(username,password,enabled) VALUES ('miguelperez','miguelperez',TRUE);
+INSERT INTO authorities VALUES ('miguelperez','client');
+INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME")
+VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'Santander', 'miguelperez');
+
  
- 
-INSERT INTO payment_methods(id, token, client_id) VALUES (1,'test_tok', 1);
+--INSERT INTO payment_methods(id, token, client_id) VALUES (1,'test_tok', 1);
  
 -- Professional 1
 INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
@@ -282,13 +288,13 @@ INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (7,78);
 
 -- Para probar citas cogidas 2020-12-12
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-12-12', '08:00', 'test',1); 
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 3, '2020-12-12', '08:15', 'test',2); 
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 1, 3, '2020-12-12', '08:15', 'test',2); 
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test',1); 
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 1, 3, '2020-12-12', '08:45', 'test',1); 
 
 -- Para las citas antiguas (pasadas, historial)
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 1, 1, 1, '2020-02-02', '08:00', 'consultation',1); 
-INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 2, 1, 3, '2020-02-12', '08:15', 'consultation',2); 
+INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 2, 1, 3, '2020-02-12', '08:15', 'consultation',2); 
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (1, 1, 3, 1, 1, '2020-02-20', '08:30', 'consultation',1); 
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 4, 1, 3, '2020-01-03', '08:45', 'consultation',1); 
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type_id) VALUES (2, 1, 5, 1, 3, '2020-02-07', '09:00', 'consultation',1);

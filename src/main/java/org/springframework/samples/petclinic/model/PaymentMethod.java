@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.model;
 
 import javax.persistence.Column;
@@ -6,8 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
-import com.sun.istack.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +17,12 @@ import lombok.Setter;
 @Table(name = "payment_methods")
 public class PaymentMethod extends BaseEntity {
 
-	
+	@Column(name = "brand")
+	private String	brand;
+
 	@Column(name = "token")
 	@NotBlank
-	private String token;
+	private String	token;
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
