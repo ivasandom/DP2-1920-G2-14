@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -30,17 +31,17 @@ public class Transaction extends BaseEntity {
 	@Column(name = "token")
 	@NotEmpty
 	private String			token;
-	
+
 	@Column(name = "success")
-	private Boolean 		success;
-	
+	private Boolean			success;
+
 	@Column(name = "status")
 	@NotEmpty
 	private String			status;
 
 	//Relations
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "receipt_id")
 	private Receipt			receipt;
 
