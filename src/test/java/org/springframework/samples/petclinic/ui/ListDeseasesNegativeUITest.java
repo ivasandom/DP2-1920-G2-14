@@ -4,7 +4,7 @@ package org.springframework.samples.petclinic.ui;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ListAppointmentsPositiveUITest {
+public class ListDeseasesNegativeUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -43,8 +43,9 @@ public class ListAppointmentsPositiveUITest {
 
 	@Test
 	public void testUntitledTestCase() throws Exception {
-		this.driver.get("http://localhost:8080/");
+		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
+		this.driver.findElement(By.xpath("//form[@id='command']/div[2]")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
 		this.driver.findElement(By.id("username")).sendKeys("professional1");
@@ -52,6 +53,17 @@ public class ListAppointmentsPositiveUITest {
 		this.driver.findElement(By.id("password")).sendKeys("professional1");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.linkText("Consultation mode")).click();
+		this.driver.findElement(By.linkText("> Start consultation")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[2]/div/h5")).click();
+		this.driver.findElement(By.id("diagnosis.description")).click();
+		this.driver.findElement(By.id("diagnosis.description")).clear();
+		this.driver.findElement(By.id("diagnosis.description")).sendKeys("Texto de prueba");
+		this.driver.findElement(By.xpath("//div[@id='list-diagnosis']/div[2]/span/span/span/ul")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]/p")).click();
+		this.driver.findElement(By.id("receipt.price")).click();
+		this.driver.findElement(By.id("receipt.price")).clear();
+		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
 	@After
@@ -59,7 +71,7 @@ public class ListAppointmentsPositiveUITest {
 		this.driver.quit();
 		String verificationErrorString = this.verificationErrors.toString();
 		if (!"".equals(verificationErrorString)) {
-			Assertions.fail(verificationErrorString);
+			Assert.fail(verificationErrorString);
 		}
 	}
 
