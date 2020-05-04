@@ -52,8 +52,8 @@ public class ClientController {
 	private static final String	VIEWS_CLIENTS_SIGN_UP	= "users/createClientForm";
 
 	private final ClientService	clientService;
-	
-	private final StripeService stripeService;
+
+	private final StripeService	stripeService;
 
 
 	@Autowired

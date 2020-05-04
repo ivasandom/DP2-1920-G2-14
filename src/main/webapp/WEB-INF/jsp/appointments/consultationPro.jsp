@@ -1,4 +1,4 @@
-0<%@ page session="false" trimDirectiveWhitespaces="true" %>
+<%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -157,6 +157,8 @@
                                         ${status.errorMessage}
                                     </div>
                                 </c:if>
+                                <form:errors path="diagnosis.deseases" class="has-error  error"></form:errors>
+                                
                             </div>
                             <div class="form-group">
                                 <label>Medicines</label>
@@ -176,7 +178,7 @@
 
                             <div class="form-group">
                                 <label>Amount to charge</label>
-                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" placeholder="0.00 EUR" path="receipt.price"/>
+                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" path="receipt.price"/>
                                 <small class="form-text text-muted">Add the cost of the consultation.</small>
                                 <c:if test="${status.error}">
                                     <div class="invalid-feedback">
@@ -189,7 +191,7 @@
                                 <form:select
                                 class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
                                 id="paymentMethod" path="client.paymentMethods">
-                                <form:options items="${appointment.client.paymentMethods}" itemLabel="brand" itemValue="id" />
+                                <form:options items="${paymentMethodsList}" itemLabel="brand" itemValue="id" />
                             </form:select>
                             </div>
                         </div>
@@ -201,7 +203,7 @@
                 </div>
 
                      <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
-
+                             
 
             </div>
             <div

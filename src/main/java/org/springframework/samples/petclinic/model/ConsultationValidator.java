@@ -15,6 +15,7 @@ public class ConsultationValidator implements Validator {
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diagnosis.description", "description must no be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "receipt.price", "price must not be empty");
 
 		Appointment appointment = (Appointment) obj;
 
@@ -32,11 +33,10 @@ public class ConsultationValidator implements Validator {
 			}
 		}
 
-		if (!errors.hasFieldErrors("receipt.price")) {
-			if (appointment.getReceipt().getPrice() <= 0 || appointment.getReceipt().getPrice() == null || appointment.getReceipt() == null || appointment.getReceipt().getPrice().toString().isEmpty()) {
-				// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
-				errors.rejectValue("receipt.price", "price must be positive");
-			}
+		if (appointment.getReceipt().getPrice() <= 0 || appointment.getReceipt().getPrice() == null || appointment.getReceipt().getPrice() == 0.00 || appointment.getReceipt().getPrice().toString().isEmpty()) {
+			// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
+			errors.rejectValue("receipt.price", "price must be positive");
+
 		}
 	}
 }

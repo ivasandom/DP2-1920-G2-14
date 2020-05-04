@@ -208,11 +208,9 @@ public class AppointmentController {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
-		//Collection<String> brands = Collections.emptyList();
 		for (int i = 0; i < paymentMethods.size(); i++) {
 			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
 			String brand = pM.getType();
-			//brands.add(brand);
 			paymentMethods.get(i).setBrand(brand);
 		}
 		PaymentMethod p = new PaymentMethod();
@@ -225,7 +223,7 @@ public class AppointmentController {
 		System.out.println(appointment.getDiagnosis());
 		// Diagnosis
 		model.put("medicineList", medicines);
-		//model.put("brands", brands);
+		model.put("paymentMethodsList", paymentMethods);
 		model.put("appointment", appointment);
 		model.put("deseaseList", deseases);
 		return "appointments/consultationPro";
@@ -234,16 +232,28 @@ public class AppointmentController {
 	@PostMapping(value = "/{appointmentId}/consultation")
 	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
 		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
-		//Collection<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods();
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		ConsultationValidator consultationValidator = new ConsultationValidator();
 		consultationValidator.validate(appointment, result);
-		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
-		System.out.println("===============================" + result.hasErrors() + "-----" + result.getFieldError());
+		Iterable<Desease> deseases = this.deseaseService.findAll();
+		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
+		for (int i = 0; i < paymentMethods.size(); i++) {
+			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
+			String brand = pM.getType();
+			paymentMethods.get(i).setBrand(brand);
+		}
+		PaymentMethod p = new PaymentMethod();
+		p.setBrand("efectivo");
+		p.setClient(appointment.getClient());
+		p.setToken("efective_token");
+		paymentMethods.add(p);
+		appointment.getClient().getPaymentMethods().add(p);
 		if (result.hasErrors()) {
-			model.put("medicines", medicines);
-			//model.put("paymentMethods", paymentMethods);
-			model.put("appointment", appointment);
+			model.put("medicineList", medicines);
+			model.put("deseaseList", deseases);
+			model.put("paymentMethodsList", paymentMethods);
+			model.put("appointment", a);
+			model.addAttribute("errors", result.getAllErrors());
 			return "appointments/consultationPro";
 		} else {
 			a.setDiagnosis(appointment.getDiagnosis());

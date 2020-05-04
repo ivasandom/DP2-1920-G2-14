@@ -16,7 +16,10 @@
 
 package org.springframework.samples.petclinic.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -96,9 +99,25 @@ public class PaymentController {
 			return "redirect:/error";
 		} else {
 			PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(method.getToken());
-			if (paymentMethod != null) {
-				method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
-				this.paymentMethodService.savePaymentMethod(method);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Client currentClient = this.clientService.findClientByUsername(auth.getName());
+			Collection<org.springframework.samples.petclinic.model.PaymentMethod> paymentsClient = this.paymentMethodService.findByClient(currentClient);
+			System.out.println("===========9" + paymentsClient);
+			Collection<PaymentMethod> stripePays = new ArrayList<>();
+			for (int i = 0; i < paymentsClient.size(); i++) {
+				PaymentMethod paymentStripe = this.stripeService.retrievePaymentMethod(paymentsClient.stream().collect(Collectors.toList()).get(i).getToken());
+				System.out.println(paymentStripe + "======8");
+				System.out.println("=====07" + paymentsClient.stream().collect(Collectors.toList()).get(i).getToken());
+				stripePays.add(paymentStripe);
+			}
+			if (paymentsClient.size() != 0 && stripePays.stream().map(x -> x.getCard().getFingerprint()).collect(Collectors.toSet()).contains(paymentMethod.getCard().getFingerprint())) {
+				result.rejectValue("client", "duplicate", "already exists");
+				return "redirect:/payments/methods";
+			} else {
+				if (paymentMethod != null) {
+					method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+					this.paymentMethodService.savePaymentMethod(method);
+				}
 			}
 		}
 
