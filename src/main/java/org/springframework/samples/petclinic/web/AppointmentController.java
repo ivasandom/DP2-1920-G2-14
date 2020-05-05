@@ -67,6 +67,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("appointments")
@@ -124,6 +125,36 @@ public class AppointmentController {
 		return "appointments/list";
 	}
 
+	@GetMapping("/{appointmentId}")
+	public ModelAndView detailtsAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		ModelAndView mav = new ModelAndView("appointments/new");
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
+		Client c = this.clientService.findClientById(a.getClient().getId());
+
+		model.put("client", c);
+		mav.addObject(a);
+		return mav;
+	}
+
+	@GetMapping(value = "/{appointmentId}/edit")
+	public String initUpdateAppointmentForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		model.put("appointment", appointment);
+		return "appointments/new";
+	}
+
+	@PostMapping(value = "/{appointmentId}/edit")
+	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Appointment app = this.appointmentService.findAppointmentById(appointmentId);
+		if (result.hasErrors()) {
+			model.put("appointment", appointment);
+			return "appointments";
+		} else {
+			this.appointmentService.saveAppointment(app);
+			this.appointmentService.chargeAppointment(app);
+			return "redirect:/appointments";
+		}
+	}
 	@GetMapping("/pro")
 	public String listAppointmentsProfessional(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
