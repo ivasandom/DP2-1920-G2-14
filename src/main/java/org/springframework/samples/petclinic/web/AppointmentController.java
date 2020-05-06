@@ -136,25 +136,6 @@ public class AppointmentController {
 		return mav;
 	}
 
-	@GetMapping(value = "/{appointmentId}/edit")
-	public String initUpdateAppointmentForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		model.put("appointment", appointment);
-		return "appointments/new";
-	}
-
-	@PostMapping(value = "/{appointmentId}/edit")
-	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-		Appointment app = this.appointmentService.findAppointmentById(appointmentId);
-		if (result.hasErrors()) {
-			model.put("appointment", appointment);
-			return "appointments";
-		} else {
-			this.appointmentService.saveAppointment(app);
-			this.appointmentService.chargeAppointment(app);
-			return "redirect:/appointments";
-		}
-	}
 	@GetMapping("/pro")
 	public String listAppointmentsProfessional(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -286,4 +267,64 @@ public class AppointmentController {
 		}
 	}
 
+	@GetMapping("/{appointmentId}/details")
+	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
+		//Collection<String> brands = Collections.emptyList();
+		for (int i = 0; i < paymentMethods.size(); i++) {
+			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
+			String brand = pM.getType();
+			//brands.add(brand);
+			paymentMethods.get(i).setBrand(brand);
+		}
+		PaymentMethod p = new PaymentMethod();
+		p.setBrand("efectivo");
+		p.setClient(appointment.getClient());
+		p.setToken("efective_token");
+		paymentMethods.add(p);
+		appointment.getClient().getPaymentMethods().add(p);
+		Iterable<Desease> deseases = this.deseaseService.findAll();
+		System.out.println(appointment.getDiagnosis());
+		// Diagnosis
+		model.put("medicineList", medicines);
+		//model.put("brands", brands);
+		model.put("appointment", appointment);
+		model.put("deseaseList", deseases);
+		return "appointments/details";
+	}
+
+	@GetMapping(path = "/delete/{appointmentId}")
+	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId, final ModelMap modelMap) {
+		String view = "redirect:/appointments";
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+
+		if (appointmentId.equals(appointment.getId())) {
+			this.appointmentService.delete(appointment);
+		} else {
+			this.appointmentService.delete(appointment);
+		}
+		return view;
+	}
+
+	//	@GetMapping(value = "/{appointmentId}/edit")
+	//	public String initUpdateAppointmentForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+	//		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+	//		model.put("appointment", appointment);
+	//		return "appointments/new";
+	//	}
+	//
+	//	@PostMapping(value = "/{appointmentId}/edit")
+	//	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	//		Appointment app = this.appointmentService.findAppointmentById(appointmentId);
+	//		if (result.hasErrors()) {
+	//			model.put("appointment", appointment);
+	//			return "appointments";
+	//		} else {
+	//			this.appointmentService.saveAppointment(app);
+	//			this.appointmentService.chargeAppointment(app);
+	//			return "redirect:/appointments";
+	//		}
+	//	}
 }

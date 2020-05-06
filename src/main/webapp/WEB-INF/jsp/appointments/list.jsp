@@ -32,11 +32,17 @@
                <td>${appointment.specialty.name}</td>
                <td>${appointment.type.name}</td>
                <td>
-                <spring:url value="/appointments/{appointmentId}/edit" var="appointmentUrl">
+                <spring:url value="/appointments/{appointmentId}/details" var="appointmentUrl">
                       <spring:param name="appointmentId" value="${appointment.id}"/>
                 </spring:url>
                 <a href="${fn:escapeXml(appointmentUrl)}">View more</a>
-               	</td>             
+               	</td>
+               	<td>
+               	<spring:url value="/appointments/delete/{appointmentId}" var="appointmentDeleteUrl">
+    				<spring:param name="appointmentId" value="${appointment.id}"/>
+    			</spring:url> 
+    			<a href="${fn:escapeXml(appointmentDeleteUrl)}">Cancel</a> 
+    			</td>            
             </tr>
         </c:forEach>
         </tbody>
