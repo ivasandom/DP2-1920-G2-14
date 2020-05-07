@@ -1,7 +1,6 @@
 
 package org.springframework.samples.petclinic.service;
 
-
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,9 +14,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.User;
@@ -25,7 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-@AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class ClientServiceTests {
 
 	@Autowired
@@ -37,20 +39,30 @@ public class ClientServiceTests {
 		int count = this.clientService.clientCount();
 		Assertions.assertEquals(count, 2);
 	}
+	
+	@ParameterizedTest
+	@CsvSource({"Gotera"})
+	@Transactional
+	public void shouldFindClientById(final String name) {
+		Client cli = this.clientService.findClientById(1);
+		Assertions.assertTrue(cli.getLastName().equals(name));
+	}
 
 	@ParameterizedTest
-	@CsvSource({"pepegotera", "elenanito"})
+	@CsvSource({
+		"pepegotera", "elenanito"
+	})
 	@Transactional
 	void shouldFindClientByUsername(final String username) {
 		Client client = this.clientService.findClientByUsername(username);
-		Collection<Client> clients = (Collection<Client>) this.clientService.findAll();
+		Collection<Client> clients = this.clientService.findAll();
 		Assertions.assertTrue(clients.contains(client));
 	}
-	
+
 	@Test
 	@Transactional
 	public void shouldSaveClient() {
-		Collection<Client> clients = (Collection<Client>) this.clientService.findAll();
+		Collection<Client> clients = this.clientService.findAll();
 		int found = clients.size();
 
 		Client client = new Client();
@@ -63,12 +75,12 @@ public class ClientServiceTests {
 		client.setHealthCardNumber("0000000003");
 		client.setHealthInsurance("Adeslas");
 		client.setLastName("Cuesta");
-		Date registrationDate = new Date(2020-03-03);
+		Date registrationDate = new Date(2020 - 03 - 03);
 		client.setRegistrationDate(registrationDate);
-		
+
 		Set<Appointment> appointments = Collections.emptySet();
 		client.setAppointments(appointments);
-		
+
 		User user = new User();
 		user.setEnabled(true);
 		user.setUsername("frankcuesta");
@@ -78,7 +90,7 @@ public class ClientServiceTests {
 		this.clientService.saveClient(client);
 		org.assertj.core.api.Assertions.assertThat(client.getId().longValue()).isNotEqualTo(0);
 
-		clients = (Collection<Client>) this.clientService.findAll();
+		clients = this.clientService.findAll();
 		org.assertj.core.api.Assertions.assertThat(clients.size()).isEqualTo(found + 1);
 	}
 }

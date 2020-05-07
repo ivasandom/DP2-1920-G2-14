@@ -123,7 +123,7 @@
     </jsp:attribute>
     <jsp:body>
         <div class="container">
-            <h2 class="my-5">New appointment</h2>
+            <c:if test="${appointment['new']}"><h2 class="my-5">New appointment</h2>
 
             <form:form modelAttribute="appointment" method="post" action="/appointments/new">
                 <div class="form-group has-feedback">
@@ -215,6 +215,122 @@
                 <p class="error-msg" style="color:red;display:none"></p>
                 <button type="submit" class="btn btn-primary">+ Create appointment</button>
             </form:form>
+            </c:if>
+            
+<!--        --------      -->
+<!--         UPDATE       -->
+<!--        --------      -->
+            
+            <c:if test="${!appointment['new']}"><h2 class="my-5">Update appointment</h2>
+
+            <form:form modelAttribute="appointment" method="post" action="/appointments/new">
+                <div class="form-group has-feedback">
+                    <h4 class="mt-5">Type of appointment</h4>
+                    <p>Choose the center, specialty and the professional you want.</p>
+                    <spring:bind path="center">
+                        <div class="form-group">
+                            <label for="id-center">Center</label>
+                            <form:select
+                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                id="center" path="center">
+                                <option disabled selected hidden>Choose a center</option>
+                                <form:options items="${centers}" itemLabel="address" itemValue="id" />
+                            </form:select>
+                            <c:if test="${status.error}">
+                                <div class="invalid-feedback">
+                                    ${status.errorMessage}
+                                </div>
+                            </c:if>
+                        </div>
+                    </spring:bind>
+                    <spring:bind path="specialty">
+                        <div class="form-group">
+                            <label for="id-specialty">Specialty</label>
+                            <form:select
+                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                id="specialty" path="specialty">
+                                <option disabled selected hidden>Choose a specialty</option>
+                                <form:options items="${specialties}" itemLabel="name" itemValue="id" />
+                            </form:select>
+                            <c:if test="${status.error}">
+                                <div class="invalid-feedback">
+                                    ${status.errorMessage}
+                                </div>
+                            </c:if>
+                        </div>
+                    </spring:bind>
+                    <spring:bind path="professional">
+                        <div class="form-group professionalGroup" style="display: none;">
+                            <label
+                                for="id-professional ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}">Professional</label>
+                            <form:select class="form-control" id="professional" path="professional">
+                            </form:select>
+                            <c:if test="${status.error}">
+                                <div class="invalid-feedback">
+                                    ${status.errorMessage}
+                                </div>
+                            </c:if>
+                        </div>
+                    </spring:bind>
+
+                    <div id="appointment-date-group" style="display: none;">
+                        <petclinic:inputField label="Reason" name="reason" />
+                        <div class="control-group">
+                            <petclinic:selectField name="type.name" label="Type" names="${types}" size="7" />
+                        </div>
+                        
+                        
+						<div class="form-group">
+                            <label for="id-type">Type</label>
+                            <form:select
+                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                id="type" path="type">
+                                <option disabled selected hidden>Choose a type</option>
+                                <form:options items="${type}" itemLabel="name" itemValue="id" />
+                            </form:select>
+                            <c:if test="${status.error}">
+                                <div class="invalid-feedback">
+                                    ${status.errorMessage}
+                                </div>
+                            </c:if>
+                        </div>
+                    
+                        <h4 class="mt-5">Choose date:</h4>
+                        <p>Choose the date of your appointment.</p>
+                        <spring:bind path="date">
+                            <div class="form-group">
+                                <label for="">Date</label>
+                                <input type="text"
+                                    class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                    id="date" name="date" placeholder="Choose date">
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
+                            </div>
+                        </spring:bind>
+                        <spring:bind path="startTime">
+                            <div class="form-group">
+                                <label for="">Time</label>
+                                <select
+                                    class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
+                                    name="startTime" id="startTime">
+                                    <option disabled selected>Choose time</option>
+                                </select>
+                                <c:if test="${status.error}">
+                                    <div class="invalid-feedback">
+                                        ${status.errorMessage}
+                                    </div>
+                                </c:if>
+                            </div>
+                        </spring:bind>
+                    </div>
+                </div>
+ 				<p class="error-msg" style="color:red;display:none"></p>
+                <button type="submit" class="btn btn-primary">+ Update appointment</button>
+            </form:form>
+            </c:if>
         </div>
     </jsp:body>
 

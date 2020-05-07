@@ -67,6 +67,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("appointments")
@@ -122,6 +123,17 @@ public class AppointmentController {
 		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
 		model.put("appointments", appointments);
 		return "appointments/list";
+	}
+
+	@GetMapping("/{appointmentId}")
+	public ModelAndView detailtsAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		ModelAndView mav = new ModelAndView("appointments/new");
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
+		Client c = this.clientService.findClientById(a.getClient().getId());
+
+		model.put("client", c);
+		mav.addObject(a);
+		return mav;
 	}
 
 	@GetMapping("/pro")
@@ -265,4 +277,71 @@ public class AppointmentController {
 		}
 	}
 
+	@GetMapping("/{appointmentId}/details")
+	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
+		//Collection<String> brands = Collections.emptyList();
+		for (int i = 0; i < paymentMethods.size(); i++) {
+			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
+			String brand = pM.getType();
+			//brands.add(brand);
+			paymentMethods.get(i).setBrand(brand);
+		}
+		PaymentMethod p = new PaymentMethod();
+		p.setBrand("efectivo");
+		p.setClient(appointment.getClient());
+		p.setToken("efective_token");
+		paymentMethods.add(p);
+		appointment.getClient().getPaymentMethods().add(p);
+		Iterable<Desease> deseases = this.deseaseService.findAll();
+		System.out.println(appointment.getDiagnosis());
+		// Diagnosis
+		model.put("medicineList", medicines);
+		//model.put("brands", brands);
+		model.put("appointment", appointment);
+		model.put("deseaseList", deseases);
+		return "appointments/details";
+	}
+
+	@GetMapping(path = "/delete/{appointmentId}")
+	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId, final ModelMap modelMap) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String vista = "redirect:/appointments";
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		try {
+			if (!authentication.getName().equals(this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
+				modelMap.addAttribute("message", "You cannot delete another user's appointment");
+				return "exception";
+			} else {
+				this.appointmentService.delete(appointment);
+				modelMap.addAttribute("message", "Appointment successfully deleted");
+			}
+		} catch (Exception e) {
+			modelMap.addAttribute("message", "Error: " + e.getMessage());
+			return "exception";
+		}
+		return vista;
+	}
+
+	//	@GetMapping(value = "/{appointmentId}/edit")
+	//	public String initUpdateAppointmentForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+	//		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+	//		model.put("appointment", appointment);
+	//		return "appointments/new";
+	//	}
+	//
+	//	@PostMapping(value = "/{appointmentId}/edit")
+	//	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	//		Appointment app = this.appointmentService.findAppointmentById(appointmentId);
+	//		if (result.hasErrors()) {
+	//			model.put("appointment", appointment);
+	//			return "appointments";
+	//		} else {
+	//			this.appointmentService.saveAppointment(app);
+	//			this.appointmentService.chargeAppointment(app);
+	//			return "redirect:/appointments";
+	//		}
+	//	}
 }

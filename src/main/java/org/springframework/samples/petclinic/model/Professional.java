@@ -44,7 +44,7 @@ public class Professional extends Person {
 	@JoinColumn(name = "specialty_id")
 	private Specialty			specialty;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional")
 	private Set<Appointment>	appointments;
 
 }
