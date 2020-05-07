@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -270,7 +271,8 @@ public class AppointmentController {
 	@GetMapping("/{appointmentId}/details")
 	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		Collection<Medicine> medicines = new ArrayList<Medicine>();
+		Collection<Desease> deseases = new ArrayList<Desease>();
 		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
 		//Collection<String> brands = Collections.emptyList();
 		for (int i = 0; i < paymentMethods.size(); i++) {
@@ -279,19 +281,22 @@ public class AppointmentController {
 			//brands.add(brand);
 			paymentMethods.get(i).setBrand(brand);
 		}
+		if (appointment.getDiagnosis() != null) {
+			medicines = appointment.getDiagnosis().getMedicines();
+			deseases = appointment.getDiagnosis().getDeseases();
+		}
 		PaymentMethod p = new PaymentMethod();
 		p.setBrand("efectivo");
 		p.setClient(appointment.getClient());
 		p.setToken("efective_token");
 		paymentMethods.add(p);
 		appointment.getClient().getPaymentMethods().add(p);
-		Iterable<Desease> deseases = this.deseaseService.findAll();
 		System.out.println(appointment.getDiagnosis());
 		// Diagnosis
-		model.put("medicineList", medicines);
+		model.put("medicines", medicines);
 		//model.put("brands", brands);
 		model.put("appointment", appointment);
-		model.put("deseaseList", deseases);
+		model.put("deseases", deseases);
 		return "appointments/details";
 	}
 

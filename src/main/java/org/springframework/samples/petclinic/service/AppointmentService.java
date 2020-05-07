@@ -130,6 +130,8 @@ public class AppointmentService {
 
 		if (appointment.getDate().isBefore(LocalDate.now())) {
 			throw new Exception("You cannot delete a passed appointment");
+		} else if (appointment.getStartTime().isBefore(LocalTime.now()) && appointment.getDate().isEqual(LocalDate.now())) {
+			throw new Exception("You cannot delete an appointment that was today");
 		}
 		this.appointmentRepository.delete(appointment);
 	}
