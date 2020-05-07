@@ -3,8 +3,8 @@ package org.springframework.samples.petclinic.ui;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -43,7 +45,8 @@ public class ListDeseasesNegativeUITest {
 
 	@Test
 	public void testUntitledTestCase() throws Exception {
-		this.driver.get("http://localhost:8080/login");
+		this.driver.get("http://localhost:" + this.port);
+		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).click();
@@ -63,8 +66,16 @@ public class ListDeseasesNegativeUITest {
 		this.driver.findElement(By.xpath("//div[@id='list-diagnosis']/div[2]/span/span/span/ul")).click();
 		this.driver.findElement(By.id("sidebar-wrapper")).click();
 		this.driver.findElement(By.xpath("//div[@id='list-diagnosis']/div[3]/span/span/span/ul")).click();
-		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).clear();
-		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).sendKeys("AAS-100-100-Mg-30-Comprimidos");
+		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).clear();
+
+		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/select"));
+
+		Select select = new Select(element);
+		select.selectByValue("1"); // This command will select the year with index 4 i.e. 5th option
+
+		//		Select dropdown = new Select(this.driver.findElement(By.id("")));
+		//		dropdown.selectByVisibleText("AAS-100-100-Mg-30-Comprimidos");
+		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).sendKeys("AAS-100-100-Mg-30-Comprimidos");
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]/div/h5")).click();
 		this.driver.findElement(By.id("receipt.price")).click();
 		this.driver.findElement(By.id("receipt.price")).clear();
@@ -75,7 +86,7 @@ public class ListDeseasesNegativeUITest {
 		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.deseases", this.driver.findElement(By.id("appointment.errors")).getText());
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		this.driver.quit();
 		String verificationErrorString = this.verificationErrors.toString();

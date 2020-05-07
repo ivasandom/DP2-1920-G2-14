@@ -3,10 +3,11 @@ package org.springframework.samples.petclinic.ui;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
@@ -14,13 +15,21 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ManageAppointmentsCreatePositiveUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
 	private boolean			acceptNextAlert		= true;
 	private StringBuffer	verificationErrors	= new StringBuffer();
+
+	@LocalServerPort
+	private int				port;
 
 
 	@BeforeEach
@@ -35,7 +44,8 @@ public class ManageAppointmentsCreatePositiveUITest {
 
 	@Test
 	public void testManageAppointmentsPositiveUI() throws Exception {
-		this.driver.get("http://localhost:8080/login");
+		this.driver.get("http://localhost:" + this.port);
+		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).clear();
 		this.driver.findElement(By.id("username")).sendKeys("miguelperez");
 		this.driver.findElement(By.id("password")).click();
@@ -71,7 +81,7 @@ public class ManageAppointmentsCreatePositiveUITest {
 		Assert.assertEquals("2021-01-06", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td")).getText());
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		this.driver.quit();
 		String verificationErrorString = this.verificationErrors.toString();
