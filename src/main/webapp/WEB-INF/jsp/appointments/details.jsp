@@ -234,11 +234,11 @@
             <div
                 style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
                 <div class="text-right">
-                    <a href="/appointments" class="btn btn-outline-secondary">BACK</a>
+                    <a href="/appointments" class="btn btn-primary">RETURN</a>
                 <spring:url value="/appointments/delete/{appointmentId}" var="appointmentDeleteUrl">
     				<spring:param name="appointmentId" value="${appointment.id}"/>
     			</spring:url> 
-    			<a href="${fn:escapeXml(appointmentDeleteUrl)}" class="btn btn-default">Cancel</a>
+    			<a href="${fn:escapeXml(appointmentDeleteUrl)}" class="btn btn-outline-secondary">CANCEL APPOINTMENT</a>
     			
                 </div>
             </div>

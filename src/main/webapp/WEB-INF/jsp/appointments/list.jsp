@@ -36,13 +36,7 @@
                       <spring:param name="appointmentId" value="${appointment.id}"/>
                 </spring:url>
                 <a href="${fn:escapeXml(appointmentUrl)}">View more</a>
-               	</td>
-               	<td>
-               	<spring:url value="/appointments/delete/{appointmentId}" var="appointmentDeleteUrl">
-    				<spring:param name="appointmentId" value="${appointment.id}"/>
-    			</spring:url> 
-    			<a href="${fn:escapeXml(appointmentDeleteUrl)}">Cancel</a> 
-    			</td>            
+               	</td>      
             </tr>
         </c:forEach>
         </tbody>

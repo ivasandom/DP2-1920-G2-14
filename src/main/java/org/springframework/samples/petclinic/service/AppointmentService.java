@@ -126,9 +126,11 @@ public class AppointmentService {
 	}
 
 	@Transactional
-	public void delete(final Appointment appointment) {
+	public void delete(final Appointment appointment) throws Exception {
 
+		if (appointment.getDate().isBefore(LocalDate.now())) {
+			throw new Exception("You cannot delete a passed appointment");
+		}
 		this.appointmentRepository.delete(appointment);
 	}
-
 }

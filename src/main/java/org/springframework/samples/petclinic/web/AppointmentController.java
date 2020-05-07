@@ -297,15 +297,22 @@ public class AppointmentController {
 
 	@GetMapping(path = "/delete/{appointmentId}")
 	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId, final ModelMap modelMap) {
-		String view = "redirect:/appointments";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String vista = "redirect:/appointments";
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-
-		if (appointmentId.equals(appointment.getId())) {
-			this.appointmentService.delete(appointment);
-		} else {
-			this.appointmentService.delete(appointment);
+		try {
+			if (!authentication.getName().equals(this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
+				modelMap.addAttribute("message", "You cannot delete another user's appointment");
+				return "exception";
+			} else {
+				this.appointmentService.delete(appointment);
+				modelMap.addAttribute("message", "Appointment successfully deleted");
+			}
+		} catch (Exception e) {
+			modelMap.addAttribute("message", "Error: " + e.getMessage());
+			return "exception";
 		}
-		return view;
+		return vista;
 	}
 
 	//	@GetMapping(value = "/{appointmentId}/edit")
