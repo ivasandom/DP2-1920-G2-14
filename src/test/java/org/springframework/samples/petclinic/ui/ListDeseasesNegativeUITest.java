@@ -17,7 +17,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -70,19 +69,20 @@ public class ListDeseasesNegativeUITest {
 		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
 		element.click();
 
-		Actions keyDown = new Actions(driver);
+		Actions keyDown = new Actions(this.driver);
 		keyDown.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
 
 		//		Select dropdown = new Select(this.driver.findElement(By.id("")));
 		//		dropdown.selectByVisibleText("AAS-100-100-Mg-30-Comprimidos");
 		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).sendKeys("AAS-100-100-Mg-30-Comprimidos");
-		driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
-	    driver.findElement(By.id("receipt.price")).click();
-	    driver.findElement(By.id("receipt.price")).clear();
-	    driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-	    driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
-	    driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
-	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
+		this.driver.findElement(By.id("receipt.price")).click();
+		this.driver.findElement(By.id("receipt.price")).sendKeys("1");
+		this.driver.findElement(By.id("receipt.price")).clear();
+		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.deseases", this.driver.findElement(By.id("appointment.errors")).getText());
 	}
 
