@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -63,26 +65,24 @@ public class ListDeseasesNegativeUITest {
 		this.driver.findElement(By.id("diagnosis.description")).click();
 		this.driver.findElement(By.id("diagnosis.description")).clear();
 		this.driver.findElement(By.id("diagnosis.description")).sendKeys("asdasd");
-		this.driver.findElement(By.xpath("//div[@id='list-diagnosis']/div[2]/span/span/span/ul")).click();
-		this.driver.findElement(By.id("sidebar-wrapper")).click();
-		this.driver.findElement(By.xpath("//div[@id='list-diagnosis']/div[3]/span/span/span/ul")).click();
 		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).clear();
 
-		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/select"));
+		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
+		element.click();
 
-		Select select = new Select(element);
-		select.selectByValue("1"); // This command will select the year with index 4 i.e. 5th option
+		Actions keyDown = new Actions(driver);
+		keyDown.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
 
 		//		Select dropdown = new Select(this.driver.findElement(By.id("")));
 		//		dropdown.selectByVisibleText("AAS-100-100-Mg-30-Comprimidos");
 		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).sendKeys("AAS-100-100-Mg-30-Comprimidos");
-		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]/div/h5")).click();
-		this.driver.findElement(By.id("receipt.price")).click();
-		this.driver.findElement(By.id("receipt.price")).clear();
-		this.driver.findElement(By.id("receipt.price")).sendKeys("1");
-		this.driver.findElement(By.id("receipt.price")).clear();
-		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
+		driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
+	    driver.findElement(By.id("receipt.price")).click();
+	    driver.findElement(By.id("receipt.price")).clear();
+	    driver.findElement(By.id("receipt.price")).sendKeys("100.00");
+	    driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
+	    driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
 		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.deseases", this.driver.findElement(By.id("appointment.errors")).getText());
 	}
 
