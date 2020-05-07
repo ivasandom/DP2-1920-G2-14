@@ -55,7 +55,9 @@ public class Appointment extends BaseEntity {
 	//@NotEmpty(message = "*")
 	private String				reason;
 
-	@ManyToOne
+	@ManyToOne(cascade = {
+		CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH
+	})
 	@JoinColumn(name = "type_id")
 	private AppointmentType		type;
 

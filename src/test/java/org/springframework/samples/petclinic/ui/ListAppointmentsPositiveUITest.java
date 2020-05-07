@@ -3,8 +3,8 @@ package org.springframework.samples.petclinic.ui;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,8 @@ public class ListAppointmentsPositiveUITest {
 
 	@Test
 	public void testUntitledTestCase() throws Exception {
-		this.driver.get("http://localhost:8080/login");
+		this.driver.get("http://localhost:" + this.port);
+		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
 		this.driver.findElement(By.id("username")).sendKeys("professional1");
@@ -54,7 +55,7 @@ public class ListAppointmentsPositiveUITest {
 		Assert.assertEquals("Pepe Gotera", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td")).getText());
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		this.driver.quit();
 		String verificationErrorString = this.verificationErrors.toString();

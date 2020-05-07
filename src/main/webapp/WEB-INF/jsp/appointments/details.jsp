@@ -53,14 +53,14 @@
                             <div class="justify-content-between">
                                 <h5 class="mb-1 text-center">1. Information</h5>
                             </div>
-                            <p class="mb-1 text-center">Patient and appointment</p>
+                            <p class="mb-1 text-center">User and Appointment details</p>
                         </a>
                         <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-diagnosis"
                             role="tab" aria-controls="diagnosis">
                             <div class="justify-content-between">
                                 <h5 class="mb-1 text-center">2. Diagnosis</h5>
                             </div>
-                            <p class="mb-1 text-center">Make a diagnosis</p>
+                            <p class="mb-1 text-center">Diagnosis done</p>
 
                         </a>
                         <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-billing"
@@ -68,7 +68,7 @@
                             <div class="justify-content-between">
                                 <h5 class="mb-1 text-center">3. Billing</h5>
                             </div>
-                            <p class="mb-1 text-center">Charge patient</p>
+                            <p class="mb-1 text-center">Payment details</p>
                         </a>
                         <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-summary"
                             role="tab" aria-controls="summary">
@@ -79,6 +79,7 @@
                         </a>
                     </div>
                 </div>
+
 
                 <hr />
 
@@ -120,7 +121,6 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
                             </div>
                             <div class="col-md-3" style="background-image:url;">
                                 <img src="https://a.wattpad.com/cover/194784944-256-k712290.jpg" height="246px">
@@ -128,118 +128,98 @@
 
                         </div>
                     </div>
+                    
+<!--                     --------------------------------------- -->
 
-
-                        <div class="tab-pane fade" id="list-diagnosis" role="tabpanel"
+                   <div class="tab-pane fade" id="list-diagnosis" role="tabpanel"
                             aria-labelledby="list-diagnosis-list">
-
-
-                            <div class="form-group">
-                                <label>Description</label>
-                                <form:textarea class="form-control" path="diagnosis.description"></form:textarea>
-                                <small class="form-text text-muted">Add a description of client symptoms and the
-                                    reason of selected
-                                    deseases and medicines</small>
-                                     <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        ${status.errorMessage}
-                                    </div>
-                                </c:if>
-                            </div>
-<!--                             	    <h2 class="my-5">Diagnosis</h2> -->
+		<div class="form-group">
+	    <h4>Deseases</h4>
 	    
-<!-- 	    <table class="table table-striped"> -->
-<%-- 	        <c:forEach var="medicine" items="${medicines}"> --%>
-<!-- 				<tr> -->
-<!-- 	                <td valign="top"> -->
-<!-- 	                    <dl> -->
-<!-- 	                        <dt>Medicine</dt> -->
-<%-- 	                        <dd><c:out value="${medicine.name}"/>,	Price: <c:out value="${medicine.price}"/></dd> --%>
-<!-- 	                    </dl> -->
-<!-- 	                </td> -->
-<!-- 	        	</tr> -->
-<%-- 			</c:forEach> --%>
-<!-- 		</table> -->
-	    
-<!-- 	    <h2 class="my-5">Deseases</h2> -->
-<!-- 		 <table class="table table-striped"> -->
-<%-- 	        <c:forEach var="desease" items="${deseases}"> --%>
-<!-- 				<tr> -->
-<!-- 	                <td valign="top"> -->
-<%-- 	                        <dd><c:out value="${desease.name}"/></dd> --%>
+	    <table class="table table-striped">
+	        <c:if test="${not empty deseases}">
+	        <c:forEach var="desease" items="${deseases}">
+				<tr>
+	                <td valign="top">
+	                	<dl>
+	                        <dd><c:out value="${desease.name}"/></dd>
 
-<!-- 	                    </dl> -->
-<!-- 	                </td> -->
-<!-- 	        	</tr> -->
-<%-- 			</c:forEach> --%>
-<!-- 		</table> -->
-                            <div class="form-group">
-                                <label>Deseases</label>
-                                <form:select class="form-control select-multiple-search" path="diagnosis.deseases"
-                                    multiple="true">
-                                    <form:options items="${deseaseList}" itemLabel="name" itemValue="id" />
-                                </form:select>
-                                <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        ${status.errorMessage}
-                                    </div>
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Medicines</label>
-                                <form:select class="form-control select-multiple-search ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" path="diagnosis.medicines"
-                                    multiple="true">
-                                    <form:options items="${medicineList}" itemLabel="name" itemValue="id" />
-                                </form:select>
-                                <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        <small class="form-text text-muted">${status.errorMessage}</small>
-                                    </div>
-                                </c:if>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="list-billing" role="tabpanel"
+	                    </dl>
+	                </td>
+	        	</tr>
+			</c:forEach>
+			</c:if>
+			<c:if test="${empty deseases}">
+                	<tr style="text-align:center;">
+                		<td colspan="5">No hay datos</td>
+                	</tr>
+            </c:if>
+		</table>
+		</div>
+	    <div class="form-group">
+	    <h4>Medicines</h4>
+		 	<table class="table table-striped">
+	        <c:if test="${not empty medicines}">
+	        <c:forEach var="medicine" items="${medicines}">
+				<tr>
+	                <td valign="top">
+	                    <dl>
+	                        <dt>Medicine</dt>
+	                        <dd><c:out value="${medicine.name}"/>,	Price: <c:out value="${medicine.price}"/></dd>
+	                    </dl>
+	                </td>
+	        	</tr>
+			</c:forEach>
+			</c:if>
+			<c:if test="${empty medicines}">
+                	<tr style="text-align:center;">
+                		<td colspan="5">No hay datos</td>
+                	</tr>
+            		</c:if>
+				</table>
+				</div>
+	   	 </div>
+			
+            <div class="tab-pane fade" id="list-billing" role="tabpanel"
                             aria-labelledby="list-billing-list">
 
-                            <div class="form-group">
-                                <label>Amount to charge</label>
-                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" placeholder="0.00 EUR" path="receipt.price"/>
-                                <small class="form-text text-muted">Add the cost of the consultation.</small>
-                                <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        ${status.errorMessage}
-                                    </div>
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Payment method</label>
-                                <form:select
-                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
-                                id="paymentMethod" path="client.paymentMethods">
-                                <form:options items="${appointment.client.paymentMethods}" itemLabel="brand" itemValue="id" />
-                            </form:select>
-                            </div>
-                        </div>
+            <div class="form-group">                        
+            <h4>Receipt</h4>
+		 	<table class="table table-striped">
+	        <c:if test="${not empty appointment.receipt}">
+	        <tr>
+                                    <th>Receipt</th>
+                                        <td>
+                                            <c:out value="${appointment.receipt.price}" />
+                                        </td>
+                                    </tr>
+			</c:if>
+			<c:if test="${empty appointment.receipt}">
+                	<tr style="text-align:center;">
+                		<td colspan="5">No hay datos</td>
+                	</tr>
+            		</c:if>
+				</table>
+				</div>
+			</div>
                         <div class="tab-pane fade" id="list-summary" role="tabpanel"
                             aria-labelledby="list-summary-list">
                             <p>Summary</p>
                         </div>
-                  
+
                 </div>
 
-                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
+                <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
+		</div>
 
-
-            </div>
-            <div
-                style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
+         	<div style="position:relative;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
                 <div class="text-right">
-                    <a href="/appointments" class="btn btn-primary">RETURN</a>
                 <spring:url value="/appointments/delete/{appointmentId}" var="appointmentDeleteUrl">
     				<spring:param name="appointmentId" value="${appointment.id}"/>
-    			</spring:url> 
-    			<a href="${fn:escapeXml(appointmentDeleteUrl)}" class="btn btn-outline-secondary">CANCEL APPOINTMENT</a>
-    			
+    			</spring:url>
+                	
+                	<a href="${fn:escapeXml(appointmentDeleteUrl)}" class="btn btn-outline-secondary">CANCEL APPOINTMENT</a>
+    				<a href="/appointments" class="btn btn-primary">RETURN</a>
                 </div>
             </div>
         </form:form>
