@@ -92,7 +92,9 @@
                 <!-- Used to display form errors. -->
                 <div id="card-errors" role="alert"></div>
 				<p class="error-msg" style="color:red;display:none"></p>
+				
                 <hr />
+                <form:errors path="token"  cssClass="alert alert-danger" element="div" />
                 <button id="add-button" class="btn btn-primary">Add card</button>
             </form:form>
         </div>

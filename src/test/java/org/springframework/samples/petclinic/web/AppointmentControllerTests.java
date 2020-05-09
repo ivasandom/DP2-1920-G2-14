@@ -76,7 +76,7 @@ public class AppointmentControllerTests {
 	private SpecialtyService	specialtyService;
 	
 	@MockBean
-	private StripeService stripeService;
+	private StripeService		stripeService;
 
 	@Autowired
 	private MockMvc				mockMvc;
