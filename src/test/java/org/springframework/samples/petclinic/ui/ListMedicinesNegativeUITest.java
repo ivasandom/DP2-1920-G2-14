@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ListDeseasesNegativeUITest {
+public class ListMedicinesNegativeUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -45,7 +45,7 @@ public class ListDeseasesNegativeUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
+	public void testListMedicinesNegativeUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
@@ -83,7 +83,7 @@ public class ListDeseasesNegativeUITest {
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.deseases", this.driver.findElement(By.id("appointment.errors")).getText());
+		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.medicines", this.driver.findElement(By.id("appointment.errors")).getText());
 	}
 
 	@AfterEach

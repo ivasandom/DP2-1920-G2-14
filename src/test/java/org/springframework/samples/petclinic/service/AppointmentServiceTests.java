@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Appointment;
@@ -86,7 +85,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAllAppointments() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
-		Assertions.assertThat(appointments.size()).isEqualTo(11);
+		Assertions.assertThat(appointments.size()).isEqualTo(130);
 	}
 
 	@Test
@@ -95,12 +94,12 @@ public class AppointmentServiceTests {
 		LocalDate date = LocalDate.of(2020, 12, 12);
 		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 
-		Assertions.assertThat(startTimes.size()).isEqualTo(2);
+		Assertions.assertThat(startTimes.size()).isEqualTo(1);
 	}
 
 	@ParameterizedTest
 	@CsvSource({
-		"1, 2020-05-04", "2, 2020-12-11", "3, 2030-04-02"
+		"1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07"
 	})
 	void shouldNotFindAppointmentsStartTimeByWrongProfessionalAndDate(final int professionalId, final LocalDate date) {
 		Professional professional = this.professionalService.findById(professionalId).get();
@@ -114,25 +113,25 @@ public class AppointmentServiceTests {
 	void shouldFindAppointmentsByClientId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
-		Assertions.assertThat(appointments.size()).isEqualTo(6);
+		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
-		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
+		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
 	}
 
 	@Test
 	void shouldFindAppointmentsByProfessionalId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByProfessionalId(3);
-		Assertions.assertThat(appointments.size()).isEqualTo(7);
+		Assertions.assertThat(appointments.size()).isEqualTo(6);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
-		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 15));
+		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 45));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 45));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 12));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
 
 	}
 
@@ -176,7 +175,7 @@ public class AppointmentServiceTests {
 
 		this.appointmentService.saveAppointment(appointment);
 		Collection<Appointment> appointments = this.appointmentService.findTodayPendingByProfessionalId(1);
-		Assertions.assertThat(appointments.size()).isEqualTo(1);
+		Assertions.assertThat(appointments.size()).isEqualTo(2);
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.now());
 	}
 
@@ -205,7 +204,7 @@ public class AppointmentServiceTests {
 
 	@ParameterizedTest
 	@CsvSource({
-		"pepegotera, 2020-12-12, 08:00, test"
+		"pepegotera, 2020-05-04, 08:00, test"
 	})
 	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
 		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1);

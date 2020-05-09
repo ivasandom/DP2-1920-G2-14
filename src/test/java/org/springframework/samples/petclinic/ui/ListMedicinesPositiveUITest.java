@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ListDeseasesPositiveUITest {
+public class ListMedicinesPositiveUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -45,7 +45,7 @@ public class ListDeseasesPositiveUITest {
 	}
 
 	@Test
-	public void testListDeseasesPositiveUI() throws Exception {
+	public void testListMedicinesPositiveUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
@@ -77,7 +77,6 @@ public class ListDeseasesPositiveUITest {
 
 		Actions keyDown1 = new Actions(this.driver);
 		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
-
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
 		this.driver.findElement(By.id("receipt.price")).click();
 		this.driver.findElement(By.id("receipt.price")).clear();
