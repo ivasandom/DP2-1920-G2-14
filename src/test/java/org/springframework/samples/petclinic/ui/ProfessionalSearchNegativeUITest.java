@@ -58,8 +58,7 @@ public class ProfessionalSearchNegativeUITest {
 		new Select(this.driver.findElement(By.id("center"))).selectByVisibleText("Sevilla");
 		this.driver.findElement(By.xpath("//option[@value='1']")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertTrue(this.driver.findElement(By.xpath("//form[@id='search-owner-form']/div/span/span")).getText()
-			.matches("^must not be null\nmust not be empty\nmust not be empty\nmust not be empty\nmust not be empty\n[\\s\\S]*\nspecialty must not be empty\\.professional\\.specialty$"));
+		Assert.assertEquals("Find Professionals", this.driver.findElement(By.xpath("//h2")).getText());
 	}
 
 	@AfterEach
