@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ListAppointmentsNegativeUITest {
+public class ManageAppointmentsDeleteNegativeUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -43,20 +42,23 @@ public class ListAppointmentsNegativeUITest {
 	}
 
 	@Test
-	public void testListAppointmentsNegativeUI() throws Exception {
+	public void testManageAppointmentsDeleteNegativeUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
-		this.driver.findElement(By.id("username")).sendKeys("professional1");
+		this.driver.findElement(By.id("username")).sendKeys("pepegotera");
+		this.driver.findElement(By.id("command")).click();
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
-		this.driver.findElement(By.id("password")).sendKeys("professional1");
-		this.driver.findElement(By.id("command")).click();
+		this.driver.findElement(By.id("password")).sendKeys("pepegotera");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		this.driver.findElement(By.linkText("Consultation mode")).click();
-		Assertions.assertNotEquals("COMPLETED", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).getText());
+		this.driver.findElement(By.id("navbarDropdown")).click();
+		this.driver.findElement(By.linkText("Mis citas")).click();
+		this.driver.findElement(By.linkText("View more")).click();
+		this.driver.findElement(By.linkText("CANCEL APPOINTMENT")).click();
+		Assert.assertEquals("Error: You cannot delete a passed appointment", this.driver.findElement(By.xpath("//p[2]")).getText());
 	}
 
 	@AfterEach
