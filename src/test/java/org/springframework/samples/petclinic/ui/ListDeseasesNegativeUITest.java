@@ -45,7 +45,7 @@ public class ListDeseasesNegativeUITest {
 	}
 
 	@Test
-	public void testUntitledTestCase() throws Exception {
+	public void testListDeseasesNegativeUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
