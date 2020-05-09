@@ -109,8 +109,8 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.name("postal")).sendKeys("41012");
 		this.driver.switchTo().defaultContent();
 		this.driver.findElement(By.id("add-button")).click();
-	    driver.findElement(By.xpath("//th[2]")).click();
-	    assertEquals("Token", driver.findElement(By.xpath("//th[2]")).getText());
+	    driver.findElement(By.id("token.errors")).click();
+	    assertEquals("Card already exists.", driver.findElement(By.id("token.errors")).getText());
 	}
 
 	@AfterEach
