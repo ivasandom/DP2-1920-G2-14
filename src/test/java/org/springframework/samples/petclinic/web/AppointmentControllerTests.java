@@ -37,6 +37,7 @@ import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
+import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -73,6 +74,9 @@ public class AppointmentControllerTests {
 
 	@MockBean
 	private SpecialtyService	specialtyService;
+	
+	@MockBean
+	private StripeService stripeService;
 
 	@Autowired
 	private MockMvc				mockMvc;

@@ -20,6 +20,7 @@ import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ClientService;
+import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -49,6 +50,9 @@ class ClientControllerTests {
 
 	@MockBean
 	private AuthoritiesService	authoritiesService;
+	
+	@MockBean
+	private StripeService stripeService;
 
 	@Autowired
 	private MockMvc				mockMvc;
