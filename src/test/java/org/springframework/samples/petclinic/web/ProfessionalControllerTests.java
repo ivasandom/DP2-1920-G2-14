@@ -26,6 +26,7 @@ import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
+import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.UserService;
@@ -67,6 +68,9 @@ class ProfessionalControllerTests {
 	@MockBean
 	private CenterService			centerService;
 
+	@MockBean
+	private ClientService clientService;
+	
 	@Autowired
 	private MockMvc					mockMvc;
 

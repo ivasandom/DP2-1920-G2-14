@@ -34,6 +34,9 @@ public class DateElectionPositiveUITest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
+		String value = System.getenv("webdriver.gecko.driver");
+
+		System.setProperty("webdriver.gecko.driver", value);
 		this.driver = new FirefoxDriver();
 		this.baseUrl = "https://www.google.com/";
 		this.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -50,7 +53,7 @@ public class DateElectionPositiveUITest {
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("pepegotera");
 		this.driver.findElement(By.id("command")).submit();
-		this.driver.findElement(By.linkText("> Citación online")).click();
+		//		this.driver.findElement(By.linkText("> Citación online")).click();
 		this.driver.findElement(By.id("center")).click();
 		new Select(this.driver.findElement(By.id("center"))).selectByVisibleText("Sevilla");
 		this.driver.findElement(By.xpath("//option[@value='1']")).click();

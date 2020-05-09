@@ -77,7 +77,6 @@ public class ListDeseasesPositiveUITest {
 
 		Actions keyDown1 = new Actions(this.driver);
 		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
-
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
 		this.driver.findElement(By.id("receipt.price")).click();
 		this.driver.findElement(By.id("receipt.price")).clear();
