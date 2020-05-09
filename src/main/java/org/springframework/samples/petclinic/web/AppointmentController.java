@@ -217,7 +217,7 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/{appointmentId}/consultation")
-	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final Map<String, Object> model) throws Exception {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = this.medicineService.findMedicines();
 		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
@@ -233,8 +233,7 @@ public class AppointmentController {
 		paymentMethods.add(p);
 		appointment.getClient().getPaymentMethods().add(p);
 		Iterable<Desease> deseases = this.deseaseService.findAll();
-		System.out.println(appointment.getDiagnosis());
-		// Diagnosis
+
 		model.put("medicineList", medicines);
 		model.put("paymentMethodsList", paymentMethods);
 		model.put("appointment", appointment);
