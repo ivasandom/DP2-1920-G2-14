@@ -27,7 +27,7 @@ INSERT INTO clients (id,birth_date,document,document_type,email,first_name,last_
 VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'Santander', 'miguelperez');
 
  
---INSERT INTO payment_methods(id, token, client_id) VALUES (1,'test_tok', 1);
+INSERT INTO payment_methods(id, token, client_id) VALUES (1,'pm_1Ggr7GDfDQNZdQMbCcCoxzEI', 1);
  
 -- Professional 1
 INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
