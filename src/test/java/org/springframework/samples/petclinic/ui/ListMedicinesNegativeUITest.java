@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ListDeseasesPositiveUITest {
+public class ListMedicinesNegativeUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -45,47 +45,45 @@ public class ListDeseasesPositiveUITest {
 	}
 
 	@Test
-	public void testListDeseasesPositiveUI() throws Exception {
+	public void testListMedicinesNegativeUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
+		this.driver.findElement(By.id("username")).click();
+		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
 		this.driver.findElement(By.id("username")).sendKeys("professional1");
+		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("professional1");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
+		this.driver.findElement(By.id("navbarDropdown")).click();
 		this.driver.findElement(By.linkText("Consultation mode")).click();
 		this.driver.findElement(By.linkText("> Start consultation")).click();
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[2]/div/h5")).click();
 		this.driver.findElement(By.id("diagnosis.description")).click();
 		this.driver.findElement(By.id("diagnosis.description")).clear();
-		this.driver.findElement(By.id("diagnosis.description")).sendKeys("aaaaaa");
-		this.driver.findElement(By.id("list-diagnosis")).click();
+		this.driver.findElement(By.id("diagnosis.description")).sendKeys("asdasd");
+		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).clear();
 
-		//Seleccion de las enfermedades (div[2])
-		WebElement element = this.driver.findElement(By.xpath("//div[2]/span/span/span/ul"));
-
+		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
 		element.click();
 
 		Actions keyDown = new Actions(this.driver);
 		keyDown.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
 
-		//Seleccion de las medicinas (div[3])
-		WebElement element1 = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
-
-		element1.click();
-
-		Actions keyDown1 = new Actions(this.driver);
-		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+		//		Select dropdown = new Select(this.driver.findElement(By.id("")));
+		//		dropdown.selectByVisibleText("AAS-100-100-Mg-30-Comprimidos");
+		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).sendKeys("AAS-100-100-Mg-30-Comprimidos");
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
 		this.driver.findElement(By.id("receipt.price")).click();
+		this.driver.findElement(By.id("receipt.price")).sendKeys("1");
 		this.driver.findElement(By.id("receipt.price")).clear();
 		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-		//		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
-		//		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).click();
-		Assert.assertEquals("COMPLETED", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).getText());
+		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.medicines", this.driver.findElement(By.id("appointment.errors")).getText());
 	}
 
 	@AfterEach

@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.ui;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -49,33 +51,38 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.linkText("Regístrate")).click();
 		this.driver.findElement(By.id("firstName")).click();
 		this.driver.findElement(By.id("firstName")).clear();
-		this.driver.findElement(By.id("firstName")).sendKeys("Lola");
+		this.driver.findElement(By.id("firstName")).sendKeys("Raúl");
 		this.driver.findElement(By.id("lastName")).clear();
-		this.driver.findElement(By.id("lastName")).sendKeys("Stevens");
+		this.driver.findElement(By.id("lastName")).sendKeys("Pérez");
+		this.driver.findElement(By.id("document")).click();
 		this.driver.findElement(By.id("document")).clear();
-		this.driver.findElement(By.id("document")).sendKeys("12345678P");
+		this.driver.findElement(By.id("document")).sendKeys("12343213J");
 		this.driver.findElement(By.id("healthInsurance")).click();
-		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Aegon");
-		this.driver.findElement(By.xpath("//option[@value='Aegon']")).click();
+		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Caser");
+		this.driver.findElement(By.xpath("//option[@value='Caser']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
-		this.driver.findElement(By.id("healthCardNumber")).sendKeys("12347");
+		this.driver.findElement(By.id("healthCardNumber")).sendKeys("12346");
+		this.driver.findElement(By.id("email")).click();
 		this.driver.findElement(By.id("email")).clear();
-		this.driver.findElement(By.id("email")).sendKeys("lola@gmail.com");
+		this.driver.findElement(By.id("email")).sendKeys("raulperez@gmail.com");
+		this.driver.findElement(By.id("user.username")).click();
 		this.driver.findElement(By.id("user.username")).clear();
-		this.driver.findElement(By.id("user.username")).sendKeys("lolaperez");
+		this.driver.findElement(By.id("user.username")).sendKeys("raulperez");
+		this.driver.findElement(By.id("user.password")).click();
 		this.driver.findElement(By.id("user.password")).clear();
-		this.driver.findElement(By.id("user.password")).sendKeys("lolaperez");
-		this.driver.findElement(By.id("add-owner-form")).submit();
+		this.driver.findElement(By.id("user.password")).sendKeys("raulperez");
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
-		this.driver.findElement(By.id("username")).sendKeys("lolaperez");
+		this.driver.findElement(By.id("username")).sendKeys("raulperez");
+		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
-		this.driver.findElement(By.id("password")).sendKeys("lolaperez");
-		this.driver.findElement(By.id("command")).submit();
-		this.driver.findElement(By.id("navbarDropdown")).click();
-		this.driver.findElement(By.linkText("My payment methods")).click();
+		this.driver.findElement(By.id("password")).sendKeys("raulperez");
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    driver.findElement(By.id("navbarDropdown")).click();
+	    driver.findElement(By.linkText("My payment methods")).click();
 		this.driver.findElement(By.linkText("+ Add method")).click();
 		this.driver.switchTo().frame(1);
 		this.driver.findElement(By.name("cardnumber")).click();
@@ -102,7 +109,8 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.name("postal")).sendKeys("41012");
 		this.driver.switchTo().defaultContent();
 		this.driver.findElement(By.id("add-button")).click();
-		Assert.assertEquals("My payment methods", this.driver.findElement(By.xpath("//h2")).getText());
+	    driver.findElement(By.id("token.errors")).click();
+	    assertEquals("Card already exists.", driver.findElement(By.id("token.errors")).getText());
 	}
 
 	@AfterEach

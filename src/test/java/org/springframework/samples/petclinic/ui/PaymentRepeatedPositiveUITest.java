@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.ui;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -79,17 +81,9 @@ public class PaymentRepeatedPositiveUITest {
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("raulperez");
-		this.driver.findElement(By.id("command")).submit();
-		//		WebElement element = this.driver.findElement(By.id("navbarDropdown"));
-		//		WebDriverWait wait = new WebDriverWait(this.driver, 20);
-		//		wait.until(ExpectedConditions.visibilityOf(element));
-		//		element.click();
-		//	this.driver.findElement(By.linkText("My payment methods"));
-		this.driver.findElement(By.id("navbarDropdown")).click();
-		//this.driver.findElement(By.linkText("My payment methods")).click();
-		WebElement element = this.driver.findElement(By.xpath("//div[@id='navbarSupportedContent']/ul[2]/li/div/a[2]"));
-		element.getLocation();
-		element.click();
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    driver.findElement(By.id("navbarDropdown")).click();
+	    driver.findElement(By.linkText("My payment methods")).click();
 		this.driver.findElement(By.linkText("+ Add method")).click();
 		this.driver.switchTo().frame(1);
 		this.driver.findElement(By.name("cardnumber")).click();
@@ -116,7 +110,8 @@ public class PaymentRepeatedPositiveUITest {
 		this.driver.findElement(By.name("postal")).sendKeys("41022");
 		this.driver.switchTo().defaultContent();
 		this.driver.findElement(By.id("add-button")).click();
-		Assert.assertEquals("My payment methods", this.driver.findElement(By.xpath("//h2")).getText());
+	    driver.findElement(By.xpath("//th[2]")).click();
+	    assertEquals("Token", driver.findElement(By.xpath("//th[2]")).getText());
 	}
 
 	@AfterEach

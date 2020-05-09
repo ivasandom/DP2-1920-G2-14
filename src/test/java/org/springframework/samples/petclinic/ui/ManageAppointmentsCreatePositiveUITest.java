@@ -43,7 +43,7 @@ public class ManageAppointmentsCreatePositiveUITest {
 	}
 
 	@Test
-	public void testManageAppointmentsPositiveUI() throws Exception {
+	public void testManageAppointmentsCreatePositiveUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
 		this.driver.findElement(By.linkText("Área clientes")).click();
 		this.driver.findElement(By.id("username")).clear();

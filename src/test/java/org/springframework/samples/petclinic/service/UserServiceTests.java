@@ -46,7 +46,7 @@ public class UserServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		Collection<User> users = (Collection<User>) this.userService.listUsers();
-		Assertions.assertEquals(users.size(), 8);
+		Assertions.assertEquals(users.size(), 9);
 	}
 
 }
