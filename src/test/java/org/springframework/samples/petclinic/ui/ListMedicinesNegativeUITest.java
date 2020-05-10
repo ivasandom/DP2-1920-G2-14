@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
@@ -17,6 +18,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -64,13 +66,12 @@ public class ListMedicinesNegativeUITest {
 		this.driver.findElement(By.id("diagnosis.description")).click();
 		this.driver.findElement(By.id("diagnosis.description")).clear();
 		this.driver.findElement(By.id("diagnosis.description")).sendKeys("asdasd");
-		//		this.driver.findElement(By.xpath("(//input[@type='search'])[2]")).clear();
+		WebElement element1 = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
+		((JavascriptExecutor) this.driver).executeScript("window.scrollTo(0," + element1.getLocation().x + ")");
+		element1.click();
 
-		WebElement element = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
-		element.click();
-
-		Actions keyDown = new Actions(this.driver);
-		keyDown.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+		Actions keyDown1 = new Actions(this.driver);
+		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
 
 		//		Select dropdown = new Select(this.driver.findElement(By.id("")));
 		//		dropdown.selectByVisibleText("AAS-100-100-Mg-30-Comprimidos");
@@ -80,10 +81,11 @@ public class ListMedicinesNegativeUITest {
 		this.driver.findElement(By.id("receipt.price")).sendKeys("1");
 		this.driver.findElement(By.id("receipt.price")).clear();
 		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
-		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
+		Select sel = new Select(this.driver.findElement(By.xpath("//div[@id='list-billing']/div[2]/select")));
+		sel.deselectByVisibleText("card");
+		this.driver.findElement(By.xpath("//option[@value='']")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("deseases must not be empty.appointment.diagnosis.medicines", this.driver.findElement(By.id("appointment.errors")).getText());
+		Assert.assertEquals("Consultation 08:00", this.driver.findElement(By.xpath("//form[@id='appointment']/div/h1")).getText());
 	}
 
 	@AfterEach

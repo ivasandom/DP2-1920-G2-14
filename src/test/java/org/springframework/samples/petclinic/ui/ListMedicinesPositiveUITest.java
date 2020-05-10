@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
@@ -17,6 +18,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -61,7 +63,6 @@ public class ListMedicinesPositiveUITest {
 		this.driver.findElement(By.id("diagnosis.description")).clear();
 		this.driver.findElement(By.id("diagnosis.description")).sendKeys("aaaaaa");
 		this.driver.findElement(By.id("list-diagnosis")).click();
-
 		//Seleccion de las enfermedades (div[2])
 		WebElement element = this.driver.findElement(By.xpath("//div[2]/span/span/span/ul"));
 
@@ -72,17 +73,19 @@ public class ListMedicinesPositiveUITest {
 
 		//Seleccion de las medicinas (div[3])
 		WebElement element1 = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
-
+		((JavascriptExecutor) this.driver).executeScript("window.scrollTo(0," + element1.getLocation().x + ")");
 		element1.click();
 
 		Actions keyDown1 = new Actions(this.driver);
 		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
 		this.driver.findElement(By.id("receipt.price")).click();
 		this.driver.findElement(By.id("receipt.price")).clear();
 		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-		//		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[4]")).click();
-		//		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a/p")).click();
+		Select sel = new Select(this.driver.findElement(By.xpath("//div[@id='list-billing']/div[2]/select")));
+		sel.deselectByVisibleText("card");
+		this.driver.findElement(By.xpath("//option[@value='']")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).click();
 		Assert.assertEquals("COMPLETED", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).getText());
