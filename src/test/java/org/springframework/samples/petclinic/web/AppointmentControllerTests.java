@@ -99,6 +99,10 @@ public class AppointmentControllerTests {
 
 	private Client				client;
 
+	private User				user;
+
+	private Specialty			specialty;
+
 	private Desease				desease;
 
 	private PaymentMethod		paymentMethod;
@@ -163,11 +167,11 @@ public class AppointmentControllerTests {
 
 		Set<AppointmentType> types = Collections.emptySet();
 
-		User user = new User();
-		user.setEnabled(true);
-		user.setUsername("frankcuesta");
-		user.setPassword("frankcuesta");
-		this.client.setUser(user);
+		this.user = new User();
+		this.user.setEnabled(true);
+		this.user.setUsername("frankcuesta");
+		this.user.setPassword("frankcuesta");
+		this.client.setUser(this.user);
 		this.appointment.setClient(this.client);
 
 		AppointmentType appointmentType = new AppointmentType();
@@ -179,15 +183,15 @@ public class AppointmentControllerTests {
 		center.setAddress("Sevilla");
 		this.appointment.setCenter(center);
 
-		Specialty specialty = new Specialty();
-		specialty.setId(AppointmentControllerTests.TEST_APPOINTMENT_ID);
-		specialty.setName("dermatology");
-		this.appointment.setSpecialty(specialty);
+		this.specialty = new Specialty();
+		this.specialty.setId(AppointmentControllerTests.TEST_APPOINTMENT_ID);
+		this.specialty.setName("dermatology");
+		this.appointment.setSpecialty(this.specialty);
 
 		this.professional = new Professional();
 		this.professional.setId(AppointmentControllerTests.TEST_APPOINTMENT_ID);
 		this.professional.setCenter(center);
-		this.professional.setSpecialty(specialty);
+		this.professional.setSpecialty(this.specialty);
 		this.professional.setFirstName("Guillermo");
 		this.professional.setLastName("Díaz");
 		this.professional.setEmail("mancar@gmail.com");
@@ -196,9 +200,9 @@ public class AppointmentControllerTests {
 		this.professional.setCollegiateNumber("413123122-K");
 
 		User user2 = new User();
-		user.setEnabled(true);
-		user.setUsername("manucar");
-		user.setPassword("manucar");
+		this.user.setEnabled(true);
+		this.user.setUsername("manucar");
+		this.user.setPassword("manucar");
 		this.professional.setUser(user2);
 		this.appointment.setProfessional(this.professional);
 
@@ -431,6 +435,62 @@ public class AppointmentControllerTests {
 				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
 			.andExpect(MockMvcResultMatchers.model().attributeHasErrors("appointment")).andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("appointment", "specialty"))
 			.andExpect(MockMvcResultMatchers.view().name("appointments/consultationPro"));
+	}
+
+	@WithMockUser(username = "frankcuesta", authorities = {
+		"client"
+	})
+	@Test
+	void shouldShowAppointmentDetails() throws Exception {
+		this.specialty.setId(1);
+		this.specialty.setName("dermatology");
+		this.appointment.setSpecialty(this.specialty);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.flash().attributeCount(1))
+			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+	}
+
+	@WithMockUser(username = "frankcuesta", authorities = {
+		"client"
+	})
+	@Test
+	void shouldNotShowAppointmentDetails() throws Exception {
+		this.specialty.setId(1);
+		this.specialty.setName("dermatology");
+		this.appointment.setSpecialty(this.specialty);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.flash().attributeCount(1))
+			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+	}
+
+	@WithMockUser(username = "frankcuesta", authorities = {
+		"client"
+	})
+	@Test
+	void shouldDeleteAppointment() throws Exception {
+		this.user.setUsername("frankcuesta");
+		this.client.setUser(this.user);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+			.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments"));
+	}
+
+	@WithMockUser(username = "pepegotera", authorities = {
+		"client"
+	})
+	@Test
+	void shouldNotDeleteAppointmentOfOtherUser() throws Exception {
+		this.user.setUsername("frankcuesta");
+		this.client.setUser(this.user);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.model().attribute("message", "You cannot delete another user's appointment")).andExpect(MockMvcResultMatchers.view().name("exception"));
 	}
 
 }
