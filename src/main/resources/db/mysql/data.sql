@@ -40,20 +40,20 @@ INSERT INTO users(username,password,enabled) VALUES ('professional3','profession
 INSERT INTO authorities VALUES ('professional3','professional');
 
 -- Specialties
-INSERT IGNORE INTO specialties VALUES (1, 'dermatology');
-INSERT IGNORE INTO specialties VALUES (2, 'surgery');
-INSERT IGNORE INTO specialties VALUES (3, 'dentistry');
+INSERT IGNORE INTO specialties (id, name)  VALUES (1, 'dermatology');
+INSERT IGNORE INTO specialties (id, name) VALUES (2, 'surgery');
+INSERT IGNORE INTO specialties (id, name) VALUES (3, 'dentistry');
 -- Centers
 INSERT IGNORE INTO centers(id, address) VALUES (1, 'Sevilla');
 INSERT IGNORE INTO centers(id, address) VALUES (2, 'Cadiz');
 -- Types
-INSERT IGNORE INTO types VALUES (1, 'checking');
-INSERT IGNORE INTO types VALUES (2, 'analisis');
-INSERT IGNORE INTO types VALUES (3, 'illness consultation');
-INSERT IGNORE INTO types VALUES (4, 'consultation for prescription issuance');
-INSERT IGNORE INTO types VALUES (5, 'vaccination');
-INSERT IGNORE INTO types VALUES (6, 'periodic consultation');
-INSERT IGNORE INTO types VALUES (7, 'another case');
+INSERT IGNORE INTO types (id, name) VALUES (1, 'checking');
+INSERT IGNORE INTO types (id, name) VALUES (2, 'analisis');
+INSERT IGNORE INTO types (id, name) VALUES (3, 'illness consultation');
+INSERT IGNORE INTO types (id, name) VALUES (4, 'consultation for prescription issuance');
+INSERT IGNORE INTO types (id, name) VALUES (5, 'vaccination');
+INSERT IGNORE INTO types (id, name) VALUES (6, 'periodic consultation');
+INSERT IGNORE INTO types(id, name)  VALUES (7, 'another case');
 
 INSERT IGNORE INTO diagnosis (id, date, description) VALUES (1, '2020-02-02', 'description 1');
 INSERT IGNORE INTO diagnosis (id, date, description) VALUES (2, '2020-02-12', 'description 2');
