@@ -279,6 +279,7 @@ public class AppointmentController {
 
 	@GetMapping("/{appointmentId}/details")
 	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = new ArrayList<Medicine>();
 		Collection<Desease> deseases = new ArrayList<Desease>();
@@ -294,19 +295,29 @@ public class AppointmentController {
 			medicines = appointment.getDiagnosis().getMedicines();
 			deseases = appointment.getDiagnosis().getDeseases();
 		}
-		PaymentMethod p = new PaymentMethod();
-		p.setBrand("efectivo");
-		p.setClient(appointment.getClient());
-		p.setToken("efective_token");
-		paymentMethods.add(p);
-		appointment.getClient().getPaymentMethods().add(p);
-		System.out.println(appointment.getDiagnosis());
-		// Diagnosis
-		model.put("medicines", medicines);
-		//model.put("brands", brands);
-		model.put("appointment", appointment);
-		model.put("deseases", deseases);
-		return "appointments/details";
+		try {
+			if (!authentication.getName().equals(this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
+				model.addAttribute("message", "You cannot show another user's appointment");
+				return "exception";
+			} else {
+				PaymentMethod p = new PaymentMethod();
+				p.setBrand("efectivo");
+				p.setClient(appointment.getClient());
+				p.setToken("efective_token");
+				paymentMethods.add(p);
+				appointment.getClient().getPaymentMethods().add(p);
+				System.out.println(appointment.getDiagnosis());
+				// Diagnosis
+				model.put("medicines", medicines);
+				//model.put("brands", brands);
+				model.put("appointment", appointment);
+				model.put("deseases", deseases);
+				return "appointments/details";
+			}
+		} catch (Exception e) {
+			model.addAttribute("message", "Error: " + e.getMessage());
+			return "exception";
+		}
 	}
 
 	@GetMapping(path = "/delete/{appointmentId}")
