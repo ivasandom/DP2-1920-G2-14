@@ -24,12 +24,12 @@ import lombok.Setter;
 public class Receipt extends BaseEntity {
 
 	@Column(name = "price")
-	@NotNull
+	@NotNull(message = "*")
 	private Double				price;
 
 	@Column(name = "status")
 	@Enumerated
-	private BillStatus				status;
+	private BillStatus			status;
 
 	// Relations
 

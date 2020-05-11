@@ -10,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -21,7 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DateElectionPositiveUITest {
+public class DescNegativeUITest {
 
 	private WebDriver		driver;
 	private String			baseUrl;
@@ -43,38 +47,47 @@ public class DateElectionPositiveUITest {
 	}
 
 	@Test
-	public void testDateElectionPositiveUI() throws Exception {
+	public void testDescriptionNegativeUI() throws Exception {
 		this.driver.get("http://localhost:" + this.port);
-		this.driver.findElement(By.linkText("> Citación online")).click();
+		this.driver.findElement(By.linkText("Área clientes")).click();
+		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).click();
 		this.driver.findElement(By.id("username")).clear();
-		this.driver.findElement(By.id("username")).sendKeys("pepegotera");
+		this.driver.findElement(By.id("username")).sendKeys("professional1");
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
-		this.driver.findElement(By.id("password")).sendKeys("pepegotera");
+		this.driver.findElement(By.id("password")).sendKeys("professional1");
 		this.driver.findElement(By.id("command")).submit();
-		//		this.driver.findElement(By.linkText("> Citación online")).click();
-		this.driver.findElement(By.id("center")).click();
-		new Select(this.driver.findElement(By.id("center"))).selectByVisibleText("Sevilla");
-		this.driver.findElement(By.xpath("//option[@value='1']")).click();
-		this.driver.findElement(By.id("specialty")).click();
-		new Select(this.driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
-		this.driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
-		this.driver.findElement(By.id("professional")).click();
-		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Díaz");
-		this.driver.findElement(By.xpath("(//option[@value='1'])[3]")).click();
-		this.driver.findElement(By.id("reason")).click();
-		this.driver.findElement(By.id("reason")).clear();
-		this.driver.findElement(By.id("reason")).sendKeys("abdominal pain");
-		this.driver.findElement(By.id("date")).click();
-		this.driver.findElement(By.id("date")).clear();
-		this.driver.findElement(By.id("date")).sendKeys("12/02/2021");
-		this.driver.findElement(By.linkText("12")).click();
-		this.driver.findElement(By.id("startTime")).click();
-		new Select(this.driver.findElement(By.id("startTime"))).selectByVisibleText("16:15:00");
-		this.driver.findElement(By.xpath("//option[@value='16:15:00']")).click();
+		this.driver.findElement(By.linkText("Consultation mode")).click();
+		this.driver.findElement(By.linkText("> Start consultation")).click();
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[2]/div/h5")).click();
+		this.driver.findElement(By.id("list-diagnosis")).click();
+
+		//Seleccion de las enfermedades (div[2])
+		WebElement element = this.driver.findElement(By.xpath("//div[2]/span/span/span/ul"));
+
+		element.click();
+
+		Actions keyDown = new Actions(this.driver);
+		keyDown.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+
+		//Seleccion de las medicinas (div[3])
+		WebElement element1 = this.driver.findElement(By.xpath("//div[3]/span/span/span/ul"));
+		((JavascriptExecutor) this.driver).executeScript("window.scrollTo(0," + element1.getLocation().x + ")");
+		element1.click();
+
+		Actions keyDown1 = new Actions(this.driver);
+		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
+
+		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]/p")).click();
+		this.driver.findElement(By.id("receipt.price")).click();
+		this.driver.findElement(By.id("receipt.price")).clear();
+		this.driver.findElement(By.id("receipt.price")).sendKeys("13");
+		Select sel = new Select(this.driver.findElement(By.xpath("//div[@id='list-billing']/div[2]/select")));
+		sel.deselectByVisibleText("card");
+		this.driver.findElement(By.xpath("//option[@value='']")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("My appointments + New appointment", this.driver.findElement(By.xpath("//h2")).getText());
+		Assert.assertEquals("Consultation 08:00", this.driver.findElement(By.xpath("//form[@id='appointment']/div/h1")).getText());
 	}
 
 	@AfterEach

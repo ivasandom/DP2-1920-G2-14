@@ -16,7 +16,10 @@
 
 package org.springframework.samples.petclinic.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -88,17 +91,47 @@ public class PaymentController {
 
 		return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
 	}
-
+	
+	
+	private Boolean isMethodDuplicated(Client currentClient, PaymentMethod paymentMethod) throws Exception {
+		/*
+		 * Service..
+		 */
+		Collection<org.springframework.samples.petclinic.model.PaymentMethod> paymentsClient = this.paymentMethodService.findByClient(currentClient);
+		Collection<PaymentMethod> stripePays = new ArrayList<>();
+		for (int i = 0; i < paymentsClient.size(); i++) {
+			PaymentMethod paymentStripe = this.stripeService.retrievePaymentMethod(paymentsClient.stream().collect(Collectors.toList()).get(i).getToken());
+			stripePays.add(paymentStripe);
+		}
+		return paymentsClient.size() != 0 && stripePays.stream().map(x -> x.getCard().getFingerprint()).collect(Collectors.toSet()).contains(paymentMethod.getCard().getFingerprint());
+	}
+		
+		
+	
 	@PostMapping(value = "/new-method")
 	public String paymentMethodStore(@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result, final ModelMap model) throws Exception {
 		if (result.hasErrors()) {
 			System.out.println(result.getAllErrors());
 			return "redirect:/error";
 		} else {
+			// Check payment method token sent by user is valid
 			PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(method.getToken());
-			if (paymentMethod != null) {
-				method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
-				this.paymentMethodService.savePaymentMethod(method);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Client currentClient = this.clientService.findClientByUsername(auth.getName());
+			// Check payment method is not duplicated
+			if (isMethodDuplicated(currentClient, paymentMethod)) {
+				String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId()).getClientSecret();
+				model.put("intentClientSecret", intentClientSecret);
+				model.put("paymentMethod", method);
+				model.put("apiKey", this.API_PUBLIC_KEY);
+
+				result.rejectValue("token", "duplicated", "Card already exists.");
+				return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
+			} else {
+				if (paymentMethod != null) {
+					method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+					this.paymentMethodService.savePaymentMethod(method);
+				}
 			}
 		}
 

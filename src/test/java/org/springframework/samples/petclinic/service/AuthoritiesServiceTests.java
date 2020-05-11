@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Authorities;
@@ -28,7 +27,7 @@ public class AuthoritiesServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		Collection<Authorities> authorities = (Collection<Authorities>) this.authoritiesService.findAll();
-		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 8);
+		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 9);
 	}
 
 	@ParameterizedTest
