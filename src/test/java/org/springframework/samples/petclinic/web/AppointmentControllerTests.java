@@ -398,44 +398,72 @@ public class AppointmentControllerTests {
 			.param("status", AppointmentStatus.COMPLETED.toString())).andExpect(MockMvcResultMatchers.status().is3xxRedirection());//.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
 	}
 
-	@WithMockUser(value = "spring")
-	@Test
-	void testProcessUpdateAppFormHasErrors() throws Exception {
-		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//	@WithMockUser(value = "spring")
+//	@Test
+//	void testProcessUpdateAppFormHasErrors() throws Exception {
+//		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+//		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//
+//		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//
+//		Specialty specialty = new Specialty();
+//		specialty.setName("dermatology");
+//		String sp = specialty.getName();
+//
+//		Specialty specialty2 = new Specialty();
+//		specialty2.setName("dermatology");
+//		String sp2 = specialty2.getName();
+//
+//		Medicine med = new Medicine();
+//		med.setName("paracetamol");
+//		med.setPrice(12.);
+//		String medName = med.getName();
+//		String medPrice = Double.toString(med.getPrice());
+//		Collection<Desease> deseases = new ArrayList<>();
+//		Desease des = new Desease();
+//		des.setName("Acné");
+//		deseases.add(des);
+//		String desName = des.getName();
+//
+//		this.mockMvc
+//			.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf()).param("Date", dia).param("reason", "my head hurts")
+//				.with(SecurityMockMvcRequestPostProcessors.csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.nif.toString()).param("client.email", "frankcuesta@gmail.com")
+//				.param("client.firstName", "Frank").param("client.healthCardNumber", "0000000003").param("client.healthInsurance", "Adeslas").param("client.lastName", "Cuesta").param("client.user.username", "frankcuesta")
+//				.param("client.user.password", "frankcuesta").param("client.type.name", "revision").param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'").param("client.paymentMethod.brand", "visa").param("center.address", "Sevilla")
+//				.param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco").param("professional.email", "mancar@gmail.com")
+//				.param("professional.document", "29334485").param("professional.documentType", "nif").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
+//				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
+//			.andExpect(MockMvcResultMatchers.model().attributeHasErrors("appointment")).andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("appointment", "specialty"))
+//			.andExpect(MockMvcResultMatchers.view().name("appointments/consultationPro"));
+//	}
 
-		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+//	@WithMockUser(username = "frankcuesta", authorities = {
+//		"client"
+//	})
+//	@Test
+//	void shouldShowAppointmentDetails() throws Exception {
+//		this.specialty.setId(1);
+//		this.specialty.setName("dermatology");
+//		this.appointment.setSpecialty(this.specialty);
+//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+//
+//		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.flash().attributeCount(1))
+//			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+//	}
 
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
-
-		Medicine med = new Medicine();
-		med.setName("paracetamol");
-		med.setPrice(12.);
-		String medName = med.getName();
-		String medPrice = Double.toString(med.getPrice());
-		Collection<Desease> deseases = new ArrayList<>();
-		Desease des = new Desease();
-		des.setName("Acné");
-		deseases.add(des);
-		String desName = des.getName();
-
-		this.mockMvc
-			.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf()).param("Date", dia).param("reason", "my head hurts")
-				.with(SecurityMockMvcRequestPostProcessors.csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.nif.toString()).param("client.email", "frankcuesta@gmail.com")
-				.param("client.firstName", "Frank").param("client.healthCardNumber", "0000000003").param("client.healthInsurance", "Adeslas").param("client.lastName", "Cuesta").param("client.user.username", "frankcuesta")
-				.param("client.user.password", "frankcuesta").param("client.type.name", "revision").param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'").param("client.paymentMethod.brand", "visa").param("center.address", "Sevilla")
-				.param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco").param("professional.email", "mancar@gmail.com")
-				.param("professional.document", "29334485").param("professional.documentType", "nif").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
-				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
-			.andExpect(MockMvcResultMatchers.model().attributeHasErrors("appointment")).andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("appointment", "specialty"))
-			.andExpect(MockMvcResultMatchers.view().name("appointments/consultationPro"));
-	}
+//	@WithMockUser(username = "frankcuesta", authorities = {
+//		"client"
+//	})
+//	@Test
+//	void shouldNotShowAppointmentDetails() throws Exception {
+//		this.specialty.setId(1);
+//		this.specialty.setName("dermatology");
+//		this.appointment.setSpecialty(this.specialty);
+//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+//
+//		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.flash().attributeCount(1))
+//			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+//	}
 
 	@WithMockUser(username = "frankcuesta", authorities = {
 		"client"
