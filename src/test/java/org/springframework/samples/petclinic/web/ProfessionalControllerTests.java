@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.assertj.core.internal.Iterables;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -28,6 +26,7 @@ import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.CenterService;
+import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.UserService;
@@ -45,7 +44,7 @@ class ProfessionalControllerTests {
 	private static final int		TEST_APPOINMENT_ID		= 1;
 
 	private static final int		TEST_SPECIALTY_ID		= 1;
-	
+
 	private static final int		TEST_CENTER_ID			= 1;
 
 	@Autowired
@@ -62,13 +61,16 @@ class ProfessionalControllerTests {
 
 	@MockBean
 	private AuthoritiesService		authoritiesService;
-	
-	@MockBean 
-	private SpecialtyService specialtyService;
-	
-	@MockBean 
-	private CenterService centerService;
 
+	@MockBean
+	private SpecialtyService		specialtyService;
+
+	@MockBean
+	private CenterService			centerService;
+
+	@MockBean
+	private ClientService clientService;
+	
 	@Autowired
 	private MockMvc					mockMvc;
 
@@ -77,26 +79,23 @@ class ProfessionalControllerTests {
 	private Appointment				app;
 
 	private Specialty				spe;
-	
+
 	private Center					center;
 
 
 	@BeforeEach
 	void setup() {
-		
+
 		this.spe = new Specialty();
 
 		this.spe.setId(ProfessionalControllerTests.TEST_SPECIALTY_ID);
 		this.spe.setName("Especial");
-		
+
 		Center center = new Center();
-		center.setId(TEST_CENTER_ID);
+		center.setId(ProfessionalControllerTests.TEST_CENTER_ID);
 		center.setName("SEVILLA");
 		center.setAddress("REINA MERCEDES");
 		this.center = center;
-
-		
-
 
 		this.pepe = new Professional();
 		this.pepe.setId(ProfessionalControllerTests.TEST_PROFESSIONAL_ID);
@@ -112,7 +111,7 @@ class ProfessionalControllerTests {
 
 		this.pepe.setSpecialty(this.spe);
 		this.pepe.setCenter(this.center);
-		
+
 		User user = new User();
 		user.setEnabled(true);
 		user.setUsername("frankcuesta");
@@ -129,23 +128,21 @@ class ProfessionalControllerTests {
 		this.app.setReceipt(null);
 		this.app.setDiagnosis(null);
 		this.app.setClient(null);
-		
+
 		List<Professional> professionalList = new ArrayList<Professional>();
 		professionalList.add(this.pepe);
 		Iterable<Professional> resultadoBuscarProfessionales = professionalList;
-		
+
 		BDDMockito.given(this.professionalService.findProfessionalById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(this.pepe);
 		BDDMockito.given(this.appointmentService.findAppointmentById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(new Appointment());
-		BDDMockito.given(this.professionalService.findProfessionalBySpecialtyAndCenter(TEST_SPECIALTY_ID, TEST_CENTER_ID)).willReturn(resultadoBuscarProfessionales);
-		
+		BDDMockito.given(this.professionalService.findProfessionalBySpecialtyAndCenter(ProfessionalControllerTests.TEST_SPECIALTY_ID, ProfessionalControllerTests.TEST_CENTER_ID)).willReturn(resultadoBuscarProfessionales);
+
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitFindForm() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/find"))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andExpect(MockMvcResultMatchers.model().attributeExists("professional"))
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/find")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("professional"))
 			.andExpect(MockMvcResultMatchers.view().name("professionals/find"));
 	}
 
@@ -153,10 +150,7 @@ class ProfessionalControllerTests {
 	@Test
 	void testProcessFindFormSuccess() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals")
-				.queryParam("center", "1")
-				.queryParam("specialty", "1"))
-			.andExpect(MockMvcResultMatchers.status().isOk());
-//			.andExpect(MockMvcResultMatchers.view().name("professionals/list"));
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals").queryParam("center", "1").queryParam("specialty", "1")).andExpect(MockMvcResultMatchers.status().isOk());
+		//			.andExpect(MockMvcResultMatchers.view().name("professionals/list"));
 	}
 }

@@ -17,6 +17,7 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "date must no be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "reason", "reason must no be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startTime", "start time must no be empty");
 		ValidationUtils.rejectIfEmpty(errors, "center", "center must no be empty");
 		ValidationUtils.rejectIfEmpty(errors, "specialty", "specialty must no be empty");

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
+import org.springframework.samples.petclinic.model.ProValidator;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -99,19 +102,25 @@ public class ProfessionalController {
 	}
 
 	@GetMapping(value = "/professionals")
-	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
-		model.put("professional", professional);
-
-		Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
-
-		if (!results.iterator().hasNext()) {
-			// no owners found
-			result.rejectValue("specialty", "notFound", "not found");
+	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
+		ProValidator proValidator = new ProValidator();
+		proValidator.validate(professional, result);
+		System.out.println(result.getFieldError("center") + "======================================" + result.hasFieldErrors("specialty"));
+		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {
+			model.put("professional", professional);
 			return "professionals/find";
 		} else {
-			// multiple owners found
-			model.put("selections", results);
-			return "professionals/list";
+			Iterable<Professional> results = this.professionalService.findProfessionalBySpecialtyAndCenter(professional.getSpecialty().getId(), professional.getCenter().getId());
+
+			if (!results.iterator().hasNext()) {
+				// no owners found
+				result.rejectValue("specialty", "notFound", "not found");
+				return "professionals/find";
+			} else {
+				// multiple owners found
+				model.put("selections", results);
+				return "professionals/list";
+			}
 		}
 	}
 
@@ -151,11 +160,13 @@ public class ProfessionalController {
 	}
 
 	//List de clientes para profesional
-	@GetMapping(value = {"/professionals/clientList"})
+	@GetMapping(value = {
+		"/professionals/clientList"
+	})
 	public String showClientsList(final Map<String, Object> model) {
 		Collection<Client> clients = this.clientService.findAll();
 		model.put("clients", clients);
 		return "professionals/clientList";
 	}
-	
+
 }

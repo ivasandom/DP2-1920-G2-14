@@ -84,6 +84,7 @@
 	        <c:forEach var="desease" items="${deseases}">
 				<tr>
 	                <td valign="top">
+	                	<dl>
 	                        <dd><c:out value="${desease.name}"/></dd>
 
 	                    </dl>

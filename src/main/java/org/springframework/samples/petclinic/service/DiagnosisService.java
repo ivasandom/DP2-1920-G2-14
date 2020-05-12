@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.Diagnosis;
 import org.springframework.samples.petclinic.repository.DiagnosisRepository;
 import org.springframework.stereotype.Service;
@@ -23,11 +22,11 @@ public class DiagnosisService {
 
 	@Transactional
 	public void saveDiagnosis(final Diagnosis diagnosis) throws DataAccessException {
-		diagnosisRepository.save(diagnosis);
+		this.diagnosisRepository.save(diagnosis);
 	}
 
 	@Transactional
 	public Iterable<Diagnosis> findAll() throws DataAccessException {
-		return diagnosisRepository.findAll();
+		return this.diagnosisRepository.findAll();
 	}
 }
