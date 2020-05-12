@@ -395,7 +395,7 @@ public class AppointmentControllerTests {
 			.param("specialty.name", sp).param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco")
 			.param("professional.email", "mancar@gmail.com").param("professional.document", "29334485").param("professional.documentType", "nif").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2)
 			.param("diagnosis.description", "healthy").param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10")
-			.param("status", AppointmentStatus.COMPLETED.toString())).andExpect(MockMvcResultMatchers.status().is2xxSuccessful());//.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+			.param("status", AppointmentStatus.COMPLETED.toString())).andExpect(MockMvcResultMatchers.status().is3xxRedirection());//.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
 	}
 
 //	@WithMockUser(value = "spring")
@@ -464,6 +464,38 @@ public class AppointmentControllerTests {
 //		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.flash().attributeCount(1))
 //			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
 //	}
+
+	@WithMockUser(username = "frankcuesta", authorities = {
+		"client"
+	})
+	@Test
+	void shouldShowAppointmentDetails() throws Exception {
+		this.specialty.setId(1);
+		this.specialty.setName("dermatology");
+		this.user.setUsername("frankcuesta");
+		this.client.setUser(this.user);
+		this.appointment.setSpecialty(this.specialty);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+	}
+
+	@WithMockUser(username = "pepegotera", authorities = {
+		"client"
+	})
+	@Test
+	void shouldNotShowAppointmentDetails() throws Exception {
+		this.specialty.setId(1);
+		this.specialty.setName("dermatology");
+		this.user.setUsername("frankcuesta");
+		this.client.setUser(this.user);
+		this.appointment.setSpecialty(this.specialty);
+		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.model().attribute("message", "You cannot show another user's appointment")).andExpect(MockMvcResultMatchers.view().name("exception"));
+	}
 
 	@WithMockUser(username = "frankcuesta", authorities = {
 		"client"
