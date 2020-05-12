@@ -85,7 +85,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAllAppointments() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
-		Assertions.assertThat(appointments.size()).isEqualTo(130);
+		Assertions.assertThat(appointments.size()).isEqualTo(133);
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class AppointmentServiceTests {
 	void shouldFindAppointmentsByClientId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
-		Assertions.assertThat(appointments.size()).isEqualTo(124);
+		Assertions.assertThat(appointments.size()).isEqualTo(127);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));

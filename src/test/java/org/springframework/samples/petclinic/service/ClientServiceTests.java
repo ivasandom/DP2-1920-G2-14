@@ -35,7 +35,7 @@ public class ClientServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		int count = this.clientService.clientCount();
-		Assertions.assertEquals(count, 3);
+		Assertions.assertEquals(count, 4);
 	}
 
 	@ParameterizedTest
