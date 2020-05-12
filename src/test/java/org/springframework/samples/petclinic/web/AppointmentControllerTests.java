@@ -395,7 +395,7 @@ public class AppointmentControllerTests {
 			.param("specialty.name", sp).param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco")
 			.param("professional.email", "mancar@gmail.com").param("professional.document", "29334485").param("professional.documentType", "nif").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2)
 			.param("diagnosis.description", "healthy").param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10")
-			.param("status", AppointmentStatus.COMPLETED.toString())).andExpect(MockMvcResultMatchers.status().is3xxRedirection());//.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+			.param("status", AppointmentStatus.COMPLETED.toString())).andExpect(MockMvcResultMatchers.status().is2xxSuccessful());//.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
 	}
 
 //	@WithMockUser(value = "spring")
