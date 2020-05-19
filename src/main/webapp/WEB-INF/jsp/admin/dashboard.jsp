@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:staffLayout currentPage="dashboard">
+<petclinic:staffLayout currentPage="dashboard" pageTitle="Dashboard">
 
     <div class="row">
           <div class="col-lg-3 col-6">

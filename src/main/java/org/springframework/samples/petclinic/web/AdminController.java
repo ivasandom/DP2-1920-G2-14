@@ -15,9 +15,18 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.service.AppointmentService;
+import org.springframework.samples.petclinic.service.CenterService;
+import org.springframework.samples.petclinic.service.ClientService;
+import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +36,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
+	
+	private final AppointmentService appointmentService;
+	private final ProfessionalService professionalService;
+	private final ClientService clientService;
+	private final CenterService centerService;
+	
 	@Autowired
-	public AdminController() {	
+	public AdminController(final AppointmentService appointmentService, final ProfessionalService professionalService,  final ClientService clientService, final CenterService centerService) {
+		this.appointmentService = appointmentService;
+		this.professionalService = professionalService;
+		this.clientService = clientService;
+		this.centerService = centerService;
 	}
 
 	@InitBinder
@@ -40,6 +58,40 @@ public class AdminController {
 	@GetMapping()
 	public String dashboard(Map<String, Object> model) {
 		return "admin/dashboard";
+	}
+	
+	@GetMapping("/clients")
+	public String clientList(Map<String, Object> model) {
+		Collection<Client> clients = this.clientService.findAll();
+		model.put("clients", clients);
+		return "admin/clients";
+	}
+	
+	
+	@GetMapping("/professionals")
+	public String professionalList(Map<String, Object> model) {
+		Iterable<Professional> professionals = this.professionalService.findAll();
+		model.put("professionals", professionals);
+		return "admin/professionals";
+	}
+	
+	@GetMapping("/appointments")
+	public String appointmentList(Map<String, Object> model) {
+		Iterable<Appointment> appointments = this.appointmentService.listAppointments();
+		model.put("appointments", appointments);
+		return "admin/appointments";
+	}
+	
+	@GetMapping("/payments")
+	public String paymentList(Map<String, Object> model) {
+		return "admin/payments";
+	}
+	
+	@GetMapping("/centers")
+	public String centerList(Map<String, Object> model) {
+		Iterable<Center> centers = this.centerService.findAll();
+		model.put("centers", centers);
+		return "admin/centers";
 	}
 
 }
