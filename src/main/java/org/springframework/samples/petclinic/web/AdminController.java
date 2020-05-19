@@ -28,9 +28,11 @@ import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -60,38 +62,90 @@ public class AdminController {
 		return "admin/dashboard";
 	}
 	
+	/**
+	 * CLIENTS
+	 */
+	
 	@GetMapping("/clients")
 	public String clientList(Map<String, Object> model) {
 		Collection<Client> clients = this.clientService.findAll();
 		model.put("clients", clients);
-		return "admin/clients";
+		return "admin/clients/list";
 	}
 	
+	@GetMapping("/clients/{clientId}")
+	public String clientDetail(@PathVariable("clientId") final int clientId, final ModelMap model) {
+		Client client = this.clientService.findClientById(clientId);
+		model.put("client", client);
+		return "admin/clients/detail";
+	}
+	
+	
+	/**
+	 * PROFESSIONALS
+	 */
+
 	
 	@GetMapping("/professionals")
 	public String professionalList(Map<String, Object> model) {
 		Iterable<Professional> professionals = this.professionalService.findAll();
 		model.put("professionals", professionals);
-		return "admin/professionals";
+		return "admin/professionals/list";
 	}
+	
+	
+	@GetMapping("/professionals/{professionalId}")
+	public String professionalDetail(@PathVariable("professionalId") final int professionalId, final ModelMap model) {
+		Professional professional = this.professionalService.findById(professionalId).get();
+		model.put("professional", professional);
+		return "admin/professionals/detail";
+	}
+	
+	/**
+	 * APPOINTMENTS
+	 */
 	
 	@GetMapping("/appointments")
 	public String appointmentList(Map<String, Object> model) {
 		Iterable<Appointment> appointments = this.appointmentService.listAppointments();
 		model.put("appointments", appointments);
-		return "admin/appointments";
+		return "admin/appointments/list";
 	}
+
+	@GetMapping("/appointments/{appointmentId}")
+	public String appointmentDetail(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		model.put("appointment", appointment);
+		return "admin/appointments/detail";
+	}
+	
+	
+	/**
+	 * PAYMENTS
+	 */
 	
 	@GetMapping("/payments")
 	public String paymentList(Map<String, Object> model) {
-		return "admin/payments";
+		return "admin/payments/list";
 	}
+	
+	
+	/**
+	 * CENTERS
+	 */
 	
 	@GetMapping("/centers")
 	public String centerList(Map<String, Object> model) {
 		Iterable<Center> centers = this.centerService.findAll();
 		model.put("centers", centers);
-		return "admin/centers";
+		return "admin/centers/list";
+	}
+
+	@GetMapping("/centers/{centerId}")
+	public String centerDetail(@PathVariable("centerId") final int centerId, final ModelMap model) {
+		Center center = this.centerService.findCenterById(centerId).get();
+		model.put("center", center);
+		return "admin/centers/detail";
 	}
 
 }

@@ -8,7 +8,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="appointments" pageTitle="Appoointments">
+<petclinic:staffLayout currentPage="appointments" pageTitle="Appointments">
 
   <jsp:attribute name="customScript">
     <script>
@@ -23,12 +23,13 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Appoointments</h3>
+            <h3 class="card-title">Appointments</h3>
           </div>
           <div class="card-body">
             <table class="table table-bordered table-striped dataTable">
               <thead>
                 <tr>
+                  <th>#</th>
                   <th>Client</th>
                   <th>Professional</th>
                   <th>Date</th>
@@ -39,6 +40,13 @@
               <tbody>
                 <c:forEach items="${appointments}" var="appointment">
                   <tr>
+                    <td>
+                      <spring:url value="/admin/appointments/{appointmentId}" var="appointmentUrl">
+                        <spring:param name="appointmentId" value="${appointment.id}" />
+                      </spring:url>
+                      <a href="${fn:escapeXml(appointmentUrl)}">
+                        <c:out value="${appointment.id}" /></a>
+                    </td>
                     <td>
                       <spring:url value="/admin/clients/{clientId}" var="clientUrl">
                         <spring:param name="clientId" value="${appointment.client.id}" />
