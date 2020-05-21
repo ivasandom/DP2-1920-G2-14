@@ -34,6 +34,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Datatable -->
   <spring:url value="/resources/adminlte/dataTables.bootstrap4.min.css" var="dataTablesBs4CSS" />
   <link href="${dataTablesBs4CSS}" rel="stylesheet" />
+
+
+  <style>
+    [class*='col-']>.card {
+      height: calc(100% - 1rem)
+    }
+
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -45,12 +53,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="index3.html" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Contact</a>
         </li>
       </ul>
 
@@ -164,9 +166,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="index3.html" class="brand-link">
+      <a href="/admin" class="brand-link">
 
-        <span class="brand-text font-weight-light">AcmeHealth STAFF</span>
+        <span class="brand-text font-weight-light">ACME STAFF</span>
       </a>
 
       <!-- Sidebar -->
@@ -200,13 +202,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <i class="nav-icon fas fa-users"></i>
                 <p>
                   Clients
-
                 </p>
               </a>
             </li>
             <li class="nav-item">
               <a href="/admin/professionals" class="nav-link">
-                <i class="nav-icon fas fa-user"></i>
+                <i class="nav-icon fas fa-user-nurse"></i>
                 <p>
                   Professionals
                 </p>
@@ -214,28 +215,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </li>
             <li class="nav-item">
               <a href="/admin/appointments" class="nav-link">
-                <i class="nav-icon fas fa-clock"></i>
+                <i class="nav-icon fas fa-syringe"></i>
                 <p>
                   Appointments
-
                 </p>
               </a>
             </li>
             <li class="nav-item">
               <a href="/admin/payments" class="nav-link">
-                <i class="nav-icon fas fa-info"></i>
+                <i class="nav-icon fas fa-money-check-alt"></i>
                 <p>
                   Payments
-
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/admin/centers" class="nav-link">
-                <i class="nav-icon fas fa-home"></i>
-                <p>
-                  Center
-
                 </p>
               </a>
             </li>

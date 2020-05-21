@@ -52,7 +52,12 @@
                 <c:out value="${client.birthDate}" />
               </dd>
             </dl>
-            <button type="button" class="btn btn-primary">Edit client</button>
+            <spring:url value="/admin/clients/{clientId}/edit" var="editUrl">
+              <spring:param name="clientId" value="${client.id}" />
+            </spring:url>
+            <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
+              Edit client
+            </a>
             <button type="button" class="btn btn-danger">Delete client</button>
           </div>
         </div>
@@ -82,7 +87,8 @@
                         <spring:param name="professionalId" value="${appointment.professional.id}" />
                       </spring:url>
                       <a href="${fn:escapeXml(professionalUrl)}">
-                        <c:out value="${appointment.professional.firstName} ${appointment.professional.lastName}" /></a>
+                        <c:out value="${appointment.professional.firstName} ${appointment.professional.lastName}" />
+                      </a>
                     </td>
 
                     <td>

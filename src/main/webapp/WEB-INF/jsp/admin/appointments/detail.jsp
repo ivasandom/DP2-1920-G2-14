@@ -20,99 +20,146 @@
   </jsp:attribute>
   <jsp:body>
     <div class="row">
-      <div class="col-6">
+      <div class="col-8">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Client details</h3>
+            <h3 class="card-title">Details</h3>
           </div>
           <div class="card-body">
             <dl class="dl-horizontal">
-              <dt>First name</dt>
+              <dt>Client</dt>
               <dd>
-                <c:out value="${appointment.client.firstName}" />
+                <spring:url value="/admin/clients/{clientId}" var="clientUrl">
+                  <spring:param name="clientId" value="${appointment.client.id}" />
+                </spring:url>
+                <a href="${fn:escapeXml(clientUrl)}">
+                  <c:out value="${appointment.client.firstName} ${appointment.client.lastName}" />
+                </a>
               </dd>
-              <dt>Last name</dt>
+              <dt>Professional</dt>
               <dd>
-                <c:out value="${appointment.client.lastName}" />
+                <spring:url value="/admin/professionals/{professionalId}" var="professionalUrl">
+                  <spring:param name="professionalId" value="${appointment.professional.id}" />
+                </spring:url>
+                <a href="${fn:escapeXml(professionalUrl)}">
+                  <c:out value="${appointment.professional.firstName} ${appointment.professional.lastName}" />
+                </a>
               </dd>
-              <dt>Health Insurance</dt>
+              <dt>Date time</dt>
               <dd>
-                <c:out value="${appointment.client.healthInsurance} / ${appointment.client.healthCardNumber}" />
+                <c:out value="${appointment.date} at ${appointment.startTime}" />
               </dd>
-              <dt>Email</dt>
+              <dt>Reason</dt>
               <dd>
-                <c:out value="${appointment.client.email}" />
+                <c:out value="${appointment.reason}" />
               </dd>
-              <dt>Document</dt>
+              <dt>Center</dt>
               <dd>
-                <c:out value="${appointment.client.document} (${appointment.client.documentType})" />
+                <c:out value="${appointment.center.address}" />
               </dd>
-              <dt>Birth date</dt>
+              <dt>Status</dt>
               <dd>
-                <c:out value="${appointment.client.birthDate}" />
+                <c:out value="${appointment.status}" />
               </dd>
             </dl>
-            <button type="button" class="btn btn-primary">View client</button>
+            
+          </div>
+          <div class="card-footer">
+          <spring:url value="/admin/appointments/{appointmentId}/edit" var="editUrl">
+              <spring:param name="appointmentId" value="${appointment.id}" />
+            </spring:url>
+            <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
+              Edit appointment
+            </a>
+            <button type="button" class="btn btn-danger">Delete appointment</button>
           </div>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Professional details</h3>
+            <h3 class="card-title">Receipt</h3>
           </div>
           <div class="card-body">
-            <dl class="dl-horizontal">
-              <dt>First name</dt>
-              <dd>
-                <c:out value="${appointment.professional.firstName}" />
-              </dd>
-              <dt>Last name</dt>
-              <dd>
-                <c:out value="${appointment.professional.lastName}" />
-              </dd>
-              <dt>Collegiate number</dt>
-              <dd>
-                <c:out value="${appointment.professional.collegiateNumber}" />
-              </dd>
-              <dt>Email</dt>
-              <dd>
-                <c:out value="${appointment.professional.email}" />
-              </dd>
-              <dt>Document</dt>
-              <dd>
-                <c:out value="${appointment.professional.document} (${appointment.professional.documentType})" />
-              </dd>
-            </dl>
-            <button type="button" class="btn btn-primary">View professional</button>
+            <c:if test="${not empty appointment.receipt}">
+              <dl class="dl-horizontal">
+                <dt>Price</dt>
+                <dd>
+                  $
+                  <c:out value="${appointment.receipt.price}" />
+                </dd>
+                <dt>Status</dt>
+                <dd>
+                  <c:out value="${appointment.receipt.status}" />
+                </dd>
+                <dt>Created at</dt>
+                <dd>
+                  <c:out value="${appointment.receipt.status}" />
+                </dd>
+              </dl>
+
+            </c:if>
+            <c:if test="${empty appointment.receipt}">
+              No receipt. A receipt will be created after appointment has been completed.
+            </c:if>
+          </div>
+          <div class="card-footer">
+          <button class="btn btn-secondary">Download .pdf</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Transactions</h3>
-        </div>
-        <div class="card-body">
-          <table class="table table-bordered table-striped dataTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+    <c:if test="${not empty appointment.receipt}">
+      <div class="row equal">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Transactions</h3>
+            </div>
+            <div class="card-body">
+              <table class="table table-bordered table-striped dataTable">
+                <thead>
+                  <tr>
+                    <th>Amount</th>
+                    <th>Token</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <c:forEach items="${appointment.receipt.transactions}" var="transaction">
+                    <tr>
+                      <td>
+                        <c:out value="${transaction.amount} $" />
+                      </td>
+                      <td>
+                        <c:out value="${transaction.token}" />
+                      </td>
+                      <td>
+                        <c:if test="${transaction.type eq 'CHARGE'}" >
+                        <span class="badge badge-success"><c:out value="${transaction.type}" /></span>
+                        </c:if>
+                        <c:if test="${transaction.type eq 'REFUND'}" >
+                        <span class="badge badge-danger"><c:out value="${transaction.type}" /></span>
+                        </c:if>
+                      </td>
+                      <td>
+                        <c:if test="${transaction.success}" >
+                        <span class="badge badge-success text-uppercase"><c:out value="${transaction.status}" /></span>
+                        </c:if>
+                        <c:if test="${not transaction.success}" >
+                        <span class="badge badge-danger text-uppercase"><c:out value="${transaction.status}" /></span>
+                        </c:if>
+                      </td>
+                    </tr>
+                  </c:forEach>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    </div>
+    </c:if>
   </jsp:body>
 
 </petclinic:staffLayout>

@@ -8,7 +8,8 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="professionals" pageTitle="Professionals: ${professional.firstName} ${professional.lastName}">
+<petclinic:staffLayout currentPage="professionals"
+  pageTitle="Professionals: ${professional.firstName} ${professional.lastName}">
 
   <jsp:attribute name="customScript">
     <script>
@@ -48,7 +49,12 @@
                 <c:out value="${professional.document} (${professional.documentType})" />
               </dd>
             </dl>
-            <button type="button" class="btn btn-primary">Edit professional</button>
+            <spring:url value="/admin/professionals/{professionalId}/edit" var="editUrl">
+              <spring:param name="professionalId" value="${professional.id}" />
+            </spring:url>
+            <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
+              Edit professional
+            </a>
             <button type="button" class="btn btn-danger">Delete professional</button>
           </div>
         </div>
