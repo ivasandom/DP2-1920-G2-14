@@ -5,13 +5,9 @@
               description="Name of corresponding property in bean object" %>
 <%@ attribute name="label" required="true" rtexprvalue="true"
               description="Label appears in red color if input is considered as invalid after submission" %>
-<%@ attribute name="names" required="true" rtexprvalue="true" type="java.util.List"
+<%@ attribute name="names" required="true" rtexprvalue="true" type="java.lang.Object[]"
               description="Names in the list" %>
-<%@ attribute name="size" required="false" rtexprvalue="true"
-              description="Size of Select" %>
-<%@ attribute name="itemLabel" required="false" rtexprvalue="true"
-              description="Item label" %>
-
+              
 <spring:bind path="${name}">
     <c:set var="cssGroup" value="form-group ${status.error ? 'error' : '' }"/>
     <c:set var="valid" value="${not status.error and not empty status.actualValue}"/>
@@ -19,12 +15,7 @@
         <label for="id-${label}">${label}</label>
 
             <form:select class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" path="${name}">
-            	<c:if test="${not empty itemLabel}">
-            		<form:options items="${names}" itemLabel="${itemLabel}"/>
-            	</c:if>
-            	<c:if test="${empty itemLabel}">
-            		<form:options items="${names}" />
-            	</c:if>
+            	<form:options items="${names}"/>	
             </form:select>
             <c:if test="${status.error}">
                 <div class="invalid-feedback">

@@ -58,7 +58,9 @@
             <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
               Edit client
             </a>
-            <button type="button" class="btn btn-danger">Delete client</button>
+            <form:form action="/admin/clients/${client.id}/delete/" method="post">
+            	<button type="submit" class="btn btn-danger">Delete client</button>
+            </form:form>
           </div>
         </div>
       </div>

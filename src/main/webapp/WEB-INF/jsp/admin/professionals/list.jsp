@@ -67,6 +67,9 @@
               </tbody>
             </table>
           </div>
+          <div class="card-footer">
+          	<a href="/admin/professionals/create" class="btn btn-primary">+ Create new professional</a>
+          </div>
         </div>
       </div>
     </div>

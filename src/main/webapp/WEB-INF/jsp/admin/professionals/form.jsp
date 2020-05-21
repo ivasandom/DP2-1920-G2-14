@@ -8,7 +8,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="clients" pageTitle="Edit client: ${client.firstName} ${client.lastName}">
+<petclinic:staffLayout currentPage="profesionals" pageTitle="Edit professional: ${professional.firstName} ${professional.lastName}">
   <jsp:body>
     <div class="row">
       <div class="col-12">
@@ -17,8 +17,8 @@
             <h3 class="card-title">Edit</h3>
           </div>
           <div class="card-body">
-            <form:form modelAttribute="client" class="form-horizontal" id="add-owner-form">
-              <form:hidden path="id"/>
+            <form:form modelAttribute="professional" class="form-horizontal" id="add-owner-form">
+              <h5>Details</h5>
               <div class="form-group ">
                 <div class="row">
                   <div class="col-md-6">
@@ -38,19 +38,22 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-6">
-                    <petclinic:selectField label="Health Insurance" name="healthInsurance" size="11"
-                      names="${healthInsurances}" />
+                	<div class="col-md-4">
+                	 	<petclinic:inputField label="Collegiate number" name="collegiateNumber" />
+                	</div>
+                  <div class="col-md-4">
+                     <petclinic:selectField label="Center" name="center" size="${fn:length(centers)}"
+                      names="${centers}" itemLabel="address" />
                   </div>
-                  <div class="col-md-6">
-                    <petclinic:inputField label="Health Card Number" name="healthCardNumber" />
+                  <div class="col-md-4">
+                    <petclinic:selectField label="Specialty" name="specialty" size="${fn:length(specialties)}"
+                      names="${specialties}" itemLabel="name"/>
                   </div>
                 </div>
+                <h5>Login</h5>
                 <petclinic:inputField label="Email" name="email" type="email" />
                 <petclinic:inputField label="Username" name="user.username" />
-                <petclinic:inputField type="password" label="Password" name="user.password" />
-
-
+                <petclinic:inputField label="Password" type="password" name="user.password" />
               </div>
 
               <button class="btn btn-secondary container-fluid" type="submit">Edit</button>

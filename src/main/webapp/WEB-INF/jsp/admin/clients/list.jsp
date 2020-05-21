@@ -66,6 +66,9 @@
               </tbody>
             </table>
           </div>
+          <div class="card-footer">
+          	<a href="/admin/clients/create" class="btn btn-primary">+ Create new client</a>
+          </div>
         </div>
       </div>
     </div>

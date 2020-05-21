@@ -8,8 +8,8 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="profesionals" pageTitle="Edit professional: ${professional.firstName} ${professional.lastName}">
-  <jsp:body>
+<petclinic:staffLayout currentPage="appointments" pageTitle="Edit appointment: #${appointment.id}">
+<jsp:body>
     <div class="row">
       <div class="col-12">
         <div class="card">
@@ -17,27 +17,42 @@
             <h3 class="card-title">Edit</h3>
           </div>
           <div class="card-body">
-            <form:form modelAttribute="professional" class="form-horizontal" id="add-owner-form">
+            <form:form modelAttribute="appointment">
+            <h5>Details</h5>
               <div class="form-group ">
                 <div class="row">
                   <div class="col-md-6">
-                    <petclinic:inputField label="First name" name="firstName" />
+                   <petclinic:selectField label="Client" name="client"
+                      names="${clients}" itemLabel="user.username" />
                   </div>
                   <div class="col-md-6">
-                    <petclinic:inputField label="Last name" name="lastName" />
+                    <petclinic:selectField label="Professional" name="professional"
+                      names="${professionals}" itemLabel="user.username" />
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
-                    <petclinic:inputField label="Document" name="document" />
+                   <petclinic:selectField label="Center" name="center"
+                      names="${centers}" itemLabel="address" />
                   </div>
                   <div class="col-md-6">
-                    <petclinic:selectField label="Document Type" name="documentType" size="3"
-                      names="${documentTypes}" />
+                    <petclinic:selectField label="Specialty" name="specialty"
+                      names="${specialties}" itemLabel="name" />
                   </div>
                 </div>
-                <petclinic:inputField label="Email" name="email" type="email" />
-                <petclinic:inputField label="Username" name="user.username" />
+                <div class="row">
+                  <div class="col-md-6">
+                    <petclinic:inputField label="Reason" name="reason" />
+                  </div>
+                  <div class="col-md-6">
+                    <petclinic:inputField label="Type" name="type" />
+                  </div>
+                </div>
+
+               	<petclinic:enumField label="Status" name="status"
+                      names="${statusChoices}" />
+
+
               </div>
 
               <button class="btn btn-secondary container-fluid" type="submit">Edit</button>
@@ -49,5 +64,6 @@
     </div>
 
   </jsp:body>
+
 
 </petclinic:staffLayout>

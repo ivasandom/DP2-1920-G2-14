@@ -21,18 +21,22 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.samples.petclinic.model.AppointmentStatus;
+import org.springframework.samples.petclinic.model.AppointmentType;
+import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.HealthValidator;
 import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
+import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -51,13 +55,16 @@ public class AdminController {
 	private final ProfessionalService professionalService;
 	private final ClientService clientService;
 	private final CenterService centerService;
+	private final SpecialtyService specialtyService;
+	
 	
 	@Autowired
-	public AdminController(final AppointmentService appointmentService, final ProfessionalService professionalService,  final ClientService clientService, final CenterService centerService) {
+	public AdminController(final AppointmentService appointmentService, final ProfessionalService professionalService,  final ClientService clientService, final CenterService centerService, final SpecialtyService specialtyService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.clientService = clientService;
 		this.centerService = centerService;
+		this.specialtyService = specialtyService;
 	}
 
 	@InitBinder
@@ -99,7 +106,7 @@ public class AdminController {
 		model.put("client", client);
 		model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
 		model.put("healthInsurances", lista);
-		return "admin/clients/edit";
+		return "admin/clients/form";
 	}
 
 
@@ -118,12 +125,54 @@ public class AdminController {
 			model.put("client", client);
 			model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
 			model.put("healthInsurances", lista);
-			return "admin/clients/edit";
+			return "admin/clients/form";
 		} else {
 			client.setId(clientId);
 			this.clientService.saveClient(client);
 			return "redirect:/admin/clients/" + clientId;
 		}
+	}
+	
+	@GetMapping("/clients/create")
+	public String clientCreateForm(final ModelMap model) {
+		Client client = new Client();
+		java.util.List<String> lista = new ArrayList<>();
+		HealthInsurance[] h = HealthInsurance.values();
+		for (HealthInsurance hi : h) {
+			lista.add(hi.getDisplayName());
+		}
+		model.put("client", client);
+		model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
+		model.put("healthInsurances", lista);
+		return "admin/clients/form";
+	}
+	
+	@PostMapping("/clients/create")
+	public String processClientCreateForm(@Valid final Client client, final BindingResult result, final ModelMap model) {
+		HealthValidator healthValidator = new HealthValidator();
+		healthValidator.validate(client, result);
+		java.util.List<String> lista = new ArrayList<>();
+		HealthInsurance[] h = HealthInsurance.values();
+		
+		for (HealthInsurance hi : h) {
+			lista.add(hi.getDisplayName());
+		}
+		
+		if (result.hasErrors()) {
+			model.put("client", client);
+			model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
+			model.put("healthInsurances", lista);
+			return "admin/clients/form";
+		} else {
+			this.clientService.saveClient(client);
+			return "redirect:/admin/clients";
+		}
+	}
+	
+	@PostMapping("/clients/{clientId}/delete")
+	public String clientDelete(@PathVariable("clientId") final int clientId, final ModelMap model) {
+		this.clientService.deleteById(clientId);
+		return "redirect:/admin/clients";
 	}
 	
 	
@@ -150,21 +199,52 @@ public class AdminController {
 	@GetMapping("/professionals/{professionalId}/edit")
 	public String professionalEditForm(@PathVariable("professionalId") final int professionalId, final ModelMap model) {
 		Professional professional = this.professionalService.findById(professionalId).get();
+		Iterable<Center> centers = this.centerService.findAll();
+		Iterable<Specialty> specialties = this.specialtyService.findAll();
+		
 		model.put("professional", professional);
-		return "admin/professionals/edit";
+		model.put("centers", centers);
+		model.put("specialties", specialties);
+		
+		return "admin/professionals/form";
 	}
 	
 	@PostMapping("/professionals/{professionalId}/edit")
-	public String processProfessionalEditForm(@Valid final Professional professional, @PathVariable("professionalId") final int professionalId, final BindingResult result, final ModelMap model) throws Exception {
+	public String processProfessionalEditForm(@Valid final Professional professional, @PathVariable("professionalId") final int professionalId, final BindingResult result, final ModelMap model) {
 		if (result.hasErrors()) {
 			model.put("professional", professional);
 			model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
-			return "admin/clients/edit";
+			return "admin/clients/form";
 		} else {
 			professional.setId(professionalId);
 			this.professionalService.saveProfessional(professional);
 			return "redirect:/admin/professionals/" + professionalId;
 		}
+	}
+	
+	@GetMapping("/professionals/create")
+	public String professionalCreateForm(final ModelMap model) {
+		Professional professional = new Professional();
+		model.put("professional", professional);
+		return "admin/professionals/form";
+	}
+	
+	@PostMapping("/professionals/create")
+	public String processProfessionalCreateForm(@Valid final Professional professional, final BindingResult result, final ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("professional", professional);
+			model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
+			return "admin/professionals/form";
+		} else {
+			this.professionalService.saveProfessional(professional);
+			return "redirect:/admin/professionals";
+		}
+	}
+	
+	@PostMapping("/professionals/{professionalId}/delete")
+	public String professionalDelete(@PathVariable("professionalId") final int professionalId, final ModelMap model) {
+		this.professionalService.deleteById(professionalId);
+		return "redirect:/admin/professionals";
 	}
 	
 	/**
@@ -188,8 +268,31 @@ public class AdminController {
 	@GetMapping("/appointments/{appointmentId}/edit")
 	public String appointmentEditForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		Iterable<Client> clients = this.clientService.findAll();
+		Iterable<Professional> professionals = this.professionalService.findAll();
+		Iterable<Center> centers = this.centerService.findAll();
+		Iterable<Specialty> specialties = this.specialtyService.findAll();
+		
 		model.put("appointment", appointment);
-		return "admin/appointments/edit";
+		model.put("clients", clients);
+		model.put("professionals", professionals);
+		model.put("centers", centers);
+		model.put("specialties", specialties);
+		model.put("statusChoices", AppointmentStatus.values());
+//		model.put("appointmentType", AppointmentType.values());
+		return "admin/appointments/form";
+	}
+	
+	@PostMapping("/appointments/{appointmentId}/edit")
+	public String processAppointmentEditForm(@Valid final Appointment appointment, @PathVariable("appointmentId") final int appointmentId, final BindingResult result, final ModelMap model) {
+		if (result.hasErrors()) {
+			model.put("appointment", appointment);
+			return "admin/appointment/form";
+		} else {
+			appointment.setId(appointmentId);
+			this.appointmentService.saveAppointment(appointment);
+			return "redirect:/admin/appointment/" + appointmentId;
+		}
 	}
 	
 	

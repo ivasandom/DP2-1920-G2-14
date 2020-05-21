@@ -51,4 +51,9 @@ public class ClientService {
 		//creating authorities
 		this.authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
 	}
+	
+	@Transactional
+	public void deleteById(final Integer id) throws DataAccessException {
+		this.clientRepository.deleteById(id);
+	}
 }

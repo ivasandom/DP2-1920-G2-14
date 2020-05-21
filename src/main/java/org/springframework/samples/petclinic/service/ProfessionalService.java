@@ -74,6 +74,12 @@ public class ProfessionalService {
 	
 	
 	@Transactional
+	public void deleteById(final Integer id) throws DataAccessException {
+		this.professionalRepository.deleteById(id);
+	}
+	
+	
+	@Transactional
 	public void saveProfessional(final Professional professional) throws DataAccessException {
 		//creating professional
 		this.professionalRepository.save(professional);
