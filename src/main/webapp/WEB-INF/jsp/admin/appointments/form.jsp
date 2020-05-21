@@ -20,6 +20,14 @@
             <form:form modelAttribute="appointment">
             <h5>Details</h5>
               <div class="form-group ">
+             	 <div class="row">
+                  <div class="col-md-6">
+                   <petclinic:inputField label="Date" name="date" />
+                  </div>
+                  <div class="col-md-6">
+                    <petclinic:inputField label="Start time" name="startTime" />
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-md-6">
                    <petclinic:selectField label="Client" name="client"
@@ -43,9 +51,6 @@
                 <div class="row">
                   <div class="col-md-6">
                     <petclinic:inputField label="Reason" name="reason" />
-                  </div>
-                  <div class="col-md-6">
-                    <petclinic:inputField label="Type" name="type" />
                   </div>
                 </div>
 

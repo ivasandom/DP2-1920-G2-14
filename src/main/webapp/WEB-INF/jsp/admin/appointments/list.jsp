@@ -13,7 +13,8 @@
   <jsp:attribute name="customScript">
     <script>
       $(document).ready(function () {
-        $('.dataTable').DataTable();
+        $('.dataTable').DataTable(
+        	{"order": [[ 0, "desc" ]]});
       });
 
     </script>
@@ -79,6 +80,9 @@
                 </c:forEach>
               </tbody>
             </table>
+          </div>
+           <div class="card-footer">
+          	<a href="/admin/appointments/create" class="btn btn-primary">+ Create new appointment</a>
           </div>
         </div>
       </div>

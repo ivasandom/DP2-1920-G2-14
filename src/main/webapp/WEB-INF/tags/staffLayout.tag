@@ -221,14 +221,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </a>
             </li>
-            <li class="nav-item">
-              <a href="/admin/payments" class="nav-link">
-                <i class="nav-icon fas fa-money-check-alt"></i>
-                <p>
-                  Payments
-                </p>
-              </a>
-            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
