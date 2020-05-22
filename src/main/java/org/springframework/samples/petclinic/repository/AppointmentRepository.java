@@ -32,9 +32,6 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id AND a.date = current_date() AND a.status = 'COMPLETED'")
 	Collection<Appointment> findTodayCompletedByProfessionalId(@Param("id") int professionalId);
 
-	@Query("SELECT DISTINCT type.name FROM AppointmentType type ORDER BY type.name")
-	List<String> findAppointmentTypes() throws DataAccessException;
-
 	@Query("SELECT DISTINCT a.diagnosis.medicines FROM Appointment a WHERE a.client.id = :id")
 	Collection<Medicine> findMedicines(@Param("id") int clientId);
 

@@ -16,8 +16,6 @@
 
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -25,8 +23,9 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.ClientValidator;
+import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
-import org.springframework.samples.petclinic.model.HealthValidator;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.StripeService;
@@ -70,33 +69,23 @@ public class ClientController {
 	@GetMapping(value = "/new")
 	public String initCreationForm(final Map<String, Object> model) throws DataAccessException {
 		Client client = new Client();
-		java.util.List<String> lista = new ArrayList<>();
-		HealthInsurance[] h = HealthInsurance.values();
-		for (HealthInsurance hi : h) {
-			lista.add(hi.getDisplayName());
-		}
 		model.put("client", client);
-		model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
-		model.put("healthInsurances", lista);
+		model.put("documentTypes", DocumentType.values());
+		model.put("healthInsurances", HealthInsurance.values());
+		
 		return ClientController.VIEWS_CLIENTS_SIGN_UP;
 	}
 
 	@PostMapping(value = "/new")
 	public String processCreationForm(@Valid final Client client, final BindingResult result, final ModelMap model) throws Exception {
-		HealthValidator healthValidator = new HealthValidator();
-		//UserValidator userValidator = new UserValidator();
-		healthValidator.validate(client, result);
-		//userValidator.validate(client.getUser(), result);
-		java.util.List<String> lista = new ArrayList<>();
-		HealthInsurance[] h = HealthInsurance.values();
-		for (HealthInsurance hi : h) {
-			lista.add(hi.getDisplayName());
-		}
+		ClientValidator clientValidator = new ClientValidator();
+		clientValidator.validate(client, result);
+		
 		if (result.hasErrors()) {
 			model.put("client", client);
-			model.put("documentTypes", Arrays.asList(org.springframework.samples.petclinic.model.DocumentType.values()));
-			model.put("healthInsurances", lista);
-			System.out.println(result.getAllErrors());
+			model.put("documentTypes", DocumentType.values());
+			model.put("healthInsurances", HealthInsurance.values());
+			
 			return ClientController.VIEWS_CLIENTS_SIGN_UP;
 		} else {
 			//creating owner, user and authorities

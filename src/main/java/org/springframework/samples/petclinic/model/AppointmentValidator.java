@@ -58,7 +58,7 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 			}
 		}
 
-		//		if (appointmentService.existsAppointment(center, specialty, professional, date, startTime)) {
+		//		if (appointmentService.existsAppointment(professional, date, startTime)) {
 		//			// It cannot exist 2 appointment with the same values
 		//			errors.rejectValue("date", "Appointment already taken.");
 		//		}

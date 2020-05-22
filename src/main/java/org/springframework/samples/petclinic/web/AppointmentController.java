@@ -35,6 +35,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
+import org.springframework.samples.petclinic.model.AppointmentType;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
@@ -159,8 +160,7 @@ public class AppointmentController {
 	@GetMapping(value = "/new")
 	public String initCreationForm(final ModelMap model) {
 		Appointment appointment = new Appointment();
-		Collection<String> types = this.appointmentService.findAppointmentByTypes();
-		model.put("types", types);
+		model.put("types", AppointmentType.values());
 		model.put("appointment", appointment);
 		return "appointments/new";
 	}
@@ -173,8 +173,7 @@ public class AppointmentController {
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
-			Collection<String> types = this.appointmentService.findAppointmentByTypes();
-			model.put("types", types);
+			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
 			System.out.println(result.getAllErrors());
 			return "appointments/new";
@@ -269,7 +268,7 @@ public class AppointmentController {
 			return "appointments/consultationPro";
 		} else {
 			a.setDiagnosis(appointment.getDiagnosis());
-			a.setReceipt(appointment.getReceipt());
+			a.setBill(appointment.getBill());
 			a.setStatus(AppointmentStatus.COMPLETED);
 			this.appointmentService.saveAppointment(a);
 			this.appointmentService.chargeAppointment(a);

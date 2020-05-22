@@ -33,8 +33,7 @@ public class ConsultationValidator implements Validator {
 			}
 		}
 
-		if (appointment.getReceipt().getPrice() <= 0 || appointment.getReceipt().getPrice() == null || appointment.getReceipt().getPrice() == 0.00 || appointment.getReceipt().getPrice().toString().isEmpty()) {
-			// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
+		if (appointment.getBill().getPrice() <= 0 || appointment.getBill().getPrice() == null || appointment.getBill().getPrice() == 0.00 || appointment.getBill().getPrice().toString().isEmpty()) {
 			errors.rejectValue("receipt.price", "price must be positive");
 
 		}

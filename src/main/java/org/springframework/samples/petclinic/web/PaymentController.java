@@ -83,8 +83,15 @@ public class PaymentController {
 		org.springframework.samples.petclinic.model.PaymentMethod method = new org.springframework.samples.petclinic.model.PaymentMethod();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
-
-		String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId()).getClientSecret();
+		
+		String stripeCustomerId = currentClient.getStripeId();
+		if (stripeCustomerId == null) {
+			stripeCustomerId = this.stripeService.createCustomer(currentClient.getEmail()).getId();
+			currentClient.setStripeId(stripeCustomerId);
+			this.clientService.saveClient(currentClient);
+		}
+		
+		String intentClientSecret = this.stripeService.setupIntent(stripeCustomerId).getClientSecret();
 		model.put("intentClientSecret", intentClientSecret);
 		model.put("paymentMethod", method);
 		model.put("apiKey", this.API_PUBLIC_KEY);

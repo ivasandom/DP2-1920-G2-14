@@ -28,7 +28,7 @@
 	                <tr>
 	                    <td>${nextAppointment.client.fullName}</td>
 	                    <td>${nextAppointment.startTime}</td>
-	                    <td>${nextAppointment.type.name}</td>
+	                    <td>${nextAppointment.type}</td>
 	                    <td>
 	                        <span class="badge badge-${nextAppointment.status eq 'PENDING' ? 'info' : 'danger'}">${nextAppointment.status}</span></td>
 	                    <td>
@@ -77,7 +77,7 @@
 	                    <tr>
 	                        <td>${appointment.client.fullName}</td>
 	                        <td>${appointment.startTime}</td>
-	                        <td>${appointment.type.name}</td>
+	                        <td>${appointment.type}</td>
 	                        <td>
 	                            <span class="badge badge-${appointment.status eq 'PENDING' ? 'info' : 'danger'}">${appointment.status}</span></td>
 	
@@ -119,7 +119,7 @@
 	                    <tr>
 	                        <td>${appointment.client.fullName}</td>
 	                        <td>${appointment.startTime}</td>
-	                        <td>${appointment.type.name}</td>
+	                        <td>${appointment.type}</td>
 	                        <td>
 	                            <span class="badge badge-success">${appointment.status}</span></td>
 	

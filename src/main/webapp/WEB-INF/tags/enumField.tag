@@ -15,7 +15,7 @@
         <label for="id-${label}">${label}</label>
 
             <form:select class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" path="${name}">
-            	<form:options items="${names}"/>	
+            	<form:options items="${names}" itemLabel="displayName"/>	
             </form:select>
             <c:if test="${status.error}">
                 <div class="invalid-feedback">

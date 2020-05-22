@@ -15,8 +15,6 @@
  */
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -28,9 +26,10 @@ import org.springframework.samples.petclinic.model.AppointmentStatus;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.model.ClientValidator;
 import org.springframework.samples.petclinic.model.HealthInsurance;
-import org.springframework.samples.petclinic.model.HealthValidator;
 import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.CenterService;
@@ -98,32 +97,20 @@ public class AdminController {
 	@GetMapping("/clients/{clientId}/edit")
 	public String clientEditForm(@PathVariable("clientId") final int clientId, final ModelMap model) {
 		Client client = this.clientService.findClientById(clientId);
-		java.util.List<String> lista = new ArrayList<>();
-		HealthInsurance[] h = HealthInsurance.values();
-		for (HealthInsurance hi : h) {
-			lista.add(hi.getDisplayName());
-		}
 		model.put("client", client);
-		model.put("healthInsurances", lista);
+		model.put("healthInsurances", HealthInsurance.values());
 		return "admin/clients/form";
 	}
 
 
 	@PostMapping("/clients/{clientId}/edit")
 	public String processClientEditForm(@Valid final Client client, @PathVariable("clientId") final int clientId, final BindingResult result, final ModelMap model) throws Exception {
-		HealthValidator healthValidator = new HealthValidator();
-		healthValidator.validate(client, result);
+		ClientValidator clientValidator = new ClientValidator();
+		clientValidator.validate(client, result);
 		
-		if (result.hasErrors()) {
-			java.util.List<String> lista = new ArrayList<>();
-			HealthInsurance[] h = HealthInsurance.values();
-			
-			for (HealthInsurance hi : h) {
-				lista.add(hi.getDisplayName());
-			}
-			
+		if (result.hasErrors()) {	
 			model.put("client", client);
-			model.put("healthInsurances", lista);
+			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
 			client.setId(clientId);
@@ -135,29 +122,19 @@ public class AdminController {
 	@GetMapping("/clients/create")
 	public String clientCreateForm(final ModelMap model) {
 		Client client = new Client();
-		java.util.List<String> lista = new ArrayList<>();
-		HealthInsurance[] h = HealthInsurance.values();
-		for (HealthInsurance hi : h) {
-			lista.add(hi.getDisplayName());
-		}
 		model.put("client", client);
-		model.put("healthInsurances", lista);
+		model.put("healthInsurances", HealthInsurance.values());
 		return "admin/clients/form";
 	}
 	
 	@PostMapping("/clients/create")
 	public String processClientCreateForm(@Valid final Client client, final BindingResult result, final ModelMap model) {
-		HealthValidator healthValidator = new HealthValidator();
-		healthValidator.validate(client, result);
-		if (result.hasErrors()) {
-			java.util.List<String> lista = new ArrayList<>();
-			HealthInsurance[] h = HealthInsurance.values();
-			
-			for (HealthInsurance hi : h) {
-				lista.add(hi.getDisplayName());
-			}
+		ClientValidator clientValidator = new ClientValidator();
+		clientValidator.validate(client, result);
+		
+		if (result.hasErrors()) {	
 			model.put("client", client);
-			model.put("healthInsurances", lista);
+			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
 			this.clientService.saveClient(client);
@@ -206,6 +183,9 @@ public class AdminController {
 	
 	@PostMapping("/professionals/{professionalId}/edit")
 	public String processProfessionalEditForm(@Valid final Professional professional, @PathVariable("professionalId") final int professionalId, final BindingResult result, final ModelMap model) {
+		ProfessionalValidator professionalValidator = new ProfessionalValidator();
+		professionalValidator.validate(professional, result);
+		
 		if (result.hasErrors()) {
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
@@ -235,6 +215,9 @@ public class AdminController {
 	
 	@PostMapping("/professionals/create")
 	public String processProfessionalCreateForm(@Valid final Professional professional, final BindingResult result, final ModelMap model) {
+		ProfessionalValidator professionalValidator = new ProfessionalValidator();
+		professionalValidator.validate(professional, result);
+		
 		if (result.hasErrors()) {
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();

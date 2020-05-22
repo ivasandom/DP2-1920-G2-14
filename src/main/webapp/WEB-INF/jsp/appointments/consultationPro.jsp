@@ -110,7 +110,7 @@
                                     <tr>
                                         <th>Type</th>
                                         <td>
-                                            <c:out value="${appointment.type.name}" />
+                                            <c:out value="${appointment.type}" />
                                         </td>
                                     </tr>
                                     <tr>

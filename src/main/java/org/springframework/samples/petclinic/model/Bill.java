@@ -1,17 +1,32 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "bills")
 public class Bill extends NamedEntity {
+	
+	@Column(name = "status")
+	@Enumerated
+	private BillStatus			status;
 
 	@Column(name = "last_name")
 	@NotEmpty
@@ -37,60 +52,14 @@ public class Bill extends NamedEntity {
 	@NotNull
 	protected Double	finalPrice;
 
-	//Relations
+	// Relations
 
-	@ManyToOne
-	@JoinColumn(name = "receipt_id")
-	private Receipt		receipt;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "appointment_id")
+	private Appointment			appointment;
 
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(final String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getDocument() {
-		return this.document;
-	}
-
-	public void setDocument(final String document) {
-		this.document = document;
-	}
-
-	public String getTypeDocument() {
-		return this.typeDocument;
-	}
-
-	public void setTypeDocument(final String typeDocument) {
-		this.typeDocument = typeDocument;
-	}
-
-	public Double getPrice() {
-		return this.price;
-	}
-
-	public void setPrice(final Double price) {
-		this.price = price;
-	}
-
-	public Double getIva() {
-		return this.iva;
-	}
-
-	public void setIva(final Double iva) {
-		this.iva = iva;
-	}
-
-	public Receipt getReceipt() {
-		return this.receipt;
-	}
-
-	public void setReceipt(final Receipt receipt) {
-		this.receipt = receipt;
-	}
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bill", fetch = FetchType.EAGER)
+	private Set<Transaction>	transactions;
 
 	public Double getFinalPrice() {
 		return this.iva / 100 * this.price + this.price;

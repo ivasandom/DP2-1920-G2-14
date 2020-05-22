@@ -19,6 +19,9 @@ public class PaymentMethod extends BaseEntity {
 
 	@Column(name = "brand")
 	private String	brand;
+	
+	@Column(name = "last4")
+	private String last4;
 
 	@Column(name = "token")
 	@NotBlank

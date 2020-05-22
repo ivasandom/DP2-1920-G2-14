@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +21,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "transactions")
 public class Transaction extends BaseEntity {
-
+	
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+	
 	@Column(name = "type")
 	@Enumerated
 	private TransactionType	type;
@@ -42,7 +47,7 @@ public class Transaction extends BaseEntity {
 	//Relations
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "receipt_id")
-	private Receipt			receipt;
+	@JoinColumn(name = "bill_id")
+	private Bill			bill;
 
 }
