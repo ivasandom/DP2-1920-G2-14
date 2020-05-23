@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,11 +23,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "bills")
-public class Bill extends NamedEntity {
+public class Bill extends BaseEntity {
 	
 	@Column(name = "status")
 	@Enumerated
 	private BillStatus			status;
+	
+	@Column(name = "first_name")
+	@NotEmpty
+	protected String	firstName;
 
 	@Column(name = "last_name")
 	@NotEmpty
@@ -36,9 +41,9 @@ public class Bill extends NamedEntity {
 	@NotEmpty
 	protected String	document;
 
-	@Column(name = "type_document")
-	@NotEmpty
-	protected String	typeDocument;
+	@Column(name = "document_type")
+	@NotNull(message = "must not be null")
+	private DocumentType	documentType;
 
 	@Column(name = "price")
 	@NotNull
@@ -47,10 +52,6 @@ public class Bill extends NamedEntity {
 	@Column(name = "iva")
 	@NotNull
 	protected Double	iva;
-
-	@Column(name = "final_price")
-	@NotNull
-	protected Double	finalPrice;
 
 	// Relations
 
@@ -61,7 +62,8 @@ public class Bill extends NamedEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bill", fetch = FetchType.EAGER)
 	private Set<Transaction>	transactions;
 
+	@Transient
 	public Double getFinalPrice() {
-		return this.iva / 100 * this.price + this.price;
+		return (1 + this.iva) * this.price;
 	}
 }

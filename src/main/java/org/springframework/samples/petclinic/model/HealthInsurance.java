@@ -3,7 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 public enum HealthInsurance {
 
-	I_DO_NOT_HAVE_INSURANCE("I do not have insurance"), MAPFRE("Mapfre"), SANITAS("Sanitas"), DKV("DKV"), CIGNA("Cigna"), FIATC("Fiatc"), AEGON("Aegon"), AXA("Axa"), CASER("Caser"), ASISA("Asisa"), ADESLAS("Adeslas");
+	I_DO_NOT_HAVE_INSURANCE("I do not have insurance"), MAPFRE("Mapfre"), SANITAS("Sanitas"), DKV("DKV"), CIGNA("Cigna"), FIATC("Fiatc"), AEGON("Aegon"), AXA("Axa"), CASER("Caser"), ASISA("Asisa"), ADESLAS("Adeslas"), SANTANDER("Santander");
 
 	private String displayName;
 

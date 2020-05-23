@@ -12,19 +12,19 @@ INSERT INTO authorities VALUES ('user','client');
 INSERT INTO users(username,password,enabled) VALUES ('pepegotera','pepegotera',TRUE);
 INSERT INTO authorities VALUES ('pepegotera','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME", "STRIPE_ID")
-VALUES (1, '1992-02-02', '28334456', 1, 'pepegotera@gmail.com', 'Pepe', 'Gotera', '2020-03-12', '00001', 'Adeslas', 'pepegotera', 'cus_HFLSuDf4wEoVn7');
+VALUES (1, '1992-02-02', '28334456', 1, 'pepegotera@gmail.com', 'Pepe', 'Gotera', '2020-03-12', '00001', 'ADESLAS', 'pepegotera', 'cus_HFLSuDf4wEoVn7');
 
 -- Cliente 2
 INSERT INTO users(username,password,enabled) VALUES ('elenanito','elenanito',TRUE);
 INSERT INTO authorities VALUES ('elenanito','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME", "STRIPE_ID")
-VALUES (2, '1982-03-02', '27334465', 1, 'elenanito@gmail.com', 'Elena', 'Nito', '2020-01-03', '00002', 'Santander', 'elenanito', 'cus_HEy02hbtV90LuK');
+VALUES (2, '1982-03-02', '27334465', 1, 'elenanito@gmail.com', 'Elena', 'Nito', '2020-01-03', '00002', 'SANTANDER', 'elenanito', 'cus_HEy02hbtV90LuK');
 
 -- Cliente 3
 INSERT INTO users(username,password,enabled) VALUES ('miguelperez','miguelperez',TRUE);
 INSERT INTO authorities VALUES ('miguelperez','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME", "STRIPE_ID")
-VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'Santander', 'miguelperez', 'cus_HFLDYXSMwBp20d');
+VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'SANTANDER', 'miguelperez', 'cus_HFLDYXSMwBp20d');
 
  
 INSERT INTO payment_methods(id, token, client_id) VALUES (1,'pm_1Ggr7GDfDQNZdQMbCcCoxzEI', 1);

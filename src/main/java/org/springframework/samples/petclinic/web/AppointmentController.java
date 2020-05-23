@@ -242,24 +242,25 @@ public class AppointmentController {
 
 	@PostMapping(value = "/{appointmentId}/consultation")
 	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
-		Collection<Medicine> medicines = this.medicineService.findMedicines();
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);	
 		ConsultationValidator consultationValidator = new ConsultationValidator();
 		consultationValidator.validate(appointment, result);
-		Iterable<Desease> deseases = this.deseaseService.findAll();
-		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
-		for (int i = 0; i < paymentMethods.size(); i++) {
-			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
-			String brand = pM.getType();
-			paymentMethods.get(i).setBrand(brand);
-		}
-		PaymentMethod p = new PaymentMethod();
-		p.setBrand("efectivo");
-		p.setClient(appointment.getClient());
-		p.setToken("efective_token");
-		paymentMethods.add(p);
-		appointment.getClient().getPaymentMethods().add(p);
+		
 		if (result.hasErrors()) {
+			Iterable<Desease> deseases = this.deseaseService.findAll();
+			List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
+			for (int i = 0; i < paymentMethods.size(); i++) {
+				com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
+				String brand = pM.getType();
+				paymentMethods.get(i).setBrand(brand);
+			}
+			PaymentMethod p = new PaymentMethod();
+			p.setBrand("efectivo");
+			p.setClient(appointment.getClient());
+			p.setToken("efective_token");
+			paymentMethods.add(p);
+			appointment.getClient().getPaymentMethods().add(p);
+			Collection<Medicine> medicines = this.medicineService.findMedicines();
 			model.put("medicineList", medicines);
 			model.put("deseaseList", deseases);
 			model.put("paymentMethodsList", paymentMethods);
@@ -270,6 +271,7 @@ public class AppointmentController {
 			a.setDiagnosis(appointment.getDiagnosis());
 			a.setBill(appointment.getBill());
 			a.setStatus(AppointmentStatus.COMPLETED);
+			
 			this.appointmentService.saveAppointment(a);
 			this.appointmentService.chargeAppointment(a);
 			return "redirect:/appointments/pro";
