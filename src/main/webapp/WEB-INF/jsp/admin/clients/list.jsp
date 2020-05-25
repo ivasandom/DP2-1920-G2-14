@@ -33,6 +33,7 @@
                   <th>Document - Type</th>
                   <th>Birthdate</th>
                   <th>Health Insurance</th>
+                  <th>
                 </tr>
               </thead>
               <tbody>
@@ -60,6 +61,16 @@
 
                     <td>
                       <c:out value="${client.healthInsurance} ${client.healthCardNumber}" />
+                    </td>
+                    
+                    
+                    <td>
+                      <spring:url value="/admin/clients/{clientId}" var="clientUrl">
+                      	<spring:param name="clientId" value="${client.id}" />
+                      </spring:url>
+                      <a href="${fn:escapeXml(clientUrl)}" class="btn btn-secondary btn-sm">
+                        View details
+                      </a>
                     </td>
                   </tr>
                 </c:forEach>

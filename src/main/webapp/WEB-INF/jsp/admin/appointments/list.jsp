@@ -30,24 +30,17 @@
             <table class="table table-bordered table-striped dataTable">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>Client</th>
                   <th>Professional</th>
                   <th>Date</th>
                   <th>Reason</th>
                   <th>Status</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <c:forEach items="${appointments}" var="appointment">
                   <tr>
-                    <td>
-                      <spring:url value="/admin/appointments/{appointmentId}" var="appointmentUrl">
-                        <spring:param name="appointmentId" value="${appointment.id}" />
-                      </spring:url>
-                      <a href="${fn:escapeXml(appointmentUrl)}">
-                        <c:out value="${appointment.id}" /></a>
-                    </td>
                     <td>
                       <spring:url value="/admin/clients/{clientId}" var="clientUrl">
                         <spring:param name="clientId" value="${appointment.client.id}" />
@@ -74,6 +67,15 @@
 
                     <td>
                       <c:out value="${appointment.status}" />
+                    </td>
+                    
+                    <td>
+                      <spring:url value="/admin/appointments/{appointmentId}" var="appointmentUrl">
+                      	<spring:param name="appointmentId" value="${appointment.id}" />
+                      </spring:url>
+                      <a href="${fn:escapeXml(appointmentUrl)}" class="btn btn-secondary btn-sm">
+                        View details
+                      </a>
                     </td>
                     
                   </tr>

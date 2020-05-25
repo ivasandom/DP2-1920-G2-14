@@ -70,7 +70,7 @@ public class ClientController {
 	public String initCreationForm(final Map<String, Object> model) throws DataAccessException {
 		Client client = new Client();
 		model.put("client", client);
-		model.put("documentTypes", DocumentType.values());
+		model.put("documentTypes", DocumentType.getNaturalPersonValues());
 		model.put("healthInsurances", HealthInsurance.values());
 		
 		return ClientController.VIEWS_CLIENTS_SIGN_UP;
@@ -83,7 +83,7 @@ public class ClientController {
 		
 		if (result.hasErrors()) {
 			model.put("client", client);
-			model.put("documentTypes", DocumentType.values());
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			model.put("healthInsurances", HealthInsurance.values());
 			
 			return ClientController.VIEWS_CLIENTS_SIGN_UP;

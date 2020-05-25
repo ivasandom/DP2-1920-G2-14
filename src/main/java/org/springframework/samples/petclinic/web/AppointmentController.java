@@ -276,7 +276,7 @@ public class AppointmentController {
 					bill.setName(appointmentClient.getFullName());
 				} else {
 					bill.setDocument(appointmentClient.getHealthInsurance().getCif());
-					bill.setDocumentType(DocumentType.nif);
+					bill.setDocumentType(DocumentType.CIF);
 					bill.setName(appointmentClient.getHealthInsurance().getLegalName());
 				}
 				

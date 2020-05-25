@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -38,7 +40,12 @@ public class Bill extends BaseEntity {
 
 	@Column(name = "iva")
 	@NotNull
-	private Double iva;
+	private Double iva = 0.21;
+
+	// If no health insurance, then only cash and bank transfer methods allowed.
+	@Column(name = "health_insurance")
+	@Enumerated(value = EnumType.STRING)
+	private HealthInsurance healthInsurance = HealthInsurance.I_DO_NOT_HAVE_INSURANCE; 
 
 	// Relations
 

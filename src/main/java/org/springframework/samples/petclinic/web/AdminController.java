@@ -33,6 +33,7 @@ import org.springframework.samples.petclinic.model.BillTransactionValidator;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.ClientValidator;
+import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
@@ -134,6 +135,7 @@ public class AdminController {
 	public String clientEditForm(@PathVariable("clientId") final int clientId, final ModelMap model) {
 		Client client = this.clientService.findClientById(clientId);
 		model.put("client", client);
+		model.put("documentTypes", DocumentType.getNaturalPersonValues());
 		model.put("healthInsurances", HealthInsurance.values());
 		return "admin/clients/form";
 	}
@@ -146,6 +148,7 @@ public class AdminController {
 
 		if (result.hasErrors()) {
 			model.put("client", client);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
@@ -159,6 +162,7 @@ public class AdminController {
 	public String clientCreateForm(final ModelMap model) {
 		Client client = new Client();
 		model.put("client", client);
+		model.put("documentTypes", DocumentType.getNaturalPersonValues());
 		model.put("healthInsurances", HealthInsurance.values());
 		return "admin/clients/form";
 	}
@@ -171,6 +175,7 @@ public class AdminController {
 
 		if (result.hasErrors()) {
 			model.put("client", client);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
@@ -212,6 +217,7 @@ public class AdminController {
 		model.put("professional", professional);
 		model.put("centers", centers);
 		model.put("specialties", specialties);
+		model.put("documentTypes", DocumentType.getNaturalPersonValues());
 		return "admin/professionals/form";
 	}
 
@@ -229,6 +235,7 @@ public class AdminController {
 			model.put("professional", professional);
 			model.put("centers", centers);
 			model.put("specialties", specialties);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			return "admin/professionals/form";
 		} else {
 			professional.setId(professionalId);
@@ -246,6 +253,7 @@ public class AdminController {
 		model.put("professional", professional);
 		model.put("centers", centers);
 		model.put("specialties", specialties);
+		model.put("documentTypes", DocumentType.getNaturalPersonValues());
 		return "admin/professionals/form";
 	}
 
@@ -262,6 +270,7 @@ public class AdminController {
 			model.put("professional", professional);
 			model.put("centers", centers);
 			model.put("specialties", specialties);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			return "admin/professionals/form";
 		} else {
 			this.professionalService.saveProfessional(professional);
@@ -404,13 +413,13 @@ public class AdminController {
 		transaction.setAmount(bill.getFinalPrice() - bill.getTotalPaid());
 
 		Client client = bill.getAppointment().getClient();
-		Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 
 		List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
 		availablePaymentMethods.add(PaymentMethod.cash());
 		availablePaymentMethods.add(PaymentMethod.bankTransfer());
 
-		if (client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
+		if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
+			Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 			availablePaymentMethods.addAll(clientPaymentMethods);
 		}
 
@@ -427,11 +436,11 @@ public class AdminController {
 		Bill bill = this.billService.findById(billId);
 		transaction.setBill(bill);
 
-		PaymentMethod usedPaymentMethod = transaction.getPaymentMethod();
-		if (usedPaymentMethod != null && !(usedPaymentMethod.getToken().equals("CASH")
-				|| usedPaymentMethod.getToken().equals("BANKTRANSFER"))) {
+		PaymentMethod paymentMethod = transaction.getPaymentMethod();
+		if (paymentMethod != null && !(paymentMethod.getToken().equals("CASH")
+				|| paymentMethod.getToken().equals("BANKTRANSFER"))) {
 
-			transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(usedPaymentMethod.getToken(),
+			transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(paymentMethod.getToken(),
 					bill.getAppointment().getClient()));
 		}
 
@@ -440,13 +449,13 @@ public class AdminController {
 
 		if (result.hasErrors()) {
 			Client client = bill.getAppointment().getClient();
-			Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 
 			List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
 			availablePaymentMethods.add(PaymentMethod.cash());
 			availablePaymentMethods.add(PaymentMethod.bankTransfer());
 
-			if (client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
+			if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
+				Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 				availablePaymentMethods.addAll(clientPaymentMethods);
 			}
 
@@ -459,10 +468,10 @@ public class AdminController {
 			transaction.setCreatedAt(LocalDateTime.now());
 			transaction.setType(TransactionType.CHARGE);
 
-			if (usedPaymentMethod.getToken().equals("CASH") || usedPaymentMethod.getToken().equals("BANKTRANSFER")) {
+			if (paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER")) {
 				transaction.setSuccess(true);
 				transaction.setStatus("succeeded");
-				transaction.setToken(usedPaymentMethod.getToken());
+				transaction.setToken(paymentMethod.getToken());
 			} else {
 				PaymentIntent paymentIntent = this.stripeService.charge(transaction.getPaymentMethod().getToken(),
 						transaction.getAmount(), bill.getAppointment().getClient().getStripeId());
@@ -498,7 +507,7 @@ public class AdminController {
 				transactionRefund.setAmount(transaction.getAmount());
 				transactionRefund.setToken(transaction.getToken());
 				transactionRefund.setSuccess(true);
-				transactionRefund.setStatus("succeded");
+				transactionRefund.setStatus("succeeded");
 			} else {
 				Refund stripeRefund = this.stripeService.refund(transaction.getToken());
 				transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);

@@ -27,6 +27,12 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 
 			}
 		}
+		
+		if (!errors.hasFieldErrors("documentType")) {
+			if (professional.getDocumentType().equals(DocumentType.CIF)) {
+				errors.rejectValue("documentType", "invalid natural person document type");
+			}
+		}
 	}
 
 }

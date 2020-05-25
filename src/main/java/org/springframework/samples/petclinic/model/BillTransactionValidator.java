@@ -32,6 +32,13 @@ public class BillTransactionValidator implements org.springframework.validation.
 					|| transaction.getPaymentMethod().getToken().isEmpty()) {
 				errors.rejectValue("paymentMethod.token", "payment method must be valid");
 			}
+			
+			if (!errors.hasFieldErrors("paymentMethod.token")) {
+				if (!transaction.getBill().getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) &&
+					!transaction.getPaymentMethod().getToken().equals("CASH") && !transaction.getPaymentMethod().getToken().equals("BANKTRANSFER")) {
+					errors.rejectValue("paymentMethod.token", "only cash and banktransfer methods are allowed");
+				}
+			}
 		}
 
 	}

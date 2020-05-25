@@ -2,7 +2,7 @@
 package org.springframework.samples.petclinic.model;
 
 public enum DocumentType {
-	nif("Nif"), nie("Nie"), passport("Passport");
+	NIF("Nif"), NIE("Nie"), PASSPORT("Passport"), CIF("Cif");
 	
 	private String displayName;
 
@@ -12,5 +12,15 @@ public enum DocumentType {
 
 	public String getDisplayName() {
 		return this.displayName;
+	}
+	
+	public static DocumentType[] getNaturalPersonValues() {
+		DocumentType[] res = {NIF, NIE, PASSPORT};
+		return res;
+	}
+	
+	public static DocumentType[] getLegalPersonValues() {
+		DocumentType[] res = {CIF};
+		return res;
 	}
 }

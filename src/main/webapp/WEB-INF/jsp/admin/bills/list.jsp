@@ -71,7 +71,7 @@
                       <spring:url value="/admin/bills/{billId}" var="billUrl">
                         <spring:param name="billId" value="${bill.id}" />
                       </spring:url>
-                      <a href="${fn:escapeXml(billUrl)}" class="btn btn-secondary">
+                      <a href="${fn:escapeXml(billUrl)}" class="btn btn-secondary btn-sm">
                         View details
                       </a>
                     </td>

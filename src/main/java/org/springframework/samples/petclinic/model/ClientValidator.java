@@ -46,6 +46,12 @@ public class ClientValidator implements org.springframework.validation.Validator
 
 			}
 		}
+		
+		if (!errors.hasFieldErrors("documentType")) {
+			if (client.getDocumentType().equals(DocumentType.CIF)) {
+				errors.rejectValue("documentType", "invalid natural person document type");
+			}
+		}
 	}
 
 }
