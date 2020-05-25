@@ -350,8 +350,7 @@ public class AppointmentServiceTests {
 		//Bill must be created for the method
 		Bill bill = new Bill();
 		bill.setIva(0.21);
-		bill.setFirstName(appointment.getClient().getFirstName());
-		bill.setLastName(appointment.getClient().getLastName());
+		bill.setName(appointment.getClient().getFullName());
 		bill.setDocument(appointment.getClient().getDocument());
 		bill.setDocumentType(appointment.getClient().getDocumentType());
 		bill.setPrice(100.);

@@ -36,7 +36,11 @@ public class AppointmentService {
 	@Autowired
 	private AppointmentRepository	appointmentRepository;
 
-
+	@Transactional
+	public int appointmentCount() {
+		return (int) this.appointmentRepository.count();
+	}
+	
 	@Autowired
 	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
@@ -102,9 +106,8 @@ public class AppointmentService {
 		if (appointment.getBill() != null && appointment.getBill().getPrice() != null && appointment.getBill().getPrice() > .0) {
 			Client client = appointment.getClient();
 			Collection<PaymentMethod> paymentMethods = client.getPaymentMethods();
-			System.out.println("step1");
+			
 			if (paymentMethods.size() > 0) {
-				System.out.println("step2");
 				PaymentMethod primary = paymentMethods.iterator().next();
 				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getBill().getFinalPrice(), appointment.getClient().getStripeId());
 				// Client charged successfully!
@@ -115,6 +118,7 @@ public class AppointmentService {
 				transaction.setAmount((double) paymentIntent.getAmount() / 100);
 				transaction.setStatus(paymentIntent.getStatus());
 				transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
+				transaction.setBill(appointment.getBill());
 				this.transactionService.saveTransaction(transaction);
 			}
 		}

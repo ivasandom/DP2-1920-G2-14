@@ -8,7 +8,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="appointments" pageTitle="Appointments: #${appointment.id}">
+<petclinic:staffLayout currentPage="bills" pageTitle="Bill: #${bill.id}">
 
   <jsp:attribute name="customScript">
     <script>
@@ -27,89 +27,49 @@
           </div>
           <div class="card-body">
             <dl class="dl-horizontal">
-              <dt>Client</dt>
+              <dt>Name</dt>
               <dd>
-                <spring:url value="/admin/clients/{clientId}" var="clientUrl">
-                  <spring:param name="clientId" value="${appointment.client.id}" />
-                </spring:url>
-                <a href="${fn:escapeXml(clientUrl)}">
-                  <c:out value="${appointment.client.firstName} ${appointment.client.lastName}" />
-                </a>
+                <c:out value="${bill.name}" />
               </dd>
-              <dt>Professional</dt>
+              <dt>Document</dt>
               <dd>
-                <spring:url value="/admin/professionals/{professionalId}" var="professionalUrl">
-                  <spring:param name="professionalId" value="${appointment.professional.id}" />
-                </spring:url>
-                <a href="${fn:escapeXml(professionalUrl)}">
-                  <c:out value="${appointment.professional.firstName} ${appointment.professional.lastName}" />
-                </a>
+               <c:out value="${bill.document} - ${bill.documentType}" />
               </dd>
-              <dt>Date time</dt>
+              <dt>Price</dt>
               <dd>
-                <c:out value="${appointment.date} at ${appointment.startTime}" />
+                <c:out value="${bill.price}" />
               </dd>
-              <dt>Reason</dt>
+              <dt>IVA</dt>
               <dd>
-                <c:out value="${appointment.reason}" />
+                <c:out value="${bill.iva}" />
               </dd>
-              <dt>Center</dt>
+              <dt>Final price</dt>
               <dd>
-                <c:out value="${appointment.center.address}" />
+                <c:out value="${bill.finalPrice}" />
+              </dd>
+              <dt>Total paid</dt>
+              <dd>
+                <c:out value="$ ${bill.totalPaid}" />
               </dd>
               <dt>Status</dt>
               <dd>
-                <c:out value="${appointment.status}" />
+                <c:out value="${bill.status.displayName}" />
               </dd>
             </dl>
             
           </div>
           <div class="card-footer">
-          <spring:url value="/admin/appointments/{appointmentId}/edit" var="editUrl">
-              <spring:param name="appointmentId" value="${appointment.id}" />
+          <spring:url value="/admin/bills/{billId}/charge" var="chargeUrl">
+              <spring:param name="billId" value="${bill.id}" />
             </spring:url>
-            <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
-              Edit appointment
+            <a href="${fn:escapeXml(chargeUrl)}" class="btn btn-primary text-white">
+              Charge bill
             </a>
-            <button type="button" class="btn btn-danger">Delete appointment</button>
           </div>
         </div>
       </div>
-      <div class="col-4">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Bill</h3>
-          </div>
-          <div class="card-body">
-            <c:if test="${not empty appointment.bill}">
-              <dl class="dl-horizontal">
-                <dt>Price</dt>
-                <dd>
-                  $
-                  <c:out value="${appointment.bill.price}" />
-                </dd>
-                <dt>Status</dt>
-                <dd>
-                  <c:out value="${appointment.bill.status}" />
-                </dd>
-                <dt>Created at</dt>
-                <dd>
-                  <c:out value="${appointment.bill.status}" />
-                </dd>
-              </dl>
-
-            </c:if>
-            <c:if test="${empty appointment.bill}">
-              No bill. A bill will be created after appointment has been completed.
-            </c:if>
-          </div>
-          <div class="card-footer">
-          <button class="btn btn-secondary">View bill</button>
-          </div>
-        </div>
-      </div>
+      
     </div>
-    <c:if test="${not empty appointment.bill}">
       <div class="row equal">
         <div class="col-12">
           <div class="card">
@@ -127,7 +87,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <c:forEach items="${appointment.bill.transactions}" var="transaction">
+                  <c:forEach items="${bill.transactions}" var="transaction">
                     <tr>
                       <td>
                         <c:out value="${transaction.amount} $" />
@@ -159,7 +119,7 @@
           </div>
         </div>
       </div>
-    </c:if>
+
   </jsp:body>
 
 </petclinic:staffLayout>

@@ -3,7 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 public enum BillStatus {
 
-	PENDING("Pending"), REFUNDED("Refunded"), PAID("Paid");
+	PENDING("Pending"), REFUNDED("Refunded"), PARTIALLY_PAID("Partially paid"), PAID("Paid");
 	
 	private String displayName;
 

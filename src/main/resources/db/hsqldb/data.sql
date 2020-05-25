@@ -12,7 +12,7 @@ INSERT INTO authorities VALUES ('user','client');
 INSERT INTO users(username,password,enabled) VALUES ('pepegotera','pepegotera',TRUE);
 INSERT INTO authorities VALUES ('pepegotera','client');
 INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMAIL","FIRST_NAME","LAST_NAME","REGISTRATION_DATE","HEALTH_CARD_NUMBER","HEALTH_INSURANCE","USERNAME", "STRIPE_ID")
-VALUES (1, '1992-02-02', '28334456', 1, 'pepegotera@gmail.com', 'Pepe', 'Gotera', '2020-03-12', '00001', 'ADESLAS', 'pepegotera', 'cus_HFLSuDf4wEoVn7');
+VALUES (1, '1992-02-02', '28334456', 1, 'pepegotera@gmail.com', 'Pepe', 'Gotera', '2020-03-12', '00001', 'I_DO_NOT_HAVE_INSURANCE', 'pepegotera', 'cus_HFLSuDf4wEoVn7');
 
 -- Cliente 2
 INSERT INTO users(username,password,enabled) VALUES ('elenanito','elenanito',TRUE);
@@ -27,7 +27,7 @@ INSERT INTO "PUBLIC"."CLIENTS"("ID","BIRTH_DATE","DOCUMENT","DOCUMENT_TYPE","EMA
 VALUES (3, '1993-05-07', '45334465', 1, 'migper@gmail.com', 'Miguel', 'Perez', '2020-02-23', '00003', 'SANTANDER', 'miguelperez', 'cus_HFLDYXSMwBp20d');
 
  
-INSERT INTO payment_methods(id, token, client_id) VALUES (1,'pm_1Ggr7GDfDQNZdQMbCcCoxzEI', 1);
+INSERT INTO payment_methods(id, token, brand, last4, client_id) VALUES (1,'pm_1Ggr7GDfDQNZdQMbCcCoxzEI', 'VISA', '4242', 1);
  
 -- Professional 1
 INSERT INTO users(username,password,enabled) VALUES ('professional1','professional1',TRUE);
@@ -414,6 +414,12 @@ INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, prof
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 5, 1, 3, '2020-02-07', '09:00', 'consultation','CHECKING');
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 6, 1, 3, '2020-03-05', '08:30', 'consultation','CHECKING');
 INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 7, 1, 3, '2020-04-09', '08:30', 'consultation','CHECKING');
+
+-- Bills
+
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id) VALUES (1, 'Seguros Adeslas S.A.', '50906030', 1, '1800.0', '0.21', 1);
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 1, '150.0', '0.21', 1);
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 1, '70.0', '0.21', 1);
 
 --INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (2, 1, 3, 3, '2020-12-12', '08:45');
 -- INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:00');

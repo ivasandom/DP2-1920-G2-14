@@ -37,12 +37,15 @@ import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
 import org.springframework.samples.petclinic.model.AppointmentType;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
+import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.ConsultationValidator;
-import org.springframework.samples.petclinic.model.Desease;
-import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.PaymentMethod;
+import org.springframework.samples.petclinic.model.Desease;
+import org.springframework.samples.petclinic.model.DocumentType;
+import org.springframework.samples.petclinic.model.HealthInsurance;
+import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -75,19 +78,21 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("appointments")
 public class AppointmentController {
 
-	private final AppointmentService	appointmentService;
-	private final ProfessionalService	professionalService;
-	private final SpecialtyService		specialtyService;
-	private final ClientService			clientService;
-	private final CenterService			centerService;
-	private final MedicineService		medicineService;
-	private final DeseaseService		deseaseService;
-	private final StripeService			stripeService;
-
+	private final AppointmentService appointmentService;
+	private final ProfessionalService professionalService;
+	private final SpecialtyService specialtyService;
+	private final ClientService clientService;
+	private final CenterService centerService;
+	private final MedicineService medicineService;
+	private final DeseaseService deseaseService;
+	private final StripeService stripeService;
 
 	@Autowired
-	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
-		final AuthoritiesService authoritiesService, final MedicineService medicineService, final DeseaseService deseaseService, final StripeService stripeService) {
+	public AppointmentController(final AppointmentService appointmentService,
+			final ProfessionalService professionalService, final SpecialtyService specialtyService,
+			final ClientService clientService, final CenterService centerService,
+			final AuthoritiesService authoritiesService, final MedicineService medicineService,
+			final DeseaseService deseaseService, final StripeService stripeService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
@@ -128,7 +133,8 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/{appointmentId}")
-	public ModelAndView detailtsAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+	public ModelAndView detailAppointment(@PathVariable("appointmentId") final int appointmentId,
+			final ModelMap model) {
 		ModelAndView mav = new ModelAndView("appointments/new");
 		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
 		Client c = this.clientService.findClientById(a.getClient().getId());
@@ -143,9 +149,11 @@ public class AppointmentController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Professional currentPro = this.professionalService.findProByUsername(auth.getName());
 		Appointment nextAppointment = null;
-		Iterator<Appointment> todayPendingAppointments = this.appointmentService.findTodayPendingByProfessionalId(currentPro.getId()).iterator();
+		Iterator<Appointment> todayPendingAppointments = this.appointmentService
+				.findTodayPendingByProfessionalId(currentPro.getId()).iterator();
 		System.out.println(todayPendingAppointments);
-		Collection<Appointment> todayCompletedAppointments = this.appointmentService.findTodayCompletedByProfessionalId(currentPro.getId());
+		Collection<Appointment> todayCompletedAppointments = this.appointmentService
+				.findTodayCompletedByProfessionalId(currentPro.getId());
 
 		if (todayPendingAppointments.hasNext()) {
 			nextAppointment = todayPendingAppointments.next();
@@ -166,7 +174,8 @@ public class AppointmentController {
 	}
 
 	@PostMapping(value = "/new")
-	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) {
+	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result,
+			final ModelMap model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		appointment.setClient(this.clientService.findClientByUsername(auth.getName()));
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
@@ -187,13 +196,15 @@ public class AppointmentController {
 
 	@GetMapping(value = "busy")
 	@ResponseBody
-	public ResponseEntity<Object> getBusyStartTimes(@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") final LocalDate date, @RequestParam(name = "professionalId", required = false) final Integer professionalId,
-		final Model model) {
+	public ResponseEntity<Object> getBusyStartTimes(
+			@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") final LocalDate date,
+			@RequestParam(name = "professionalId", required = false) final Integer professionalId, final Model model) {
 
 		if (date != null && professionalId != null) {
 			Optional<Professional> professional = this.professionalService.findById(professionalId);
 			if (professional.isPresent()) {
-				Collection<LocalTime> busyStartTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
+				Collection<LocalTime> busyStartTimes = this.appointmentService
+						.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
 				return new ResponseEntity<Object>(busyStartTimes, HttpStatus.OK);
 			}
 		}
@@ -216,80 +227,86 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/{appointmentId}/consultation")
-	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final Map<String, Object> model) throws Exception {
+	public String showAppointment(@PathVariable("appointmentId") final int appointmentId,
+			final Map<String, Object> model) throws Exception {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		Collection<Medicine> medicines = this.medicineService.findMedicines();
-		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
-		for (int i = 0; i < paymentMethods.size(); i++) {
-			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
-			String brand = pM.getType();
-			paymentMethods.get(i).setBrand(brand);
-		}
-		PaymentMethod p = new PaymentMethod();
-		p.setBrand("efectivo");
-		p.setClient(appointment.getClient());
-		p.setToken("efective_token");
-		paymentMethods.add(p);
-		appointment.getClient().getPaymentMethods().add(p);
-		Iterable<Desease> deseases = this.deseaseService.findAll();
 
-		model.put("medicineList", medicines);
-		model.put("paymentMethodsList", paymentMethods);
-		model.put("appointment", appointment);
-		model.put("deseaseList", deseases);
-		return "appointments/consultationPro";
+		if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
+			return "redirect:/appointments/pro";
+		} else {
+			Collection<Medicine> medicines = this.medicineService.findMedicines();
+			Iterable<Desease> deseases = this.deseaseService.findAll();
+
+			model.put("medicineList", medicines);
+			model.put("appointment", appointment);
+			model.put("deseaseList", deseases);
+			return "appointments/consultationPro";
+		}
+
 	}
 
 	@PostMapping(value = "/{appointmentId}/consultation")
-	public String processUpdateAppForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-		Appointment a = this.appointmentService.findAppointmentById(appointmentId);	
-		ConsultationValidator consultationValidator = new ConsultationValidator();
-		consultationValidator.validate(appointment, result);
-		
-		if (result.hasErrors()) {
-			Iterable<Desease> deseases = this.deseaseService.findAll();
-			List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
-			for (int i = 0; i < paymentMethods.size(); i++) {
-				com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
-				String brand = pM.getType();
-				paymentMethods.get(i).setBrand(brand);
-			}
-			PaymentMethod p = new PaymentMethod();
-			p.setBrand("efectivo");
-			p.setClient(appointment.getClient());
-			p.setToken("efective_token");
-			paymentMethods.add(p);
-			appointment.getClient().getPaymentMethods().add(p);
-			Collection<Medicine> medicines = this.medicineService.findMedicines();
-			model.put("medicineList", medicines);
-			model.put("deseaseList", deseases);
-			model.put("paymentMethodsList", paymentMethods);
-			model.put("appointment", a);
-			model.addAttribute("errors", result.getAllErrors());
-			return "appointments/consultationPro";
-		} else {
-			a.setDiagnosis(appointment.getDiagnosis());
-			a.setBill(appointment.getBill());
-			a.setStatus(AppointmentStatus.COMPLETED);
-			
-			this.appointmentService.saveAppointment(a);
-			this.appointmentService.chargeAppointment(a);
+	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result,
+			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
+
+		if (a.getStatus() == AppointmentStatus.COMPLETED) {
 			return "redirect:/appointments/pro";
+		} else {
+			ConsultationValidator consultationValidator = new ConsultationValidator();
+			consultationValidator.validate(appointment, result);
+
+			if (result.hasErrors()) {
+				Iterable<Desease> deseases = this.deseaseService.findAll();
+				Collection<Medicine> medicines = this.medicineService.findMedicines();
+				model.put("medicineList", medicines);
+				model.put("deseaseList", deseases);
+				model.put("appointment", a);
+				return "appointments/consultationPro";
+			} else {
+				Client appointmentClient = a.getClient();
+				
+				Bill bill = appointment.getBill();
+				bill.setIva(0.21);
+				bill.setAppointment(appointment);
+				
+				if (appointmentClient.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
+					bill.setDocument(appointmentClient.getDocument());
+					bill.setDocumentType(appointmentClient.getDocumentType());
+					bill.setName(appointmentClient.getFullName());
+				} else {
+					bill.setDocument(appointmentClient.getHealthInsurance().getCif());
+					bill.setDocumentType(DocumentType.nif);
+					bill.setName(appointmentClient.getHealthInsurance().getLegalName());
+				}
+				
+				a.setBill(bill);
+				a.setDiagnosis(appointment.getDiagnosis());
+				a.setStatus(AppointmentStatus.COMPLETED);
+
+				this.appointmentService.saveAppointment(a);
+//				this.appointmentService.chargeAppointment(a);
+				return "redirect:/appointments/pro";
+			}
+
 		}
 	}
 
 	@GetMapping("/{appointmentId}/details")
-	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model)
+			throws Exception {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		Collection<Medicine> medicines = new ArrayList<Medicine>();
 		Collection<Desease> deseases = new ArrayList<Desease>();
-		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream().collect(Collectors.toList());
-		//Collection<String> brands = Collections.emptyList();
+		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream()
+				.collect(Collectors.toList());
+		// Collection<String> brands = Collections.emptyList();
 		for (int i = 0; i < paymentMethods.size(); i++) {
-			com.stripe.model.PaymentMethod pM = this.stripeService.retrievePaymentMethod(paymentMethods.get(i).getToken());
+			com.stripe.model.PaymentMethod pM = this.stripeService
+					.retrievePaymentMethod(paymentMethods.get(i).getToken());
 			String brand = pM.getType();
-			//brands.add(brand);
+			// brands.add(brand);
 			paymentMethods.get(i).setBrand(brand);
 		}
 		if (appointment.getDiagnosis() != null) {
@@ -297,7 +314,8 @@ public class AppointmentController {
 			deseases = appointment.getDiagnosis().getDeseases();
 		}
 		try {
-			if (!authentication.getName().equals(this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
+			if (!authentication.getName().equals(
+					this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
 				model.addAttribute("message", "You cannot show another user's appointment");
 				return "exception";
 			} else {
@@ -310,7 +328,7 @@ public class AppointmentController {
 				System.out.println(appointment.getDiagnosis());
 				// Diagnosis
 				model.put("medicines", medicines);
-				//model.put("brands", brands);
+				// model.put("brands", brands);
 				model.put("appointment", appointment);
 				model.put("deseases", deseases);
 				return "appointments/details";
@@ -322,12 +340,14 @@ public class AppointmentController {
 	}
 
 	@GetMapping(path = "/delete/{appointmentId}")
-	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId, final ModelMap modelMap) {
+	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId,
+			final ModelMap modelMap) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String vista = "redirect:/appointments";
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		try {
-			if (!authentication.getName().equals(this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
+			if (!authentication.getName().equals(
+					this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
 				modelMap.addAttribute("message", "You cannot delete another user's appointment");
 				return "exception";
 			} else {
@@ -341,23 +361,4 @@ public class AppointmentController {
 		return vista;
 	}
 
-	//	@GetMapping(value = "/{appointmentId}/edit")
-	//	public String initUpdateAppointmentForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
-	//		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-	//		model.put("appointment", appointment);
-	//		return "appointments/new";
-	//	}
-	//
-	//	@PostMapping(value = "/{appointmentId}/edit")
-	//	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-	//		Appointment app = this.appointmentService.findAppointmentById(appointmentId);
-	//		if (result.hasErrors()) {
-	//			model.put("appointment", appointment);
-	//			return "appointments";
-	//		} else {
-	//			this.appointmentService.saveAppointment(app);
-	//			this.appointmentService.chargeAppointment(app);
-	//			return "redirect:/appointments";
-	//		}
-	//	}
 }

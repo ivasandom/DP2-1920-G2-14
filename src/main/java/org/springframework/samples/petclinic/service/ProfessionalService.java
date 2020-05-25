@@ -41,7 +41,12 @@ public class ProfessionalService {
 	public ProfessionalService(final ProfessionalRepository professionalRepository) {
 		this.professionalRepository = professionalRepository;
 	}
-
+	
+	@Transactional
+	public int professionalCount() {
+		return (int) this.professionalRepository.count();
+	}
+	
 	@Transactional(readOnly = true)
 	public Iterable<Professional> findAll() throws DataAccessException {
 		return this.professionalRepository.findAll();

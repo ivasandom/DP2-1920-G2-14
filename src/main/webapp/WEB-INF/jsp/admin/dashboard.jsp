@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <petclinic:staffLayout currentPage="dashboard" pageTitle="Dashboard">
 
@@ -10,7 +11,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>0</h3>
+                <h3><c:out value="${numClients}" /></h3>
 
                 <p>Clients</p>
               </div>
@@ -25,7 +26,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>0</h3>
+                <h3><c:out value="${numProfessionals}" /></h3>
 
                 <p>Professionals</p>
               </div>
@@ -39,7 +40,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>0</h3>
+                <h3><c:out value="${numAppointments}" /></h3>
 
                 <p>Appointments</p>
               </div>
@@ -55,9 +56,9 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>0</h3>
+                <h3>$ <c:out value="${totalBilled > 0 ? totalBilled : '0.00'}" /></h3>
 
-                <p>Billed this month</p>
+                <p>Total billed</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>

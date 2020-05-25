@@ -49,5 +49,10 @@ public class Transaction extends BaseEntity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bill_id")
 	private Bill			bill;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "payment_method_id")
+	private PaymentMethod		paymentMethod;
+	
 
 }

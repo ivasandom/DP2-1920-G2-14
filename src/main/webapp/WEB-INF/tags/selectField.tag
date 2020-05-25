@@ -11,6 +11,8 @@
               description="Size of Select" %>
 <%@ attribute name="itemLabel" required="false" rtexprvalue="true"
               description="Item label" %>
+<%@ attribute name="itemValue" required="false" rtexprvalue="true"
+              description="Item value" %>
 
 <spring:bind path="${name}">
     <c:set var="cssGroup" value="form-group ${status.error ? 'error' : '' }"/>
@@ -20,7 +22,7 @@
 
             <form:select class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" path="${name}">
             	<c:if test="${not empty itemLabel}">
-            		<form:options items="${names}" itemLabel="${itemLabel}"/>
+            		<form:options items="${names}" itemLabel="${itemLabel}" itemValue="${empty itemValue ? 'id' : itemValue}"/>
             	</c:if>
             	<c:if test="${empty itemLabel}">
             		<form:options items="${names}" />
