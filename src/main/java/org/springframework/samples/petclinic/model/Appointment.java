@@ -34,11 +34,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.sun.istack.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {
@@ -84,8 +82,7 @@ public class Appointment extends BaseEntity {
 	@JoinColumn(name = "diagnosis_id")
 	private Diagnosis			diagnosis;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "bill_id")
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "appointment")
 	private Bill				bill;
 
 	@Column(length = 32, columnDefinition = "varchar(32) default 'PENDING'")

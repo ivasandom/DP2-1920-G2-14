@@ -22,7 +22,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${creditCards}" var="creditCard">
+					<c:forEach items="${paymentMethods}" var="creditCard">
 						<tr>
 							<td>#</td>
 							<td><c:out value="${creditCard.token}"/></td>

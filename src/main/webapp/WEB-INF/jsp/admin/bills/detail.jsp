@@ -53,15 +53,15 @@
               </dd>
               <dt>Status</dt>
               <dd>
-               	<c:if test="${bill.status.displayName eq 'Paid'}" >
-                	<span class="badge badge-success"><c:out value="${bill.status.displayName}" /></span>
-                </c:if>
-                <c:if test="${bill.status.displayName eq 'Refunded'}" >
-                	<span class="badge badge-danger"><c:out value="${bill.status.displayName}" /></span>
-                </c:if>
-                <c:if test="${bill.status.displayName ne 'Refunded' and bill.status.displayName ne 'Paid'}" >
-                	<span class="badge badge-warning"><c:out value="${bill.status.displayName}" /></span>
-                </c:if>
+                <c:if test="${bill.status eq 'PAID'}" >
+		        	<span class="badge badge-success"><c:out value="${bill.status.displayName}" /></span>
+		        </c:if>
+		        <c:if test="${bill.status eq 'REFUNDED'}" >
+		           	<span class="badge badge-danger"><c:out value="${bill.status.displayName}" /></span>
+		        </c:if>
+		        <c:if test="${bill.status ne 'REFUNDED' and bill.status ne 'PAID'}" >
+		         	<span class="badge badge-warning"><c:out value="${bill.status.displayName}" /></span>
+		        </c:if>
               </dd>
             </dl>
             

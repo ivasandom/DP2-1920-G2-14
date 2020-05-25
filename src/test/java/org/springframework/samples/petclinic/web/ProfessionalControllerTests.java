@@ -103,7 +103,7 @@ class ProfessionalControllerTests {
 		professional.setBirthDate(birthdate);
 		professional.setRegistrationDate(registrationDate);
 		professional.setDocument("10203040T");
-		professional.setDocumentType(DocumentType.nif);
+		professional.setDocumentType(DocumentType.NIF);
 		professional.setSpecialty(specialty);
 		professional.setCenter(center);
 		professional.setUser(user);

@@ -53,7 +53,7 @@
                     </td>
 
                     <td>
-                      <c:out value="${professional.document} - ${professional.documentType}" />
+                      <c:out value="${professional.document} - ${professional.documentType.displayName}" />
                     </td>
 
                     <td>

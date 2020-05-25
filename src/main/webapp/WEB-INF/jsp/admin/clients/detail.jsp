@@ -37,7 +37,7 @@
               </dd>
               <dt>Health Insurance</dt>
               <dd>
-                <c:out value="${client.healthInsurance} / ${client.healthCardNumber}" />
+                <c:out value="${client.healthInsurance.displayName} / ${client.healthCardNumber}" />
               </dd>
               <dt>Email</dt>
               <dd>

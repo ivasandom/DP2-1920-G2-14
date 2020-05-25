@@ -6,7 +6,7 @@ import org.springframework.samples.petclinic.model.Bill;
 
 public interface BillRepository extends CrudRepository<Bill, Integer>{
 	
-	@Query("SELECT sum(bill.price * bill.iva + bill.price) FROM Bill bill")
+	@Query("SELECT sum(bill.price * bill.iva / 100 + bill.price) FROM Bill bill")
 	Double getTotalBilled();
 
 }

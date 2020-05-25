@@ -79,7 +79,7 @@ class ClientControllerTests {
 		pepe.setBirthDate(birthdate);
 		pepe.setRegistrationDate(registrationDate);
 		pepe.setDocument("10203040T");
-		pepe.setDocumentType(DocumentType.nif);
+		pepe.setDocumentType(DocumentType.NIF);
 		pepe.setHealthInsurance(HealthInsurance.MAPFRE);
 		pepe.setHealthCardNumber("1234567890");
 		pepe.setStripeId("1");
@@ -112,7 +112,7 @@ class ClientControllerTests {
 						.param("birthdate", "1955-12-4")
 						// .param("registrationDate", "2015-07-23")
 						.param("document", "10203040T")
-						.param("documentType", "nif")
+						.param("documentType", "NIF")
 						.param("healthInsurance", HealthInsurance.MAPFRE.name())
 						.param("healthCardNumber", "1234567890")
 						.param("user.username", "1234567890")

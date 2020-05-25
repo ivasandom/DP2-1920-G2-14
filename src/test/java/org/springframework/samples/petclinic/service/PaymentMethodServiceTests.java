@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class CreditCardServiceTests {
+public class PaymentMethodServiceTests {
 
 	@Autowired
 	protected PaymentMethodService	paymentMethodService;
@@ -66,8 +66,8 @@ public class CreditCardServiceTests {
 		paymentMethod.setToken(token);
 		paymentMethod.setClient(client);
 
-		this.paymentMethodService.saveCreditCard(paymentMethod);
-		;
+		this.paymentMethodService.savePaymentMethod(paymentMethod);
+
 		org.assertj.core.api.Assertions.assertThat(paymentMethod.getId().longValue()).isNotEqualTo(0);
 
 		paymentMethods = this.paymentMethodService.findByClient(client);

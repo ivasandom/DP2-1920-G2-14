@@ -56,7 +56,7 @@ public class AppointmentValidatorTests {
 		professional.setLastName("Carrasco");
 		professional.setEmail("mancar@gmail.com");
 		professional.setDocument("29334485");
-		professional.setDocumentType(DocumentType.nif);
+		professional.setDocumentType(DocumentType.NIF);
 		professional.setCollegiateNumber("413123122-K");
 		this.appointment.setProfessional(professional);
 

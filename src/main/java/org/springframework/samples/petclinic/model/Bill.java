@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.beans.Transient;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -24,7 +25,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "bills")
 public class Bill extends BaseEntity {
-
+	
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+	
 	@Column(name = "name")
 	private String name;
 
@@ -40,7 +44,7 @@ public class Bill extends BaseEntity {
 
 	@Column(name = "iva")
 	@NotNull
-	private Double iva = 0.21;
+	private Double iva = 21.;
 
 	// If no health insurance, then only cash and bank transfer methods allowed.
 	@Column(name = "health_insurance")
@@ -58,7 +62,7 @@ public class Bill extends BaseEntity {
 
 	@Transient
 	public Double getFinalPrice() {
-		return (1 + this.iva) * this.price;
+		return (1 + this.iva / 100) * this.price;
 	}
 
 	@Transient

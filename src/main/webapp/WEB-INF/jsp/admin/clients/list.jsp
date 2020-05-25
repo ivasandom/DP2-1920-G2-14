@@ -52,7 +52,7 @@
                     </td>
 
                     <td>
-                      <c:out value="${client.document} - ${client.documentType}" />
+                      <c:out value="${client.document} - ${client.documentType.displayName}" />
                     </td>
 
                     <td>
@@ -60,7 +60,7 @@
                     </td>
 
                     <td>
-                      <c:out value="${client.healthInsurance} ${client.healthCardNumber}" />
+                      <c:out value="${client.healthInsurance.displayName} ${client.healthCardNumber}" />
                     </td>
                     
                     

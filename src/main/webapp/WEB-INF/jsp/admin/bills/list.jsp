@@ -48,7 +48,7 @@
                     </td>
                     
                     <td>
-                      <c:out value="${bill.document} ${bill.documentType}" />
+                      <c:out value="${bill.document} ${bill.documentType.displayName}" />
                     </td>
 
                     <td>
@@ -64,7 +64,15 @@
                     </td>
                     
                     <td>
-                      <c:out value="${bill.status.displayName}" />
+                      <c:if test="${bill.status eq 'PAID'}" >
+		              	<span class="badge badge-success"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
+		              <c:if test="${bill.status eq 'REFUNDED'}" >
+		              	<span class="badge badge-danger"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
+		              <c:if test="${bill.status ne 'REFUNDED' and bill.status ne 'PAID'}" >
+		              	<span class="badge badge-warning"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
                     </td>
                     
                     <td>

@@ -39,7 +39,7 @@ public class ProfessionalValidatorTests {
 		Professional professional =new Professional();
 		professional.setBirthDate(birthdate);
 		professional.setDocument("29334456");
-		professional.setDocumentType(DocumentType.nif);
+		professional.setDocumentType(DocumentType.NIF);
 		professional.setEmail("frankcuesta@gmail.com");
 		professional.setFirstName("Frank");
 		professional.setLastName("Cuesta");

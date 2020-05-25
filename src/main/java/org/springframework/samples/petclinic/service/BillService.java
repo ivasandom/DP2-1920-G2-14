@@ -33,4 +33,9 @@ public class BillService {
 	public Double getTotalBilled() throws DataAccessException {
 		return this.billRepository.getTotalBilled();
 	}
+	
+	@Transactional
+	public void saveBill(final Bill bill) throws DataAccessException {
+		this.billRepository.save(bill);
+	}
 }

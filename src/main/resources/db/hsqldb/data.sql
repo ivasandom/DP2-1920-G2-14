@@ -280,9 +280,9 @@ INSERT INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (7,78);
 
 
 -- Para probar citas cogidas 2020-12-12
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-05-04', '08:00', 'test','CHECKING');
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-05-04', '08:15', 'test','CHECKING');
-INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test','CHECKING');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-05-04', '08:00', 'test','CHECKING', 'COMPLETED');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-05-04', '08:15', 'test','CHECKING', 'COMPLETED');
+INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test','CHECKING', 'COMPLETED');
 INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 1, 3, '2020-12-12', '08:45', 'test','CHECKING');
 
 -- Citas futuras para 4 meses
@@ -418,8 +418,8 @@ INSERT INTO appointments (client_id, center_id, diagnosis_id, specialty_id, prof
 -- Bills
 
 INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance) VALUES (1, 'Pepe Gotera', '28334456', 1, '1800.0', '0.21', 1, 'I_DO_NOT_HAVE_INSURANCE');
-INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 3, '150.0', '0.21', 1, 'ADESLAS');
-INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 3, '70.0', '0.21', 1, 'ADESLAS');
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 3, '150.0', '0.21', 2, 'ADESLAS');
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 3, '70.0', '0.21', 3, 'ADESLAS');
 
 --INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (2, 1, 3, 3, '2020-12-12', '08:45');
 -- INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:00');

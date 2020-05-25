@@ -173,16 +173,9 @@
                         <div class="tab-pane fade" id="list-billing" role="tabpanel"
                             aria-labelledby="list-billing-list">
 
-                            <div class="form-group">
-                                <label>Amount to charge</label>
-                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" path="bill.price"/>
-                                <small class="form-text text-muted">Add the cost of the consultation.</small>
-                                <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        ${status.errorMessage}
-                                    </div>
-                                </c:if>
-                            </div>
+                            <petclinic:inputField label="Bill price (without taxes)" name="bill.price" />
+                            <petclinic:inputField label="IVA" name="bill.iva" />
+                            
                            
                             </div>
                         </div>

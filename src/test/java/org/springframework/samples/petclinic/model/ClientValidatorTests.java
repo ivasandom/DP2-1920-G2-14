@@ -39,7 +39,7 @@ public class ClientValidatorTests {
 		Client client = new Client();
 		client.setBirthDate(birthdate);
 		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.nif);
+		client.setDocumentType(DocumentType.NIF);
 		client.setEmail("frankcuesta@gmail.com");
 		client.setFirstName("Frank");
 		client.setHealthCardNumber("0000000003");

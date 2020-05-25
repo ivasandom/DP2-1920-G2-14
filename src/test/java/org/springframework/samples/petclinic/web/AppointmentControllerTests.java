@@ -129,7 +129,7 @@ public class AppointmentControllerTests {
 		client = new Client();
 		client.setId(1);
 		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.nif);
+		client.setDocumentType(DocumentType.NIF);
 		client.setEmail("frankcuesta@gmail.com");
 		client.setFirstName("Frank");
 		client.setHealthCardNumber("0000000003");
@@ -189,7 +189,7 @@ public class AppointmentControllerTests {
 		professional.setLastName("Díaz");
 		professional.setEmail("mancar@gmail.com");
 		professional.setDocument("29334485");
-		professional.setDocumentType(DocumentType.nif);
+		professional.setDocumentType(DocumentType.NIF);
 		professional.setCollegiateNumber("413123122-K");
 		professional.setUser(user2);
 
@@ -263,7 +263,7 @@ public class AppointmentControllerTests {
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
 						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.nif.toString())
+						.param("client.documentType", DocumentType.NIF.toString())
 						.param("client.email", "frankcuesta@gmail.com")
 						.param("client.firstName", "Frank")
 						.param("client.healthCardNumber", "0000000003")
@@ -280,7 +280,7 @@ public class AppointmentControllerTests {
 						.param("professional.lastName", "Carrasco")
 						.param("professional.email", "mancar@gmail.com")
 						.param("professional.document", "29334485")
-						.param("professional.documentType", "nif")
+						.param("professional.documentType", "NIF")
 						.param("professional.collegiateNumber", "413123122K"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/appointments"));
@@ -306,7 +306,7 @@ public class AppointmentControllerTests {
 						.param("startTime", hora)
 						.param("client.document", "29334456")
 						.param("reason", "my head hurts")
-						.param("client.documentType", DocumentType.nif.toString())
+						.param("client.documentType", DocumentType.NIF.toString())
 						.param("client.email", "frankcuesta@gmail.com")
 						.param("client.firstName", "Frank")
 						.param("client.healthCardNumber", "0000000003")
@@ -322,7 +322,7 @@ public class AppointmentControllerTests {
 						.param("professional.lastName", "Carrasco")
 						.param("professional.email", "mancar@gmail.com")
 						.param("professional.document", "29334485")
-						.param("professional.documentType", "nif")
+						.param("professional.documentType", "NIF")
 						.param("professional.collegiateNumber", "413123122K"))
 				.andExpect(model().attributeHasErrors("appointment"))
 				.andExpect(model().attributeHasFieldErrors("appointment", "specialty"))
@@ -369,7 +369,7 @@ public class AppointmentControllerTests {
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
 						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.nif.toString())
+						.param("client.documentType", DocumentType.NIF.toString())
 						.param("client.email", "frankcuesta@gmail.com")
 						.param("client.firstName", "Frank")
 						.param("client.healthCardNumber", "0000000003")
@@ -386,7 +386,7 @@ public class AppointmentControllerTests {
 						.param("professional.lastName", "Carrasco")
 						.param("professional.email", "mancar@gmail.com")
 						.param("professional.document", "29334485")
-						.param("professional.documentType", "nif")
+						.param("professional.documentType", "NIF")
 						.param("professional.collegiateNumber", "413123122K"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/appointments/pro"));
@@ -425,7 +425,7 @@ public class AppointmentControllerTests {
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
 						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.nif.toString())
+						.param("client.documentType", DocumentType.NIF.toString())
 						.param("client.email", "frankcuesta@gmail.com")
 						.param("client.firstName", "Frank")
 						.param("client.healthCardNumber", "0000000003")
@@ -444,7 +444,7 @@ public class AppointmentControllerTests {
 						.param("professional.lastName", "Carrasco")
 						.param("professional.email", "mancar@gmail.com")
 						.param("professional.document", "29334485")
-						.param("professional.documentType", "nif")
+						.param("professional.documentType", "NIF")
 						.param("professional.collegiateNumber", "413123122K")
 						.param("diagnosis.Date", dia2)
 						.param("diagnosis.description", "healthy")
@@ -491,7 +491,7 @@ public class AppointmentControllerTests {
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
 						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.nif.toString())
+						.param("client.documentType", DocumentType.NIF.toString())
 						.param("client.email", "frankcuesta@gmail.com")
 						.param("client.firstName", "Frank")
 						.param("client.healthCardNumber", "0000000003")
@@ -510,7 +510,7 @@ public class AppointmentControllerTests {
 						.param("professional.lastName", "Carrasco")
 						.param("professional.email", "mancar@gmail.com")
 						.param("professional.document", "29334485")
-						.param("professional.documentType", "nif")
+						.param("professional.documentType", "NIF")
 						.param("professional.collegiateNumber", "413123122K")
 						.param("diagnosis.Date", dia2)
 						.param("diagnosis.description", "healthy")
@@ -552,11 +552,11 @@ public class AppointmentControllerTests {
 //
 //		this.mockMvc
 //			.perform(post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(csrf()).param("Date", dia).param("reason", "my head hurts")
-//				.with(csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.nif.toString()).param("client.email", "frankcuesta@gmail.com")
+//				.with(csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.NIF.toString()).param("client.email", "frankcuesta@gmail.com")
 //				.param("client.firstName", "Frank").param("client.healthCardNumber", "0000000003").param("client.healthInsurance", HealthInsurance.ADESLAS.name()).param("client.lastName", "Cuesta").param("client.user.username", "frankcuesta")
 //				.param("client.user.password", "frankcuesta").param("client.type.name", "revision").param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'").param("client.paymentMethod.brand", "visa").param("center.address", "Sevilla")
 //				.param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco").param("professional.email", "mancar@gmail.com")
-//				.param("professional.document", "29334485").param("professional.documentType", "nif").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
+//				.param("professional.document", "29334485").param("professional.documentType", "NIF").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
 //				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
 //			.andExpect(model().attributeHasErrors("appointment")).andExpect(model().attributeHasFieldErrors("appointment", "specialty"))
 //			.andExpect(view().name("appointments/consultationPro"));

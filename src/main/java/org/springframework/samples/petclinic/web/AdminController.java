@@ -411,13 +411,12 @@ public class AdminController {
 
 		Transaction transaction = new Transaction();
 		transaction.setAmount(bill.getFinalPrice() - bill.getTotalPaid());
-
 		Client client = bill.getAppointment().getClient();
 
 		List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
 		availablePaymentMethods.add(PaymentMethod.cash());
 		availablePaymentMethods.add(PaymentMethod.bankTransfer());
-
+		
 		if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
 			Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 			availablePaymentMethods.addAll(clientPaymentMethods);

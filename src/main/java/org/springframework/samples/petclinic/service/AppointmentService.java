@@ -34,7 +34,11 @@ public class AppointmentService {
 	private TransactionService		transactionService;
 
 	@Autowired
+	private BillService				billService;
+	
+	@Autowired
 	private AppointmentRepository	appointmentRepository;
+	
 
 	@Transactional
 	public int appointmentCount() {

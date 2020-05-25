@@ -66,7 +66,17 @@
                     </td>
 
                     <td>
-                      <c:out value="${appointment.status}" />
+                      <dd>
+		              	<c:if test="${appointment.status eq 'COMPLETED'}" >
+		                	<span class="badge badge-success"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+		                <c:if test="${appointment.status eq 'ABSENT'}" >
+		                	<span class="badge badge-danger"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+			            <c:if test="${appointment.status eq 'PENDING'}" >
+		                	<span class="badge badge-warning"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+		              </dd>
                     </td>
                     
                     <td>

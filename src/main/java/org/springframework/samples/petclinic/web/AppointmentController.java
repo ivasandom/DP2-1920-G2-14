@@ -41,15 +41,16 @@ import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.ConsultationValidator;
-import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.Medicine;
+import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.DeseaseService;
@@ -86,13 +87,14 @@ public class AppointmentController {
 	private final MedicineService medicineService;
 	private final DeseaseService deseaseService;
 	private final StripeService stripeService;
+	private final BillService billService;
 
 	@Autowired
 	public AppointmentController(final AppointmentService appointmentService,
 			final ProfessionalService professionalService, final SpecialtyService specialtyService,
 			final ClientService clientService, final CenterService centerService,
 			final AuthoritiesService authoritiesService, final MedicineService medicineService,
-			final DeseaseService deseaseService, final StripeService stripeService) {
+			final DeseaseService deseaseService, final StripeService stripeService, final BillService billService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
@@ -101,6 +103,7 @@ public class AppointmentController {
 		this.medicineService = medicineService;
 		this.deseaseService = deseaseService;
 		this.stripeService = stripeService;
+		this.billService = billService;
 	}
 
 	@ModelAttribute("centers")
@@ -184,7 +187,6 @@ public class AppointmentController {
 		if (result.hasErrors()) {
 			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
-			System.out.println(result.getAllErrors());
 			return "appointments/new";
 		} else {
 			// Save appointment if valid
@@ -267,8 +269,8 @@ public class AppointmentController {
 				Client appointmentClient = a.getClient();
 				
 				Bill bill = appointment.getBill();
-				bill.setIva(0.21);
-				bill.setAppointment(appointment);
+				bill.setAppointment(a);
+				bill.setHealthInsurance(appointmentClient.getHealthInsurance());
 				
 				if (appointmentClient.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
 					bill.setDocument(appointmentClient.getDocument());
@@ -280,12 +282,11 @@ public class AppointmentController {
 					bill.setName(appointmentClient.getHealthInsurance().getLegalName());
 				}
 				
-				a.setBill(bill);
 				a.setDiagnosis(appointment.getDiagnosis());
 				a.setStatus(AppointmentStatus.COMPLETED);
 
 				this.appointmentService.saveAppointment(a);
-//				this.appointmentService.chargeAppointment(a);
+				this.billService.saveBill(bill);
 				return "redirect:/appointments/pro";
 			}
 
