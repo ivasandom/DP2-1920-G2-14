@@ -61,6 +61,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Refund;
 
 @Controller
 @RequestMapping("/admin")
@@ -429,7 +430,7 @@ public class AdminController {
 		PaymentMethod usedPaymentMethod = transaction.getPaymentMethod();
 		if (usedPaymentMethod != null && !(usedPaymentMethod.getToken().equals("CASH")
 				|| usedPaymentMethod.getToken().equals("BANKTRANSFER"))) {
-			
+
 			transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(usedPaymentMethod.getToken(),
 					bill.getAppointment().getClient()));
 		}
@@ -476,6 +477,42 @@ public class AdminController {
 
 			return "redirect:/admin/bills/" + billId;
 		}
+
+	}
+
+	@PostMapping("/bills/{billId}/refund/{transactionId}")
+	public String billRefund(@PathVariable("billId") final int billId,
+			@PathVariable("transactionId") final int transactionId, final ModelMap model) throws Exception {
+
+		Transaction transaction = this.transactionService.findById(transactionId);
+
+		if (transaction != null && transaction.getType() == TransactionType.CHARGE && transaction.getSuccess()
+				&& !transaction.getRefunded()) {
+			
+			Transaction transactionRefund = new Transaction();
+			transactionRefund.setBill(transaction.getBill());
+			transactionRefund.setType(TransactionType.REFUND);
+			transactionRefund.setCreatedAt(LocalDateTime.now());
+
+			if (transaction.getToken().equals("CASH") || transaction.getToken().equals("BANKTRANSFER")) {
+				transactionRefund.setAmount(transaction.getAmount());
+				transactionRefund.setToken(transaction.getToken());
+				transactionRefund.setSuccess(true);
+				transactionRefund.setStatus("succeded");
+			} else {
+				Refund stripeRefund = this.stripeService.refund(transaction.getToken());
+				transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
+				transactionRefund.setToken(stripeRefund.getId());
+				transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");
+				transactionRefund.setStatus(stripeRefund.getStatus());
+			}
+
+			transaction.setRefunded(true);
+			this.transactionService.saveTransaction(transaction);
+			this.transactionService.saveTransaction(transactionRefund);
+		}
+
+		return "redirect:/admin/bills/" + billId;
 
 	}
 

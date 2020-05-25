@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Transaction;
@@ -28,5 +30,15 @@ public class TransactionService {
 	public Iterable<Transaction> listTransactions() throws DataAccessException {
 		return this.transactionRepository.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public Transaction findById(int id) throws DataAccessException {
+		Optional<Transaction> optional = this.transactionRepository.findById(id);
+		if (optional.isEmpty()) {
+			return null;
+		}
+		return optional.get();
+	}
+	
 
 }

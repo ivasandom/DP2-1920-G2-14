@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -43,6 +44,9 @@ public class Transaction extends BaseEntity {
 	@Column(name = "status")
 	@NotEmpty
 	private String			status;
+	
+	@Column(name = "refunded")
+	private Boolean			refunded = false;
 
 	//Relations
 
@@ -53,6 +57,19 @@ public class Transaction extends BaseEntity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "payment_method_id")
 	private PaymentMethod		paymentMethod;
+	
+	
+	@Transient
+	public String getSource() {
+		switch (token) {
+		case "CASH":
+			return "Cash";
+		case "BANKTRANSFER":
+			return "Bank Transfer";
+		default:
+			return String.format("Stripe: %s", token);
+		}
+	}
 	
 
 }

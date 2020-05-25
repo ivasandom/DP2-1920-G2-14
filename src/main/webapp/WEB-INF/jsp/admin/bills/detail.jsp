@@ -80,20 +80,25 @@
               <table class="table table-bordered table-striped dataTable">
                 <thead>
                   <tr>
+                  	<th>Date time</th>
                     <th>Amount</th>
-                    <th>Token</th>
+                    <th>Source</th>
                     <th>Type</th>
                     <th>Status</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <c:forEach items="${bill.transactions}" var="transaction">
                     <tr>
                       <td>
+                      	<c:out value="${transaction.createdAt}" />
+                      </td>
+                      <td>
                         <c:out value="${transaction.amount} $" />
                       </td>
                       <td>
-                        <c:out value="${transaction.token}" />
+                        <c:out value="${transaction.source}" />
                       </td>
                       <td>
                         <c:if test="${transaction.type eq 'CHARGE'}" >
@@ -110,6 +115,13 @@
                         <c:if test="${not transaction.success}" >
                         <span class="badge badge-danger text-uppercase"><c:out value="${transaction.status}" /></span>
                         </c:if>
+                      </td>
+                      <td>
+                      	<c:if test="${not transaction.refunded and transaction.success and transaction.type eq 'CHARGE'}">
+                      	<form:form action="/admin/bills/${bill.id}/refund/${transaction.id}/" method="post">
+                      		<button type="submit" class="btn btn-danger btn-sm">Refund</button>
+                      	</form:form>
+                      	</c:if>
                       </td>
                     </tr>
                   </c:forEach>
