@@ -26,7 +26,7 @@
 	            <sec:authorize access="hasAuthority('professional')">
 		           <a class="btn btn-primary btn-lg" href="/appointments/pro" role="button">> Acceder a modo consulta</a>
 	            </sec:authorize>
-	            <sec:authorize access="!hasAuthority('admin')">
+	            <sec:authorize access="hasAuthority('admin')">
 		           <a class="btn btn-primary btn-lg" href="/admin" role="button">> Panel de administración</a>
 	            </sec:authorize>
 			</sec:authorize>
