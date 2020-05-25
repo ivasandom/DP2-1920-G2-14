@@ -33,7 +33,7 @@
                     <petclinic:inputField label="Document" name="document" />
                   </div>
                   <div class="col-md-6">
-                    <petclinic:selectField label="Document Type" name="documentType" size="3"
+                    <petclinic:enumField label="Document Type" name="documentType"
                       names="${documentTypes}" />
                   </div>
                 </div>

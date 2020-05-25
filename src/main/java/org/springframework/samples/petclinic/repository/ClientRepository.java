@@ -14,9 +14,6 @@ public interface ClientRepository extends CrudRepository<Client, Integer> {
 	@Query("SELECT client FROM Client client WHERE client.user.username = :username")
 	Client findClientByUsername(@Param("username") String username);
 
-	@Query("SELECT client FROM Client client WHERE client.id = :id")
-	Client findById(int id) throws DataAccessException;
-
 	@Override
 	@Query("SELECT c FROM Client c")
 	Collection<Client> findAll() throws DataAccessException;

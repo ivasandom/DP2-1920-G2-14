@@ -15,10 +15,13 @@ public class ConsultationValidator implements Validator {
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diagnosis.description", "description must no be empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "receipt.price", "price must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bill.price", "price must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bill.iva", "iva must not be empty");
 
 		Appointment appointment = (Appointment) obj;
-
+		
+		/** FIXME NULL POINTER EXCEPTION CONTROLLER TEST **/
+		
 		if (!errors.hasFieldErrors("diagnosis.medicines")) {
 			if (appointment.getDiagnosis().getMedicines().isEmpty()) {
 				// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
@@ -33,10 +36,8 @@ public class ConsultationValidator implements Validator {
 			}
 		}
 
-		if (appointment.getReceipt().getPrice() <= 0 || appointment.getReceipt().getPrice() == null || appointment.getReceipt().getPrice() == 0.00 || appointment.getReceipt().getPrice().toString().isEmpty()) {
-			// Appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times.
-			errors.rejectValue("receipt.price", "price must be positive");
-
+		if (appointment.getBill().getIva() == null || appointment.getBill().getIva() < 0. || appointment.getBill().getIva() > 100.) {
+			errors.rejectValue("bill.iva", "iva must be between 0 and 100");
 		}
 	}
 }

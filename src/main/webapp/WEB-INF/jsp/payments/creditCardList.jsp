@@ -10,21 +10,23 @@
 <petclinic:layout currentPage="payments">
 
       <div class="container">
-          <h2 class="mt-5">My payment methods</h2>
-          <a href="/payments/new-method" class="btn btn-outline-primary">+ Add method</a>
+          <h2 class="mt-5">My cards</h2>
+          <a href="/payments/new-card" class="btn btn-outline-primary">+ Add card</a>
           <hr />
 			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>Token</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${paymentMethods}" var="paymentMethod">
+					<c:forEach items="${paymentMethods}" var="creditCard">
 						<tr>
 							<td>#</td>
-							<td><c:out value="${paymentMethod.token}"/></td>
+							<td><c:out value="${creditCard.token}"/></td>
+							<td><c:out value="${creditCard.brand}"/> **** **** **** <c:out value="${creditCard.last4}"/></td>
 						</tr>
 					</c:forEach>
 				</tbody>

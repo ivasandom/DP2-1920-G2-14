@@ -17,15 +17,15 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
-public class ClientValidatorTests {
+public class ProfessionalValidatorTests {
 
 	@Autowired
-	private ClientValidator clientValidator = new ClientValidator();
+	private ProfessionalValidator professionalValidator = new ProfessionalValidator();
 	
 	@Autowired
 	private Errors errors;
 	
-	private Client generateClient() {
+	private Professional generateProfessional() {
 		
 		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
 		Date registrationDate = new Date(2020-03-03);
@@ -36,33 +36,32 @@ public class ClientValidatorTests {
 		user.setUsername("frankcuesta");
 		user.setPassword("frankcuesta");
 		
-		Client client = new Client();
-		client.setBirthDate(birthdate);
-		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.NIF);
-		client.setEmail("frankcuesta@gmail.com");
-		client.setFirstName("Frank");
-		client.setHealthCardNumber("0000000003");
-		client.setHealthInsurance(HealthInsurance.ADESLAS);
-		client.setLastName("Cuesta");
-		client.setRegistrationDate(registrationDate);
-		client.setAppointments(appointments);
-		client.setUser(user);
+		Professional professional =new Professional();
+		professional.setBirthDate(birthdate);
+		professional.setDocument("29334456");
+		professional.setDocumentType(DocumentType.NIF);
+		professional.setEmail("frankcuesta@gmail.com");
+		professional.setFirstName("Frank");
+		professional.setLastName("Cuesta");
+		professional.setCollegiateNumber("77777777K");
+		professional.setRegistrationDate(registrationDate);
+		professional.setAppointments(appointments);
+		professional.setUser(user);
 		
-		errors = new BeanPropertyBindingResult(client, "");
+		errors = new BeanPropertyBindingResult(professional, "");
 
-		return client;
+		return professional;
 	}
 
 	@Test
 	void shouldNotValidateWhenBirthDateIsInFuture() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
+		Professional professional = this.generateProfessional();
 		Date birthdate = new GregorianCalendar(2030, Calendar.FEBRUARY, 11).getTime();
-		client.setBirthDate(birthdate);
+		professional.setBirthDate(birthdate);
 		
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("birthDate").getCode()).isEqualTo("the date must be in past");
@@ -72,11 +71,11 @@ public class ClientValidatorTests {
 	void shouldValidateWhenBirthDateIsInPast() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
+		Professional professional = this.generateProfessional();
 		Date birthdate = new GregorianCalendar(1950, Calendar.FEBRUARY, 11).getTime();
-		client.setBirthDate(birthdate);
+		professional.setBirthDate(birthdate);
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(0);
 	}
@@ -85,10 +84,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenFirstNameIsEmpty() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setFirstName("");
+		Professional professional = this.generateProfessional();
+		professional.setFirstName("");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("firstName").getCode()).isEqualTo("must not be empty");
@@ -98,10 +97,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenLastNameIsEmpty() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setLastName("");
+		Professional professional = this.generateProfessional();
+		professional.setLastName("");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("lastName").getCode()).isEqualTo("must not be empty");
@@ -111,10 +110,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenEmailIsEmpty() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setEmail("");
+		Professional professional = this.generateProfessional();
+		professional.setEmail("");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("email").getCode()).isEqualTo("must not be empty");
@@ -124,10 +123,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenEmailDoesNotHaveCorrectFormat() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setEmail("allaroundmearefamiliarfaces.com");
+		Professional professional = this.generateProfessional();
+		professional.setEmail("allaroundmearefamiliarfaces.com");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("email").getCode()).isEqualTo("choose the correct format");
@@ -137,10 +136,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenDocumentIsEmpty() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setDocument("");
+		Professional professional = this.generateProfessional();
+		professional.setDocument("");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("document").getCode()).isEqualTo("must not be empty");
@@ -150,10 +149,10 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenDocumentTypeIsNull() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setDocumentType(null);
+		Professional professional = this.generateProfessional();
+		professional.setDocumentType(null);
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("documentType").getCode()).isEqualTo("must not be null");
@@ -163,13 +162,13 @@ public class ClientValidatorTests {
 	void shouldNotValidateWhenRegistrationDateIsInFuture() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
+		Professional professional = this.generateProfessional();
 		Date registrationDate = new GregorianCalendar(2030, Calendar.FEBRUARY, 11).getTime();
-		client.setRegistrationDate(registrationDate);
-		System.out.println(client.getRegistrationDate());
-		
-		clientValidator.validate(client, errors);
-		System.out.println(errors.getAllErrors());
+		professional.setRegistrationDate(registrationDate);
+		System.out.println(professional.getRegistrationDate());
+
+		professionalValidator.validate(professional, errors);
+
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("registrationDate").getCode()).isEqualTo("the date must be in past");
 	}
@@ -178,27 +177,32 @@ public class ClientValidatorTests {
 	void shouldValidateWhenRegistrationDateIsInPast() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
+		Professional professional = this.generateProfessional();
 		Date registrationDate = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
-		client.setRegistrationDate(registrationDate);
+		professional.setRegistrationDate(registrationDate);
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(0);
 	}
 	
 	@Test
-	void shouldNotValidateHealthInsuranceIsEmpty() {
+	void shouldNotValidateCollegiateNumberIsEmpty() {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		client.setHealthInsurance(null);
+		Professional professional = this.generateProfessional();
+		professional.setCollegiateNumber("");
 
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("must not be empty");
+		assertThat(errors.getFieldError("collegiateNumber").getCode()).isEqualTo("must not be empty");
 	}
+	
+	
+	/**
+	 *  Validate HealthInsurance tests
+	 */
 	
 	
 	@Test
@@ -207,36 +211,12 @@ public class ClientValidatorTests {
 		user.setUsername(" ");
 		user.setPassword("p455w0rd");
 		
-		Client client = this.generateClient();
-		client.setUser(user);
-		clientValidator.validate(client, errors);
+		Professional professional = this.generateProfessional();
+		professional.setUser(user);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("user.username").getCode()).isEqualTo("username must not be empty");
-	}
-	
-	
-	/**
-	 *  Validate HealthInsurance tests
-	 */
-
-	
-	@Test
-	void shouldValidateCorrectHealth() {
-		Client client = this.generateClient();
-		clientValidator.validate(client, errors);
-
-		assertThat(errors.getErrorCount()).isEqualTo(0);
-	}
-	
-	@Test
-	void shouldNotValidateEmptyHealthInsurance() {
-		Client client = this.generateClient();
-		client.setHealthInsurance(null); // check
-		clientValidator.validate(client, errors);
-
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("health insurance must not be empty. In case you don't have any, write 'I do not have insurance'");
 	}	
 
 	@Test
@@ -245,40 +225,15 @@ public class ClientValidatorTests {
 		user.setUsername("frankcuesta");
 		user.setPassword(" ");
 		
-		Client client = this.generateClient();
-		client.setUser(user);
+		Professional professional = this.generateProfessional();
+		professional.setUser(user);
 		
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("user.password").getCode()).isEqualTo("password must not be empty");
 	}
 
-
-	@Test
-	void shouldNotValidateHealthCardNumberWhenYouDoNotHaveHealthInsurance() {
-		Client client = this.generateClient();
-		client.setHealthInsurance(HealthInsurance.I_DO_NOT_HAVE_INSURANCE);
-		client.setHealthCardNumber("0290239");
-
-		clientValidator.validate(client, errors);
-
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("you cannot write a health card number if you don't have health insurance");
-	}
-	
-	@Test
-	void shouldNotValidateHealthCardNumberEmptyWhenYouHaveHealthInsurance() {
-		Client client = this.generateClient();
-		client.setHealthInsurance(HealthInsurance.MAPFRE);
-		client.setHealthCardNumber(null);
-
-		clientValidator.validate(client, errors);
-
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("you must write your health card number");
-	}
-	
 	@ParameterizedTest
 	@ValueSource(strings = {
 			"pepe",//
@@ -291,10 +246,10 @@ public class ClientValidatorTests {
 		user.setUsername("frankcuesta");
 		user.setPassword(password);
 		
-		Client client = this.generateClient();
-		client.setUser(user);
+		Professional professional = this.generateProfessional();
+		professional.setUser(user);
 		
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
 		assertThat(errors.getFieldError("user.password").getCode()).isEqualTo("password must be between 6 and 15 characters");
@@ -312,10 +267,10 @@ public class ClientValidatorTests {
 		user.setUsername("frankcuesta");
 		user.setPassword(password);
 		
-		Client client = this.generateClient();
-		client.setUser(user);
+		Professional professional = this.generateProfessional();
+		professional.setUser(user);
 		
-		clientValidator.validate(client, errors);
+		professionalValidator.validate(professional, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(0);
 	}

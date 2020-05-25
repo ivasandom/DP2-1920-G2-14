@@ -30,24 +30,17 @@
             <table class="table table-bordered table-striped dataTable">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>Client</th>
                   <th>Professional</th>
                   <th>Date</th>
                   <th>Reason</th>
                   <th>Status</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <c:forEach items="${appointments}" var="appointment">
                   <tr>
-                    <td>
-                      <spring:url value="/admin/appointments/{appointmentId}" var="appointmentUrl">
-                        <spring:param name="appointmentId" value="${appointment.id}" />
-                      </spring:url>
-                      <a href="${fn:escapeXml(appointmentUrl)}">
-                        <c:out value="${appointment.id}" /></a>
-                    </td>
                     <td>
                       <spring:url value="/admin/clients/{clientId}" var="clientUrl">
                         <spring:param name="clientId" value="${appointment.client.id}" />
@@ -73,7 +66,26 @@
                     </td>
 
                     <td>
-                      <c:out value="${appointment.status}" />
+                      <dd>
+		              	<c:if test="${appointment.status eq 'COMPLETED'}" >
+		                	<span class="badge badge-success"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+		                <c:if test="${appointment.status eq 'ABSENT'}" >
+		                	<span class="badge badge-danger"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+			            <c:if test="${appointment.status eq 'PENDING'}" >
+		                	<span class="badge badge-warning"><c:out value="${appointment.status.displayName}" /></span>
+			            </c:if>
+		              </dd>
+                    </td>
+                    
+                    <td>
+                      <spring:url value="/admin/appointments/{appointmentId}" var="appointmentUrl">
+                      	<spring:param name="appointmentId" value="${appointment.id}" />
+                      </spring:url>
+                      <a href="${fn:escapeXml(appointmentUrl)}" class="btn btn-secondary btn-sm">
+                        View details
+                      </a>
                     </td>
                     
                   </tr>

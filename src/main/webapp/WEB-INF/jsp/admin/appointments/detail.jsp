@@ -59,7 +59,15 @@
               </dd>
               <dt>Status</dt>
               <dd>
-                <c:out value="${appointment.status}" />
+              	<c:if test="${appointment.status eq 'COMPLETED'}" >
+                	<span class="badge badge-success"><c:out value="${appointment.status.displayName}" /></span>
+	            </c:if>
+                <c:if test="${appointment.status eq 'ABSENT'}" >
+                	<span class="badge badge-danger"><c:out value="${appointment.status.displayName}" /></span>
+	            </c:if>
+	            <c:if test="${appointment.status eq 'PENDING'}" >
+                	<span class="badge badge-warning"><c:out value="${appointment.status.displayName}" /></span>
+	            </c:if>
               </dd>
             </dl>
             
@@ -71,95 +79,71 @@
             <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
               Edit appointment
             </a>
-            <button type="button" class="btn btn-danger">Delete appointment</button>
+            <c:if test="${appointment.status ne 'COMPLETED'}">
+            	<form:form action="/admin/appointments/${appointment.id}/delete">
+            		<button type="submit" class="btn btn-danger">Delete appointment</button>
+            	</form:form>
+            </c:if>
+            
           </div>
         </div>
       </div>
       <div class="col-4">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Receipt</h3>
+            <h3 class="card-title">Bill</h3>
           </div>
           <div class="card-body">
-            <c:if test="${not empty appointment.receipt}">
+            <c:if test="${not empty appointment.bill}">
               <dl class="dl-horizontal">
                 <dt>Price</dt>
                 <dd>
                   $
-                  <c:out value="${appointment.receipt.price}" />
+                  <c:out value="${appointment.bill.price}" />
+                </dd>
+                <dt>IVA</dt>
+                <dd>
+                  <c:out value="${appointment.bill.iva}" />
+                </dd>
+                <dt>Final price</dt>
+                <dd>
+                  $
+                  <c:out value="${appointment.bill.finalPrice}" />
                 </dd>
                 <dt>Status</dt>
                 <dd>
-                  <c:out value="${appointment.receipt.status}" />
+                  <c:if test="${appointment.bill.status eq 'PAID'}" >
+                	<span class="badge badge-success"><c:out value="${appointment.bill.status.displayName}" /></span>
+	              </c:if>
+	              <c:if test="${appointment.bill.status eq 'REFUNDED'}" >
+	              	<span class="badge badge-danger"><c:out value="${appointment.bill.status.displayName}" /></span>
+	              </c:if>
+	              <c:if test="${appointment.bill.status ne 'REFUNDED' and appointment.bill.status ne 'PAID'}" >
+	              	<span class="badge badge-warning"><c:out value="${appointment.bill.status.displayName}" /></span>
+	              </c:if>
                 </dd>
                 <dt>Created at</dt>
                 <dd>
-                  <c:out value="${appointment.receipt.status}" />
+                  <c:out value="${appointment.bill.createdAt}" />
                 </dd>
               </dl>
 
             </c:if>
-            <c:if test="${empty appointment.receipt}">
-              No receipt. A receipt will be created after appointment has been completed.
+            <c:if test="${empty appointment.bill}">
+              No bill. A bill will be created after appointment has been completed.
             </c:if>
           </div>
           <div class="card-footer">
-          <button class="btn btn-secondary">Download .pdf</button>
+          	<spring:url value="/admin/bills/{billId}" var="billUrl">
+              <spring:param name="billId" value="${appointment.bill.id}" />
+            </spring:url>
+            <a href="${fn:escapeXml(billUrl)}" class="btn btn-secondary text-white">
+              View bill
+            </a>
           </div>
         </div>
       </div>
     </div>
-    <c:if test="${not empty appointment.receipt}">
-      <div class="row equal">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Transactions</h3>
-            </div>
-            <div class="card-body">
-              <table class="table table-bordered table-striped dataTable">
-                <thead>
-                  <tr>
-                    <th>Amount</th>
-                    <th>Token</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <c:forEach items="${appointment.receipt.transactions}" var="transaction">
-                    <tr>
-                      <td>
-                        <c:out value="${transaction.amount} $" />
-                      </td>
-                      <td>
-                        <c:out value="${transaction.token}" />
-                      </td>
-                      <td>
-                        <c:if test="${transaction.type eq 'CHARGE'}" >
-                        <span class="badge badge-success"><c:out value="${transaction.type}" /></span>
-                        </c:if>
-                        <c:if test="${transaction.type eq 'REFUND'}" >
-                        <span class="badge badge-danger"><c:out value="${transaction.type}" /></span>
-                        </c:if>
-                      </td>
-                      <td>
-                        <c:if test="${transaction.success}" >
-                        <span class="badge badge-success text-uppercase"><c:out value="${transaction.status}" /></span>
-                        </c:if>
-                        <c:if test="${not transaction.success}" >
-                        <span class="badge badge-danger text-uppercase"><c:out value="${transaction.status}" /></span>
-                        </c:if>
-                      </td>
-                    </tr>
-                  </c:forEach>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </c:if>
   </jsp:body>
 
 </petclinic:staffLayout>

@@ -32,7 +32,7 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
-import org.springframework.samples.petclinic.model.ProValidator;
+import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -103,7 +103,7 @@ public class ProfessionalController {
 
 	@GetMapping(value = "/professionals")
 	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
-		ProValidator proValidator = new ProValidator();
+		ProfessionalValidator proValidator = new ProfessionalValidator();
 		proValidator.validate(professional, result);
 		System.out.println(result.getFieldError("center") + "======================================" + result.hasFieldErrors("specialty"));
 		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {

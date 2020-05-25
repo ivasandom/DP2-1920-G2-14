@@ -35,8 +35,13 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository	appointmentRepository;
+	
 
-
+	@Transactional
+	public int appointmentCount() {
+		return (int) this.appointmentRepository.count();
+	}
+	
 	@Autowired
 	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
@@ -60,11 +65,6 @@ public class AppointmentService {
 	@Transactional
 	public Collection<Appointment> findAppointmentByProfessionalId(final int id) {
 		return this.appointmentRepository.findAppointmentByProfessionalId(id);
-	}
-
-	@Transactional
-	public Collection<String> findAppointmentByTypes() throws DataAccessException {
-		return this.appointmentRepository.findAppointmentTypes();
 	}
 
 	@Transactional
@@ -104,22 +104,22 @@ public class AppointmentService {
 
 	@Transactional
 	public void chargeAppointment(final Appointment appointment) throws Exception {
-		if (appointment.getReceipt() != null && appointment.getReceipt().getPrice() != null && appointment.getReceipt().getPrice() > .0) {
+		if (appointment.getBill() != null && appointment.getBill().getPrice() != null && appointment.getBill().getPrice() > .0) {
 			Client client = appointment.getClient();
 			Collection<PaymentMethod> paymentMethods = client.getPaymentMethods();
-			System.out.println("step1");
+			
 			if (paymentMethods.size() > 0) {
-				System.out.println("step2");
 				PaymentMethod primary = paymentMethods.iterator().next();
-				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getReceipt().getPrice(), appointment.getClient().getStripeId());
+				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getBill().getFinalPrice(), appointment.getClient().getStripeId());
 				// Client charged successfully!
 				Transaction transaction = new Transaction();
 				transaction.setType(TransactionType.CHARGE);
-				transaction.setReceipt(appointment.getReceipt());
+				transaction.setBill(appointment.getBill());
 				transaction.setToken(paymentIntent.getId());
 				transaction.setAmount((double) paymentIntent.getAmount() / 100);
 				transaction.setStatus(paymentIntent.getStatus());
 				transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
+				transaction.setBill(appointment.getBill());
 				this.transactionService.saveTransaction(transaction);
 			}
 		}
@@ -135,4 +135,21 @@ public class AppointmentService {
 		}
 		this.appointmentRepository.delete(appointment);
 	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfPendingAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
+	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfAbsentAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
+	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfCompletedAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
+	}
+	
+	
 }

@@ -3,13 +3,11 @@ package org.springframework.samples.petclinic.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,14 +24,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
+import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Diagnosis;
 import org.springframework.samples.petclinic.model.DocumentType;
+import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
-import org.springframework.samples.petclinic.model.Receipt;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Transaction;
 import org.springframework.samples.petclinic.model.TransactionType;
@@ -85,7 +84,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAllAppointments() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
-		Assertions.assertThat(appointments.size()).isEqualTo(133);
+		Assertions.assertThat(appointments.size()).isEqualTo(130);
 	}
 
 	@Test
@@ -113,7 +112,7 @@ public class AppointmentServiceTests {
 	void shouldFindAppointmentsByClientId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
-		Assertions.assertThat(appointments.size()).isEqualTo(127);
+		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
@@ -133,27 +132,6 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 12));
 		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
 
-	}
-
-	@Test
-	void shouldFindAppointmentTypes() {
-		Collection<String> types = this.appointmentService.findAppointmentByTypes();
-
-		// Create list of types ordered by name, as the query says
-		List<String> items = new ArrayList<>();
-		items.add("analisis");
-		items.add("another case");
-		items.add("checking");
-		items.add("consultation for prescription issuance");
-		items.add("illness consultation");
-		items.add("periodic consultation");
-		items.add("vaccination");
-
-		Collection<String> expected = new ArrayList<>();
-		expected.addAll(items);
-
-		Assertions.assertThat(types.size()).isEqualTo(7);
-		Assertions.assertThat(types).containsExactlyElementsOf(expected);
 	}
 
 	@Test
@@ -340,11 +318,11 @@ public class AppointmentServiceTests {
 		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
 		client.setBirthDate(birthdate);
 		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.nif);
+		client.setDocumentType(DocumentType.NIF);
 		client.setEmail("frankcuesta@gmail.com");
 		client.setFirstName("Frank");
 		client.setHealthCardNumber("0000000003");
-		client.setHealthInsurance("Adeslas");
+		client.setHealthInsurance(HealthInsurance.ADESLAS);
 		client.setLastName("Cuesta");
 		Date registrationDate = new Date(2020 - 03 - 03);
 		client.setRegistrationDate(registrationDate);
@@ -369,10 +347,14 @@ public class AppointmentServiceTests {
 		appointment.setStartTime(startTime);
 		appointment.setReason("test");
 
-		//Receipt must be created for the method
-		Receipt receipt = new Receipt();
-		receipt.setPrice(100.);
-		appointment.setReceipt(receipt);
+		//Bill must be created for the method
+		Bill bill = new Bill();
+		bill.setIva(0.21);
+		bill.setName(appointment.getClient().getFullName());
+		bill.setDocument(appointment.getClient().getDocument());
+		bill.setDocumentType(appointment.getClient().getDocumentType());
+		bill.setPrice(100.);
+		appointment.setBill(bill);
 
 		//		Map<String, Object> card2 = new HashMap<>();
 		//		Map<String, Object> billingDetails = new HashMap<>();
@@ -406,7 +388,7 @@ public class AppointmentServiceTests {
 		//Later, we create a transaction
 		Transaction transaction = new Transaction();
 		transaction.setType(TransactionType.CHARGE);
-		transaction.setReceipt(appointment.getReceipt());
+		transaction.setBill(appointment.getBill());
 		transaction.setToken(paymentIntent.getId());
 		transaction.setAmount((double) paymentIntent.getAmount() / 100);
 		transaction.setStatus(paymentIntent.getStatus());

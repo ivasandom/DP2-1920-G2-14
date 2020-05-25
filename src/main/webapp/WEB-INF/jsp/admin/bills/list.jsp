@@ -8,13 +8,15 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<petclinic:staffLayout currentPage="clients" pageTitle="Clients">
+<petclinic:staffLayout currentPage="bills" pageTitle="Bills">
 
   <jsp:attribute name="customScript">
     <script>
       $(document).ready(function () {
-        $('.dataTable').DataTable();
+        $('.dataTable').DataTable(
+        	{"order": [[ 0, "desc" ]]});
       });
+
     </script>
   </jsp:attribute>
   <jsp:body>
@@ -22,63 +24,70 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Clients</h3>
+            <h3 class="card-title">Bills</h3>
           </div>
           <div class="card-body">
             <table class="table table-bordered table-striped dataTable">
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
-                  <th>Document - Type</th>
-                  <th>Birthdate</th>
-                  <th>Health Insurance</th>
-                  <th>
+                  <th>Document</th>
+                  <th>Price</th>
+                  <th>IVA</th>
+                  <th>Final price</th>
+                  <th>Status</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <c:forEach items="${clients}" var="client">
+                <c:forEach items="${bills}" var="bill">
                   <tr>
-                    <td>
-                      <spring:url value="/admin/clients/{clientId}" var="clientUrl">
-                        <spring:param name="clientId" value="${client.id}" />
-                      </spring:url>
-                      <a href="${fn:escapeXml(clientUrl)}">
-                        <c:out value="${client.firstName} ${client.lastName}" /></a>
-                    </td>
 
                     <td>
-                      <c:out value="${client.email}" />
-                    </td>
-
-                    <td>
-                      <c:out value="${client.document} - ${client.documentType.displayName}" />
-                    </td>
-
-                    <td>
-                      <c:out value="${client.birthDate}" />
-                    </td>
-
-                    <td>
-                      <c:out value="${client.healthInsurance.displayName} ${client.healthCardNumber}" />
+                      <c:out value="${bill.name}" />
                     </td>
                     
+                    <td>
+                      <c:out value="${bill.document} ${bill.documentType.displayName}" />
+                    </td>
+
+                    <td>
+                      <c:out value="${bill.price}" /> $
+                    </td>
+
+                    <td>
+                      <c:out value="${bill.iva}" />
+                    </td>
                     
                     <td>
-                      <spring:url value="/admin/clients/{clientId}" var="clientUrl">
-                      	<spring:param name="clientId" value="${client.id}" />
+                      <c:out value="${bill.finalPrice}" /> $
+                    </td>
+                    
+                    <td>
+                      <c:if test="${bill.status eq 'PAID'}" >
+		              	<span class="badge badge-success"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
+		              <c:if test="${bill.status eq 'REFUNDED'}" >
+		              	<span class="badge badge-danger"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
+		              <c:if test="${bill.status ne 'REFUNDED' and bill.status ne 'PAID'}" >
+		              	<span class="badge badge-warning"><c:out value="${bill.status.displayName}" /></span>
+		              </c:if>
+                    </td>
+                    
+                    <td>
+                      <spring:url value="/admin/bills/{billId}" var="billUrl">
+                        <spring:param name="billId" value="${bill.id}" />
                       </spring:url>
-                      <a href="${fn:escapeXml(clientUrl)}" class="btn btn-secondary btn-sm">
+                      <a href="${fn:escapeXml(billUrl)}" class="btn btn-secondary btn-sm">
                         View details
                       </a>
                     </td>
+                    
                   </tr>
                 </c:forEach>
               </tbody>
             </table>
-          </div>
-          <div class="card-footer">
-          	<a href="/admin/clients/create" class="btn btn-primary">+ Create new client</a>
           </div>
         </div>
       </div>

@@ -29,7 +29,7 @@ public class ClientService {
 	}
 	@Transactional(readOnly = true)
 	public Client findClientById(final int id) throws DataAccessException {
-		return this.clientRepository.findById(id);
+		return this.clientRepository.findById(id).get();
 	}
 
 	@Transactional

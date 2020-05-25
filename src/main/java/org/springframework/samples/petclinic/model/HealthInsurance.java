@@ -1,39 +1,44 @@
 
 package org.springframework.samples.petclinic.model;
 
-import java.util.ArrayList;
-
 public enum HealthInsurance {
 
-	I_DO_NOT_HAVE_INSURANCE("I do not have insurance"), MAPFRE("Mapfre"), SANITAS("Sanitas"), DKV("DKV"), CIGNA("Cigna"), FIATC("Fiatc"), AEGON("Aegon"), AXA("Axa"), CASER("Caser"), ASISA("Asisa"), ADESLAS("Adeslas");
+	I_DO_NOT_HAVE_INSURANCE("I do not have insurance", null, null),
+	MAPFRE("Mapfre", "Seguros Mapfre S.A.", "A111111"),
+	SANITAS("Sanitas", "Seguros Sanitas S.A.", "A222222"),
+	DKV("DKV", "Seguros DKV S.A.", "A333333"),
+	CIGNA("Cigna", "Seguros Cigna S.A.", "A555555"),
+	FIATC("Fiatc", "Seguros Miatc S.A.", "A666666"),
+	AEGON("Aegon", "Seguros Aegon S.A.", "A777777"),
+	AXA("Axa", "Seguros Axa S.A.", "A888888"),
+	CASER("Caser", "Seguros Caser S.A.", "A999999"),
+	ASISA("Asisa", "Seguros Asisa S.A.", "B1111111"),
+	ADESLAS("Adeslas", "Seguros Adeslas S.A.", "B222222"),
+	SANTANDER("Santander", "Seguros Santander S.A.", "B3333333");
 
 	private String displayName;
+	
+	private String legalName;
+	
+	private String cif;
 
-
-	private HealthInsurance(final String displayName) {
+	private HealthInsurance(final String displayName, final String legalName, final String cif) {
 		this.displayName = displayName;
+		this.legalName = legalName;
+		this.cif = cif;
 	}
 
 	public String getDisplayName() {
 		return this.displayName;
 	}
-
-	// Optionally and/or additionally, toString.
-	@Override
-	public String toString() {
-		return this.getDisplayName();
+	
+	public String getLegalName() {
+		return this.legalName;
 	}
-
-	public static void main(final String args[]) {
-
-		java.util.List<HealthInsurance> lista = new ArrayList<>();
-		HealthInsurance[] h = HealthInsurance.values();
-		for (HealthInsurance hi : h) {
-			System.out.println(hi.toString());
-		}
-		//}
-		//		for (HealthInsurance hi : h) {
-		//			System.out.println(hi);
-		//		}
+	
+	public String getCif() {
+		return this.cif;
 	}
+	
+	
 }

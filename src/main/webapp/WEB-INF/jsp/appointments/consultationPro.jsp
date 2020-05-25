@@ -7,7 +7,7 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:staffLayout currentPage="dashboard">
+<petclinic:layout currentPage="appointments">
     <jsp:attribute name="customScript">
         <script>
             // https://stackoverflow.com/questions/24021276/select2-search-options/47697371#47697371
@@ -110,7 +110,7 @@
                                     <tr>
                                         <th>Type</th>
                                         <td>
-                                            <c:out value="${appointment.type.name}" />
+                                            <c:out value="${appointment.type}" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -121,9 +121,6 @@
                                     </tr>
                                 </table>
                                 <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
-                            </div>
-                            <div class="col-md-3" style="background-image:url;">
-                                <img src="https://a.wattpad.com/cover/194784944-256-k712290.jpg" height="246px">
                             </div>
 
                         </div>
@@ -176,23 +173,10 @@
                         <div class="tab-pane fade" id="list-billing" role="tabpanel"
                             aria-labelledby="list-billing-list">
 
-                            <div class="form-group">
-                                <label>Amount to charge</label>
-                                <form:input class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}" type="number" path="receipt.price"/>
-                                <small class="form-text text-muted">Add the cost of the consultation.</small>
-                                <c:if test="${status.error}">
-                                    <div class="invalid-feedback">
-                                        ${status.errorMessage}
-                                    </div>
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Payment method</label>
-                                <form:select
-                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
-                                id="paymentMethod" path="client.paymentMethods">
-                                <form:options items="${paymentMethodsList}" itemLabel="brand" itemValue="id" />
-                            </form:select>
+                            <petclinic:inputField label="Bill price (without taxes)" name="bill.price" />
+                            <petclinic:inputField label="IVA" name="bill.iva" />
+                            
+                           
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-summary" role="tabpanel"
@@ -215,4 +199,4 @@
             </div>
         </form:form>
     </jsp:body>
-</petclinic:staffLayout>
+</petclinic:layout>

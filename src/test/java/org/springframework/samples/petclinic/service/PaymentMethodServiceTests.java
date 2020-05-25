@@ -67,7 +67,7 @@ public class PaymentMethodServiceTests {
 		paymentMethod.setClient(client);
 
 		this.paymentMethodService.savePaymentMethod(paymentMethod);
-		;
+
 		org.assertj.core.api.Assertions.assertThat(paymentMethod.getId().longValue()).isNotEqualTo(0);
 
 		paymentMethods = this.paymentMethodService.findByClient(client);

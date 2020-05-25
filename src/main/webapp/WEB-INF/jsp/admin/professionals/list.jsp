@@ -34,6 +34,7 @@
                   <th>Document - Type</th>
                   <th>Collegiate number</th>
                   <th>Specialty</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -52,7 +53,7 @@
                     </td>
 
                     <td>
-                      <c:out value="${professional.document} - ${professional.documentType}" />
+                      <c:out value="${professional.document} - ${professional.documentType.displayName}" />
                     </td>
 
                     <td>
@@ -62,6 +63,16 @@
                     <td>
                       <c:out value="${professional.specialty.name}" />
                     </td>
+                    
+                     <td>
+                      <spring:url value="/admin/professionals/{professionalId}" var="professionalUrl">
+                      	<spring:param name="professionalId" value="${professional.id}" />
+                      </spring:url>
+                      <a href="${fn:escapeXml(professionalUrl)}" class="btn btn-secondary btn-sm">
+                        View details
+                      </a>
+                    </td>
+                    
                   </tr>
                 </c:forEach>
               </tbody>
