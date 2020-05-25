@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -271,6 +272,7 @@ public class AppointmentController {
 				Bill bill = appointment.getBill();
 				bill.setAppointment(a);
 				bill.setHealthInsurance(appointmentClient.getHealthInsurance());
+				bill.setCreatedAt(LocalDateTime.now());
 				
 				if (appointmentClient.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
 					bill.setDocument(appointmentClient.getDocument());

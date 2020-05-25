@@ -34,9 +34,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.sun.istack.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {

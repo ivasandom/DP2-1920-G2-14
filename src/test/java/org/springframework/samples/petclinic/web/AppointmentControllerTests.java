@@ -46,6 +46,7 @@ import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
+import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.CenterService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.DeseaseService;
@@ -89,6 +90,9 @@ public class AppointmentControllerTests {
 
 	@MockBean
 	private StripeService stripeService;
+	
+	@MockBean
+	private BillService billService;
 
 	@Autowired
 	private MockMvc mockMvc;

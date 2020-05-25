@@ -34,6 +34,12 @@ public class BillService {
 		return this.billRepository.getTotalBilled();
 	}
 	
+	@Transactional(readOnly = true)
+	public Object[] getBilledPerDay() throws DataAccessException {
+		return this.billRepository.getBilledPerDay();
+	}
+	
+	
 	@Transactional
 	public void saveBill(final Bill bill) throws DataAccessException {
 		this.billRepository.save(bill);

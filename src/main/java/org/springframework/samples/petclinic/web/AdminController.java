@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -105,11 +106,19 @@ public class AdminController {
 		Integer numProfessionals = this.professionalService.professionalCount();
 		Integer numAppointments = this.appointmentService.appointmentCount();
 		Double totalBilled = this.billService.getTotalBilled();
-
+		Object[] billedPerDay = this.billService.getBilledPerDay();
+		Long numCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
+		Long numPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
+		Long numAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
+		System.out.println(Arrays.toString(billedPerDay));
 		model.put("numClients", numClients);
 		model.put("numProfessionals", numProfessionals);
 		model.put("numAppointments", numAppointments);
 		model.put("totalBilled", totalBilled);
+		model.put("billedPerDay", billedPerDay);
+		model.put("numCompletedAppointments", numCompletedAppointments);
+		model.put("numPendingAppointments", numPendingAppointments);
+		model.put("numAbsentAppointments", numAbsentAppointments);
 		return "admin/dashboard";
 	}
 
@@ -385,6 +394,15 @@ public class AdminController {
 			this.appointmentService.saveAppointment(appointment);
 			return "redirect:/admin/appointments";
 		}
+	}
+	
+	@PostMapping("/appointments/{appointmentId}/delete")
+	public String appointmentDelete(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
+		if (appointment != null && !appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
+			this.appointmentService.delete(appointment);
+		}
+		return "redirect:/admin/appointments";
 	}
 
 	/**

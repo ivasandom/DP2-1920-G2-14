@@ -4,9 +4,7 @@ package org.springframework.samples.petclinic.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -37,4 +35,13 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
 	@Query("SELECT DISTINCT a.diagnosis.deseases FROM Appointment a WHERE a.client.id = :id")
 	Collection<Desease> findDeseases(@Param("id") int clientId);
+	
+	@Query("SELECT count(a) from Appointment a WHERE a.status = 'PENDING'")
+	Long getNumberOfPendingAppointmentsByStatus();
+	
+	@Query("SELECT count(a) from Appointment a WHERE a.status = 'ABSENT'")
+	Long getNumberOfAbsentAppointmentsByStatus();
+	
+	@Query("SELECT count(a) from Appointment a WHERE a.status = 'COMPLETED'")
+	Long getNumberOfCompletedAppointmentsByStatus();
 }

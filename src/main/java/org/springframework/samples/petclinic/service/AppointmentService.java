@@ -34,9 +34,6 @@ public class AppointmentService {
 	private TransactionService		transactionService;
 
 	@Autowired
-	private BillService				billService;
-	
-	@Autowired
 	private AppointmentRepository	appointmentRepository;
 	
 
@@ -138,4 +135,21 @@ public class AppointmentService {
 		}
 		this.appointmentRepository.delete(appointment);
 	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfPendingAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
+	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfAbsentAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
+	}
+	
+	@Transactional(readOnly = true)
+	public Long getNumberOfCompletedAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
+	}
+	
+	
 }

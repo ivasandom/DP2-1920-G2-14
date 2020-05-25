@@ -79,7 +79,12 @@
             <a href="${fn:escapeXml(editUrl)}" class="btn btn-primary text-white">
               Edit appointment
             </a>
-            <button type="button" class="btn btn-danger">Delete appointment</button>
+            <c:if test="${appointment.status ne 'COMPLETED'}">
+            	<form:form action="/admin/appointments/${appointment.id}/delete">
+            		<button type="submit" class="btn btn-danger">Delete appointment</button>
+            	</form:form>
+            </c:if>
+            
           </div>
         </div>
       </div>
