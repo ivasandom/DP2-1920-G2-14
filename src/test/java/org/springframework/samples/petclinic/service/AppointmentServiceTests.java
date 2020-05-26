@@ -95,7 +95,8 @@ public class AppointmentServiceTests {
 		LocalDate date = LocalDate.of(2020, 12, 12);
 		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 
-		Assertions.assertThat(startTimes.size()).isEqualTo(1);
+		Assertions.assertThat(startTimes.iterator().next().getHour()).isEqualTo(8);
+		Assertions.assertThat(startTimes.iterator().next().getMinute()).isEqualTo(30);
 	}
 
 	@ParameterizedTest
@@ -118,11 +119,11 @@ public class AppointmentServiceTests {
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
-		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
+		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
 	}
 
 	@Test
@@ -140,7 +141,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
-	@Transactional
+	@Transactional(readOnly = true)
 	void shouldFindTodayPendingAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -164,7 +165,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
-	@Transactional
+	@Transactional(readOnly = true)
 	void shouldFindTodayCompletedAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -248,7 +249,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"pepegotera, 2020-11-11, 10:15"
 	})
-	@Transactional
+	@Transactional(readOnly = true)
 	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
@@ -276,7 +277,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test"
 	})
-	@Transactional
+	@Transactional(readOnly = true)
 	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date, final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
@@ -316,7 +317,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"2020-11-11, 11:15"
 	})
-	@Transactional
+	@Transactional(readOnly = true)
 	public void shouldChargeAppointment(final LocalDate date, final LocalTime startTime) throws Exception {
 		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		int found = transactions.size();

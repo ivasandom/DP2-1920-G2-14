@@ -62,7 +62,7 @@ public class ClientServiceTests {
 	}
 
 	@Test
-	@Transactional
+	@Transactional(readOnly = true)
 	public void shouldSaveClient() {
 		Collection<Client> clients = this.clientService.findAll();
 		int found = clients.size();
