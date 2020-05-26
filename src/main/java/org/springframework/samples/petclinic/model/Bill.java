@@ -1,98 +1,106 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "bills")
-public class Bill extends NamedEntity {
-
-	@Column(name = "last_name")
-	@NotEmpty
-	protected String	lastName;
+public class Bill extends BaseEntity {
+	
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+	
+	@Column(name = "name")
+	private String name;
 
 	@Column(name = "document")
-	@NotEmpty
-	protected String	document;
+	private String document;
 
-	@Column(name = "type_document")
-	@NotEmpty
-	protected String	typeDocument;
+	@Column(name = "document_type")
+	private DocumentType documentType;
 
 	@Column(name = "price")
 	@NotNull
-	protected Double	price;
+	private Double price;
 
 	@Column(name = "iva")
 	@NotNull
-	protected Double	iva;
+	private Double iva = 21.;
 
-	@Column(name = "final_price")
-	@NotNull
-	protected Double	finalPrice;
+	// If no health insurance, then only cash and bank transfer methods allowed.
+	@Column(name = "health_insurance")
+	@Enumerated(value = EnumType.STRING)
+	private HealthInsurance healthInsurance = HealthInsurance.I_DO_NOT_HAVE_INSURANCE; 
 
-	//Relations
+	// Relations
 
-	@ManyToOne
-	@JoinColumn(name = "receipt_id")
-	private Receipt		receipt;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "appointment_id")
+	private Appointment appointment;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bill", fetch = FetchType.EAGER)
+	private Set<Transaction> transactions;
 
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(final String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getDocument() {
-		return this.document;
-	}
-
-	public void setDocument(final String document) {
-		this.document = document;
-	}
-
-	public String getTypeDocument() {
-		return this.typeDocument;
-	}
-
-	public void setTypeDocument(final String typeDocument) {
-		this.typeDocument = typeDocument;
-	}
-
-	public Double getPrice() {
-		return this.price;
-	}
-
-	public void setPrice(final Double price) {
-		this.price = price;
-	}
-
-	public Double getIva() {
-		return this.iva;
-	}
-
-	public void setIva(final Double iva) {
-		this.iva = iva;
-	}
-
-	public Receipt getReceipt() {
-		return this.receipt;
-	}
-
-	public void setReceipt(final Receipt receipt) {
-		this.receipt = receipt;
-	}
-
+	@Transient
 	public Double getFinalPrice() {
-		return this.iva / 100 * this.price + this.price;
+		return (1 + this.iva / 100) * this.price;
 	}
+
+	@Transient
+	public Double getTotalPaid() {
+		Double totalCharged = 0.0;
+		Double totalRefunded = 0.0;
+
+		for (Transaction transaction : this.getTransactions()) {
+			if (transaction.getSuccess()) {
+				if (transaction.getType().equals(TransactionType.CHARGE)) {
+					totalCharged += transaction.getAmount();
+				} else {
+					totalRefunded += transaction.getAmount();
+				}
+			}
+		}
+
+		return totalCharged - totalRefunded;
+	}
+
+	@Transient
+	public BillStatus getStatus() {
+		Long successfullRefundedTransactions = transactions.stream()
+				.filter(t -> t.getSuccess() && t.getType().equals(TransactionType.REFUND)).count();
+		Double totalPaid = getTotalPaid();
+		Double finalPrice = getFinalPrice();
+
+		if (totalPaid.equals(finalPrice)) {
+			return BillStatus.PAID;
+		} else if (successfullRefundedTransactions > 0 && totalPaid > 0.0) {
+			return BillStatus.PARTIALLY_REFUNDED;
+		} else if (totalPaid > 0.0) {
+			return BillStatus.PARTIALLY_PAID;
+		} else if (successfullRefundedTransactions > 0) {
+			return BillStatus.REFUNDED;
+		} else {
+			return BillStatus.PENDING;
+		}
+	}
+
 }

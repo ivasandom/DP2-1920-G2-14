@@ -31,4 +31,11 @@ public class PaymentMethodService {
 		return paymentMethodRepository.findByClient(client);
 	}
 	
+	@Transactional
+	public PaymentMethod findByTokenAndClient(String token, Client client) throws DataAccessException {
+		return paymentMethodRepository.findByTokenAndClient(token, client);
+	}
+	
+	
+	
 }

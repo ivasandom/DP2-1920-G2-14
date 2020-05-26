@@ -1,4 +1,4 @@
-0<%@ page session="false" trimDirectiveWhitespaces="true" %>
+<%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -7,7 +7,7 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:staffLayout currentPage="dashboard">
+<petclinic:layout currentPage="appointments">
     <jsp:attribute name="customScript">
         <script>
             // https://stackoverflow.com/questions/24021276/select2-search-options/47697371#47697371
@@ -110,7 +110,7 @@
                                     <tr>
                                         <th>Type</th>
                                         <td>
-                                            <c:out value="${appointment.type.name}" />
+                                            <c:out value="${appointment.type}" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -121,9 +121,6 @@
                                     </tr>
                                 </table>
                                 <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
-                            </div>
-                            <div class="col-md-3" style="background-image:url;">
-                                <img src="https://a.wattpad.com/cover/194784944-256-k712290.jpg" height="246px">
                             </div>
 
                         </div>
@@ -157,6 +154,8 @@
                                         ${status.errorMessage}
                                     </div>
                                 </c:if>
+                                <form:errors path="diagnosis.deseases" class="has-error  error"></form:errors>
+                                
                             </div>
                             <div class="form-group">
                                 <label>Medicines</label>
@@ -174,18 +173,10 @@
                         <div class="tab-pane fade" id="list-billing" role="tabpanel"
                             aria-labelledby="list-billing-list">
 
-                            <div class="form-group">
-                                <label>Amount to charge</label>
-                                <form:input class="form-control" type="number" placeholder="0.00 EUR" path="receipt.price"/>
-                                <small class="form-text text-muted">Add the cost of the consultation.</small>
-                            </div>
-                            <div class="form-group">
-                                <label>Payment method</label>
-                                <select class="form-control" disabled>
-                                    <option>Efectivo</option>
-                                    <option>Tarjeta</option>
-                                    <option>IBAN</option>
-                                </select>
+                            <petclinic:inputField label="Bill price (without taxes)" name="bill.price" />
+                            <petclinic:inputField label="IVA" name="bill.iva" />
+                            
+                           
                             </div>
                         </div>
                         <div class="tab-pane fade" id="list-summary" role="tabpanel"
@@ -195,7 +186,8 @@
                   
                 </div>
 
-
+                     <span class="help-inline" style="color: red;"><form:errors path="*"/></span>
+                             
 
             </div>
             <div
@@ -207,4 +199,4 @@
             </div>
         </form:form>
     </jsp:body>
-</petclinic:staffLayout>
+</petclinic:layout>

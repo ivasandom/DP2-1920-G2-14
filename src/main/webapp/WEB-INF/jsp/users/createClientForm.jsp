@@ -27,12 +27,14 @@
         			<petclinic:inputField label="Document" name="document"/>
         		</div>
         		<div class="col-md-6">
-        			<petclinic:selectField label="Document Type" name="documentType" size="3" names="${documentTypes}"/>
-        		</div>
+        			<petclinic:enumField label="Document Type" name="documentType"
+                      names="${documentTypes}" />
+                </div>
         	</div>
         	<div class="row">
         		<div class="col-md-6">
-        			<petclinic:selectField label="Health Insurance" name="healthInsurance" size="11" names="${healthInsurances}"/>
+        			<petclinic:enumField label="Health Insurance" name="healthInsurance"
+                      names="${healthInsurances}" />
         		</div>
         		<div class="col-md-6">
         			<petclinic:inputField label="Health Card Number" name="healthCardNumber"/>

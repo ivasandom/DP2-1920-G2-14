@@ -29,7 +29,7 @@ public class ClientService {
 	}
 	@Transactional(readOnly = true)
 	public Client findClientById(final int id) throws DataAccessException {
-		return this.clientRepository.findById(id);
+		return this.clientRepository.findById(id).get();
 	}
 
 	@Transactional
@@ -50,5 +50,10 @@ public class ClientService {
 		this.userService.saveUser(client.getUser());
 		//creating authorities
 		this.authoritiesService.saveAuthorities(client.getUser().getUsername(), "client");
+	}
+	
+	@Transactional
+	public void deleteById(final Integer id) throws DataAccessException {
+		this.clientRepository.deleteById(id);
 	}
 }

@@ -30,8 +30,13 @@
                <td>${appointment.center.address}</td>
                <td>${appointment.professional.fullName}</td>
                <td>${appointment.specialty.name}</td>
-               <td>${appointment.type.name}</td>
-               <td><a href="#">View more</a></td>             
+               <td>${appointment.type}</td>
+               <td>
+                <spring:url value="/appointments/{appointmentId}/details" var="appointmentUrl">
+                      <spring:param name="appointmentId" value="${appointment.id}"/>
+                </spring:url>
+                <a href="${fn:escapeXml(appointmentUrl)}">View more</a>
+               	</td>      
             </tr>
         </c:forEach>
         </tbody>

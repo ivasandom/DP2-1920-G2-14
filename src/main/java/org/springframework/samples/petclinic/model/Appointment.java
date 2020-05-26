@@ -45,51 +45,49 @@ public class Appointment extends BaseEntity {
 
 	@Column(name = "date")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	private LocalDate		date;
+	private LocalDate			date;
 
 	@Column(name = "start_time")
 	@DateTimeFormat(pattern = "HH:mm:ss")
-	private LocalTime		startTime;
+	private LocalTime			startTime;
 
 	@Column(name = "reason")
 	//@NotEmpty(message = "*")
-	private String			reason;
-
-	@NotNull
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "type_id")
-	private AppointmentType	type;
+	private String				reason;
+	
+	@Column(name = "type")
+	@Enumerated(value = EnumType.STRING)
+	private AppointmentType		type;
 
 	// Relations
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "client_id")
-	private Client			client;
+	private Client				client;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "professional_id")
-	private Professional	professional;
+	private Professional		professional;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "specialty_id")
-	private Specialty		specialty;
+	private Specialty			specialty;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "center_id")
-	private Center			center;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "diagnosis_id")
-	private Diagnosis		diagnosis;
+	private Center				center;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "receipt_id")
-	private Receipt			receipt;
-	
+	@JoinColumn(name = "diagnosis_id")
+	private Diagnosis			diagnosis;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "appointment")
+	private Bill				bill;
+
 	@Column(length = 32, columnDefinition = "varchar(32) default 'PENDING'")
 	@Enumerated(value = EnumType.STRING)
-	private AppointmentStatus status;
+	private AppointmentStatus	status;
 }

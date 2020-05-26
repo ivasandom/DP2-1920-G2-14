@@ -15,9 +15,11 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "diagnosis")
 public class Diagnosis extends BaseEntity {
@@ -27,7 +29,7 @@ public class Diagnosis extends BaseEntity {
 	private LocalDate		date;
 
 	@Column(name = "description")
-	@NotEmpty
+	@NotEmpty(message = "must not be empty")
 	private String			description;
 
 	@ManyToMany(fetch = FetchType.EAGER)

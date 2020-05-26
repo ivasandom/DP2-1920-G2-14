@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -33,9 +32,6 @@ public class Professional extends Person {
 
 	//Relations
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
-	private Set<Schedule>		schedules;
-
 	@ManyToOne
 	@JoinColumn(name = "center_id")
 	private Center				center;
@@ -44,7 +40,7 @@ public class Professional extends Person {
 	@JoinColumn(name = "specialty_id")
 	private Specialty			specialty;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional")
 	private Set<Appointment>	appointments;
 
 }

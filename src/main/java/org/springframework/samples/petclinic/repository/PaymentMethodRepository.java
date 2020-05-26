@@ -14,4 +14,7 @@ public interface PaymentMethodRepository extends CrudRepository<PaymentMethod, I
 	@Query("SELECT pm FROM PaymentMethod pm WHERE pm.client = :client")
 	Collection<PaymentMethod> findByClient(@Param("client") Client client);
 	
+	@Query("SELECT pm FROM PaymentMethod pm WHERE pm.token = :token and pm.client = :client")
+	PaymentMethod findByTokenAndClient(@Param("token") String token, @Param("client") Client client);
+	
 }
