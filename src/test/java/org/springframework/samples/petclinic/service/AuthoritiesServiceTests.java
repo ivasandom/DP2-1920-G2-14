@@ -25,6 +25,7 @@ public class AuthoritiesServiceTests {
 
 
 	@Test
+	@Transactional
 	public void testCountWithInitialData() {
 		Collection<Authorities> authorities = (Collection<Authorities>) this.authoritiesService.findAll();
 		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 9);

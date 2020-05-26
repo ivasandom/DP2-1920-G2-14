@@ -82,12 +82,14 @@ public class AppointmentServiceTests {
 
 
 	@Test
+	@Transactional
 	void shouldFindAllAppointments() {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		Assertions.assertThat(appointments.size()).isEqualTo(130);
 	}
 
 	@Test
+	@Transactional
 	void shouldFindAppointmentsStartTimeByProfessionalAndDate() {
 		Professional professional = this.professionalService.findById(1).get();
 		LocalDate date = LocalDate.of(2020, 12, 12);
@@ -100,6 +102,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07"
 	})
+	@Transactional
 	void shouldNotFindAppointmentsStartTimeByWrongProfessionalAndDate(final int professionalId, final LocalDate date) {
 		Professional professional = this.professionalService.findById(professionalId).get();
 		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
@@ -109,6 +112,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldFindAppointmentsByClientId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
@@ -122,6 +126,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldFindAppointmentsByProfessionalId() {
 
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByProfessionalId(3);
@@ -135,6 +140,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldFindTodayPendingAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -158,6 +164,7 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldFindTodayCompletedAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -184,6 +191,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"pepegotera, 2020-05-04, 08:00, test"
 	})
+	@Transactional
 	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
 		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1);
 
@@ -215,6 +223,7 @@ public class AppointmentServiceTests {
 	@CsvSource({
 		"-1", "1000", "1000000000"
 	})
+	@Transactional
 	void shouldNotFindAppointmentWithWrongId(final int id) {
 		org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
 			this.appointmentService.findAppointmentById(id);
@@ -222,12 +231,14 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldfindMedicines() {
 		Collection<Medicine> medicines = this.appointmentService.findMedicines(1);
 		Assertions.assertThat(medicines.size()).isEqualTo(2);
 	}
 
 	@Test
+	@Transactional
 	void shouldFindDeseases() {
 		Collection<Desease> deseasees = this.appointmentService.findDeseases(1);
 		Assertions.assertThat(deseasees.size()).isEqualTo(1);

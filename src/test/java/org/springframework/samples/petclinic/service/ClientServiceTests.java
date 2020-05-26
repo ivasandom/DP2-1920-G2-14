@@ -34,6 +34,7 @@ public class ClientServiceTests {
 
 
 	@Test
+	@Transactional
 	public void testCountWithInitialData() {
 		int count = this.clientService.clientCount();
 		Assertions.assertEquals(count, 3);

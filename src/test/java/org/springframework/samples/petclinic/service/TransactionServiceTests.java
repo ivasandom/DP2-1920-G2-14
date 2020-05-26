@@ -47,6 +47,7 @@ public class TransactionServiceTests {
 	}
 
 	@Test
+	@Transactional
 	public void testCountWithInitialData() {
 		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		Assertions.assertEquals(transactions.size(), 0);
