@@ -279,10 +279,10 @@ INSERT IGNORE INTO diagnosis_deseases (diagnosis_id, desease_id) VALUES (7,78);
 
 
 -- Para probar citas cogidas 2020-12-12
-INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-05-04', '08:00', 'test',1); 
-INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-05-04', '08:15', 'test',2); 
-INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test',1); 
-INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 1, 3, '2020-12-12', '08:45', 'test',1); 
+INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-05-04', '08:00', 'test','CHECKING', 'COMPLETED');
+INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-05-04', '08:15', 'test','CHECKING', 'COMPLETED');
+INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type, status) VALUES (1, 1, 1, 1, '2020-12-12', '08:30', 'test','CHECKING', 'COMPLETED');
+INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (2, 1, 1, 3, '2020-12-12', '08:45', 'test','CHECKING');
 
 -- Citas futuras para 4 meses
 INSERT IGNORE INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time,reason,type) VALUES (1, 1, 1, 1, '2020-05-05', '08:00', 'test','CHECKING');
