@@ -34,10 +34,10 @@ public class TransactionService {
 	@Transactional(readOnly = true)
 	public Transaction findById(int id) throws DataAccessException {
 		Optional<Transaction> optional = this.transactionRepository.findById(id);
-		if (optional.isEmpty()) {
-			return null;
+		if (optional.isPresent()) {
+			return optional.get();
 		}
-		return optional.get();
+		return null;
 	}
 	
 
