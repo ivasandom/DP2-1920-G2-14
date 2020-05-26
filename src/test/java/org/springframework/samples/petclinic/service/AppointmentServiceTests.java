@@ -197,7 +197,7 @@ public class AppointmentServiceTests {
 		appointment.setClient(client);
 		appointment.setSpecialty(specialty);
 		appointment.setDate(date);
-		appointment.setStatus(AppointmentStatus.PENDING);
+		appointment.setStatus(AppointmentStatus.COMPLETED);
 		appointment.setStartTime(startTime);
 		appointment.setReason(reason);
 

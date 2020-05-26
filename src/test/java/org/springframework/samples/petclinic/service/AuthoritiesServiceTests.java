@@ -27,7 +27,7 @@ public class AuthoritiesServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		Collection<Authorities> authorities = (Collection<Authorities>) this.authoritiesService.findAll();
-		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 10);
+		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 9);
 	}
 
 	@ParameterizedTest

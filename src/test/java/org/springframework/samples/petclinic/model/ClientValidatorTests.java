@@ -143,7 +143,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("document").getCode()).isEqualTo("must not be empty");
+		assertThat(errors.getFieldError("document").getCode()).isEqualTo("document must not be empty");
 	}
 	
 	@Test
@@ -197,7 +197,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("must not be empty");
+		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("health insurance must not be empty. In case you don't have any, write 'I do not have insurance'");
 	}
 	
 	
@@ -276,7 +276,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("you must write your health card number");
+		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("cannot be null");
 	}
 	
 	@ParameterizedTest

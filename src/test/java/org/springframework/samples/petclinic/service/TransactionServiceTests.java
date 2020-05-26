@@ -49,7 +49,7 @@ public class TransactionServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		Assertions.assertEquals(transactions.size(), 1);
+		Assertions.assertEquals(transactions.size(), 0);
 	}
 
 }

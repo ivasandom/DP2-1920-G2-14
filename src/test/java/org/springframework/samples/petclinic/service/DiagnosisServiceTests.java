@@ -60,6 +60,6 @@ public class DiagnosisServiceTests {
 	@Test
 	public void testCountWithInitialData() {
 		Collection<Diagnosis> diagnosis = (Collection<Diagnosis>) this.diagnosisService.findAll();
-		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 8);
+		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 7);
 	}
 }

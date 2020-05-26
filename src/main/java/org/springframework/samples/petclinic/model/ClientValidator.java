@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.util.Calendar;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -16,6 +18,12 @@ public class ClientValidator implements org.springframework.validation.Validator
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "healthInsurance", "health insurance must not be empty. In case you don't have any, write 'I do not have insurance'");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.username", "username must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.password", "password must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "document", "document must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
+
 
 		Client client = (Client) obj;
 
@@ -50,6 +58,30 @@ public class ClientValidator implements org.springframework.validation.Validator
 		if (!errors.hasFieldErrors("documentType")) {
 			if (client.getDocumentType().equals(DocumentType.CIF)) {
 				errors.rejectValue("documentType", "invalid natural person document type");
+			}
+		}
+		
+		if (!errors.hasFieldErrors("birthDate")) {
+			if (client.getBirthDate().after(Calendar.getInstance().getTime())) {
+				errors.rejectValue("birthDate", "the date must be in past",
+						new Object[] { "'birthDate'" }, "the date must be in past");
+
+			}
+		}
+		
+		if (!errors.hasFieldErrors("registrationDate")) {
+			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
+				errors.rejectValue("registrationDate", "the date must be in past",
+						new Object[] { "'registrationDate'" }, "the date must be in past");
+
+			}
+		}
+		
+		if (!errors.hasFieldErrors("email")) {
+			if (!client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
+				errors.rejectValue("email", "choose the correct format",
+						new Object[] { "'email'" }, "choose the correct format");
+
 			}
 		}
 	}
