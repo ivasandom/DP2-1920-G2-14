@@ -47,6 +47,12 @@ public class ProfessionalValidatorTests {
 		professional.setRegistrationDate(registrationDate);
 		professional.setAppointments(appointments);
 		professional.setUser(user);
+		Center center = new Center();
+		center.setName("Sevilla");
+		professional.setCenter(center);
+		Specialty specialty = new Specialty();
+		specialty.setName("dermatology");
+		professional.setSpecialty(specialty);
 		
 		errors = new BeanPropertyBindingResult(professional, "");
 
