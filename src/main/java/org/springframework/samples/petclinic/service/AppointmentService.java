@@ -37,7 +37,6 @@ public class AppointmentService {
 	private AppointmentRepository	appointmentRepository;
 	
 
-	@Transactional
 	public int appointmentCount() {
 		return (int) this.appointmentRepository.count();
 	}
@@ -47,47 +46,38 @@ public class AppointmentService {
 		this.appointmentRepository = appointmentRepository;
 	}
 
-	@Transactional(readOnly = true)
 	public Iterable<Appointment> listAppointments() throws DataAccessException {
 		return this.appointmentRepository.findAll();
 	}
 
-	@Transactional
 	public Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(final LocalDate date, final Professional professional) {
 		return this.appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 	}
 
-	@Transactional
 	public Collection<Appointment> findAppointmentByUserId(final int id) {
 		return this.appointmentRepository.findAppointmentByClientId(id);
 	}
 
-	@Transactional
 	public Collection<Appointment> findAppointmentByProfessionalId(final int id) {
 		return this.appointmentRepository.findAppointmentByProfessionalId(id);
 	}
 
-	@Transactional
 	public Collection<Appointment> findTodayPendingByProfessionalId(final int id) {
 		return this.appointmentRepository.findTodayPendingByProfessionalId(id);
 	}
 
-	@Transactional
 	public Collection<Appointment> findTodayCompletedByProfessionalId(final int id) {
 		return this.appointmentRepository.findTodayCompletedByProfessionalId(id);
 	}
 
-	@Transactional
 	public Appointment findAppointmentById(final int id) {
 		return this.appointmentRepository.findById(id).get();
 	}
 
-	@Transactional
 	public Collection<Medicine> findMedicines(final int id) {
 		return this.appointmentRepository.findMedicines(id);
 	}
 
-	@Transactional
 	public Collection<Desease> findDeseases(final int id) {
 		return this.appointmentRepository.findDeseases(id);
 	}
@@ -136,17 +126,14 @@ public class AppointmentService {
 		this.appointmentRepository.delete(appointment);
 	}
 	
-	@Transactional(readOnly = true)
 	public Long getNumberOfPendingAppointments() throws DataAccessException {
 		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
 	}
 	
-	@Transactional(readOnly = true)
 	public Long getNumberOfAbsentAppointments() throws DataAccessException {
 		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
 	}
 	
-	@Transactional(readOnly = true)
 	public Long getNumberOfCompletedAppointments() throws DataAccessException {
 		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
 	}

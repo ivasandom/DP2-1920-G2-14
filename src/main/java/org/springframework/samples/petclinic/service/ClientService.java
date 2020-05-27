@@ -23,21 +23,17 @@ public class ClientService {
 	private AuthoritiesService	authoritiesService;
 
 
-	@Transactional
 	public int clientCount() {
 		return (int) this.clientRepository.count();
 	}
-	@Transactional(readOnly = true)
 	public Client findClientById(final int id) throws DataAccessException {
 		return this.clientRepository.findById(id).get();
 	}
 
-	@Transactional
 	public Client findClientByUsername(final String username) throws DataAccessException {
 		return this.clientRepository.findClientByUsername(username);
 	}
 
-	@Transactional
 	public Collection<Client> findAll() throws DataAccessException {
 		return this.clientRepository.findAll();
 	}

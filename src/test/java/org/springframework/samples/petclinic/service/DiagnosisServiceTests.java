@@ -31,7 +31,6 @@ public class DiagnosisServiceTests {
 
 	
 	@Test
-	@Transactional
 	public void testCountWithInitialData() {
 		Collection<Diagnosis> diagnosis = (Collection<Diagnosis>) this.diagnosisService.findAll();
 		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 7);
@@ -41,7 +40,7 @@ public class DiagnosisServiceTests {
 	@CsvSource({
 		"2020-02-03, diagnosis description"
 	})
-	@Transactional(readOnly = true)
+	@Transactional
 	public void shouldSaveDiagnosis(final LocalDate date, final String description) {
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
 		int found = diagnosisCollection.size();

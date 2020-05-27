@@ -34,7 +34,6 @@ public class ClientServiceTests {
 
 
 	@Test
-	@Transactional
 	public void testCountWithInitialData() {
 		int count = this.clientService.clientCount();
 		Assertions.assertEquals(count, 3);
@@ -44,7 +43,6 @@ public class ClientServiceTests {
 	@CsvSource({
 		"Gotera"
 	})
-	@Transactional
 	public void shouldFindClientById(final String name) {
 		Client cli = this.clientService.findClientById(1);
 		Assertions.assertTrue(cli.getLastName().equals(name));
@@ -54,7 +52,6 @@ public class ClientServiceTests {
 	@CsvSource({
 		"pepegotera", "elenanito"
 	})
-	@Transactional
 	void shouldFindClientByUsername(final String username) {
 		Client client = this.clientService.findClientByUsername(username);
 		Collection<Client> clients = this.clientService.findAll();
@@ -62,7 +59,7 @@ public class ClientServiceTests {
 	}
 
 	@Test
-	@Transactional(readOnly = true)
+	@Transactional
 	public void shouldSaveClient() {
 		Collection<Client> clients = this.clientService.findAll();
 		int found = clients.size();

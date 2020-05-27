@@ -36,7 +36,7 @@ public class TransactionServiceTests {
 	@CsvSource({
 		"10.0, tok_visa, finished"
 	})
-	@Transactional(readOnly = true)
+	@Transactional
 	public void shouldSaveTransaction(final Double amount, final String token, final String status) {
 		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		int found = transactions.size();
