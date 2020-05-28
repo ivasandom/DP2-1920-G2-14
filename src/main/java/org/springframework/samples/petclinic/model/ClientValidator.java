@@ -23,6 +23,7 @@ public class ClientValidator implements org.springframework.validation.Validator
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "must not be empty");
 
 
 		Client client = (Client) obj;

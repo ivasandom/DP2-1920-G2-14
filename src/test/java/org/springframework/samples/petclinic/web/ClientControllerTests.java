@@ -109,7 +109,7 @@ class ClientControllerTests {
 						.param("firstName", "Pepe")
 						.param("lastName", "Gotera")
 						.param("email", "pepegotera@gmail.com")
-						.param("birthdate", "1955-12-4")
+						.param("birthDate", "1955-12-4")
 						// .param("registrationDate", "2015-07-23")
 						.param("document", "10203040T")
 						.param("documentType", "NIF")
