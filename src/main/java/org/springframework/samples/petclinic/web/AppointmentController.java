@@ -58,7 +58,7 @@ import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
-import org.springframework.samples.petclinic.service.StripeService;
+import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -88,7 +88,6 @@ public class AppointmentController {
 	private final CenterService centerService;
 	private final MedicineService medicineService;
 	private final DeseaseService deseaseService;
-	private final StripeService stripeService;
 	private final BillService billService;
 
 	@Autowired
@@ -96,7 +95,7 @@ public class AppointmentController {
 			final ProfessionalService professionalService, final SpecialtyService specialtyService,
 			final ClientService clientService, final CenterService centerService,
 			final AuthoritiesService authoritiesService, final MedicineService medicineService,
-			final DeseaseService deseaseService, final StripeService stripeService, final BillService billService) {
+			final DeseaseService deseaseService, final BillService billService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
@@ -104,7 +103,6 @@ public class AppointmentController {
 		this.centerService = centerService;
 		this.medicineService = medicineService;
 		this.deseaseService = deseaseService;
-		this.stripeService = stripeService;
 		this.billService = billService;
 	}
 
@@ -181,7 +179,12 @@ public class AppointmentController {
 
 	@PostMapping(value = "/new")
 	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result,
-			final ModelMap model) {
+			final ModelMap model) throws Exception {
+		
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findById");
+		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		appointment.setClient(this.clientService.findClientByUsername(auth.getName()));
 		AppointmentValidator appointmentValidator = new AppointmentValidator();

@@ -3,7 +3,7 @@ package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,8 +21,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,7 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
+import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Transaction;
@@ -111,6 +114,10 @@ public class AdminControllerTests {
 	
 	private static final int TEST_TRANSACTION_ID = 1;
 	
+	private static final int TEST_CENTER_ID = 1;
+	
+	private static final int TEST_SPECIALTY_ID = 1;
+	
 	
 	@BeforeEach
 	void setup() throws Exception {
@@ -140,13 +147,14 @@ public class AdminControllerTests {
 		client.setUser(user);
 		client.setBirthDate(birthDate);
 		client.setRegistrationDate(Date.from(Instant.now()));
+		client.setPaymentMethods(new HashSet<PaymentMethod>());
 		
 		Center center = new Center();
-		center.setId(1);
+		center.setId(TEST_CENTER_ID);
 		center.setAddress("Sevilla");
 
 		Specialty specialty = new Specialty();
-		specialty.setId(1);
+		specialty.setId(TEST_SPECIALTY_ID);
 		specialty.setName("dermatology");
 
 		professional = new Professional();
@@ -184,6 +192,7 @@ public class AdminControllerTests {
 		bill.setHealthInsurance(HealthInsurance.I_DO_NOT_HAVE_INSURANCE);
 		bill.setIva(21.0);
 		bill.setAppointment(appointment);
+		bill.setTransactions(new HashSet<Transaction>());
 		
 		transaction = new Transaction();
 		transaction.setId(TEST_TRANSACTION_ID);
@@ -228,6 +237,10 @@ public class AdminControllerTests {
 		given(this.billService.findAll()).willReturn(resultadoBuscarBills);
 		
 		given(this.transactionService.findById(TEST_TRANSACTION_ID)).willReturn(Optional.of(transaction));
+		
+		given(this.centerService.findCenterById(TEST_CENTER_ID)).willReturn(Optional.of(center));
+		
+		given(this.specialtyService.findSpecialtyById(TEST_SPECIALTY_ID)).willReturn(Optional.of(specialty));
 
 	}
 
@@ -256,6 +269,15 @@ public class AdminControllerTests {
 				.andExpect(model().attributeExists("client"))
 				.andExpect(view().name("admin/clients/detail"));
 	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
+	void testClientDetailNotFound() throws Exception {
+		this.mockMvc.perform(get("/admin/clients/{clientId}", 2))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
+	}
+
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
@@ -393,11 +415,27 @@ public class AdminControllerTests {
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
-	void testClientProfessionalForm() throws Exception {
+	void testProfessionalDetailNotFound() throws Exception {
+		this.mockMvc.perform(get("/admin/professionals/{professionalId}", 2))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
+	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
+	void testProfessionalEditForm() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", TEST_PROFESSIONAL_ID))
 				.andExpect(model().attributeExists("professional"))
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(view().name("admin/professionals/form"));
+	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
+	void testProfessionalEditFormNotFound() throws Exception {
+		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", 2))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
 	}
 
 	@WithMockUser(value = "admin", authorities = {"admin"})
@@ -414,10 +452,10 @@ public class AdminControllerTests {
 						.param("email", professional.getEmail())
 						.param("user.username", professional.getUser().getUsername())
 						.param("user.password", professional.getUser().getPassword())
-						.param("center", "1")
-						.param("specialty", "1"))
+						.param("center.id", "1")
+						.param("specialty.id", "1"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("admin/professionals/detail"));
+				.andExpect(view().name("redirect:/admin/professionals/" + TEST_PROFESSIONAL_ID));
 	}
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
@@ -526,7 +564,15 @@ public class AdminControllerTests {
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
-	void testClientAppointmentForm() throws Exception {
+	void testAppointmentDetailNotFound() throws Exception {
+		this.mockMvc.perform(get("/admin/appointments/{appointmentId}", 2))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
+	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
+	void testAppointmentEditForm() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments/{appointmentId}/edit", TEST_APPOINTMENT_ID))
 				.andExpect(model().attributeExists("appointment"))
 				.andExpect(status().is2xxSuccessful())
@@ -540,14 +586,14 @@ public class AdminControllerTests {
 						.with(csrf())
 						.param("date", "06/06/2020")
 						.param("startTime", "08:00:00")
-						.param("client", "1")
-						.param("professional", "1")
-						.param("center", "1")
-						.param("specialty", "1")
+						.param("client.id", "1")
+						.param("professional.id", "1")
+						.param("center.id", "1")
+						.param("specialty.id", "1")
 						.param("reason", "test")
 						.param("status", AppointmentStatus.COMPLETED.name()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("admin/appointments/detail"));
+				.andExpect(view().name("redirect:/admin/appointments/" + TEST_APPOINTMENT_ID));
 	}
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
@@ -557,10 +603,10 @@ public class AdminControllerTests {
 						.with(csrf())
 						.param("date", "")
 						.param("startTime", "")
-						.param("client", "")
-						.param("professional", "")
-						.param("center", "")
-						.param("specialty", "")
+						.param("client.id", "")
+						.param("professional.id", "")
+						.param("center.id", "")
+						.param("specialty.id", "")
 						.param("reason", "")
 						.param("status",  AppointmentStatus.PENDING.name()))
 				.andExpect(status().is2xxSuccessful())
@@ -586,10 +632,10 @@ public class AdminControllerTests {
 						.with(csrf())
 						.param("date", "06/06/2020")
 						.param("startTime", "09:00:00")
-						.param("client", "1")
-						.param("professional", "1")
-						.param("center", "1")
-						.param("specialty", "1")
+						.param("client.id", "1")
+						.param("professional.id", "1")
+						.param("center.id", "1")
+						.param("specialty.id", "1")
 						.param("reason", "test")
 						.param("status", AppointmentStatus.PENDING.name()))
 				.andExpect(status().is3xxRedirection())
@@ -603,10 +649,10 @@ public class AdminControllerTests {
 						.with(csrf())
 						.param("date", "")
 						.param("startTime", "")
-						.param("client", "")
-						.param("professional", "")
-						.param("center", "")
-						.param("specialty", "")
+						.param("client.id", "")
+						.param("professional.id", "")
+						.param("center.id", "")
+						.param("specialty.id", "")
 						.param("reason", "")
 						.param("status", AppointmentStatus.PENDING.name()))
 				.andExpect(status().is2xxSuccessful())
@@ -667,7 +713,7 @@ public class AdminControllerTests {
 						.param("amount", "50")
 						.param("paymentMethod.token", "CASH"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirecT:/admin/bills/" + TEST_BILL_ID));
+				.andExpect(view().name("redirect:/admin/bills/" + TEST_BILL_ID));
 	}
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})

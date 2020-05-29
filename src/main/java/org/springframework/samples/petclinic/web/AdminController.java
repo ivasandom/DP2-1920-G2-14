@@ -186,7 +186,7 @@ public class AdminController {
 	@PostMapping("/clients/create")
 	public String processClientCreateForm(@Valid final Client client, final BindingResult result,
 			final ModelMap model) {
-		
+
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 
@@ -223,7 +223,7 @@ public class AdminController {
 		return this.professionalService.findById(professionalId).map(professional -> {
 			model.put("professional", professional);
 			return "admin/professionals/detail";
-			
+
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
@@ -238,14 +238,15 @@ public class AdminController {
 			model.put("specialties", specialties);
 			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			return "admin/professionals/form";
-			
+
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
 	}
 
 	@PostMapping("/professionals/{professionalId}/edit")
-	public String processProfessionalEditForm(@ModelAttribute final Professional professional, final BindingResult result,
-			@PathVariable("professionalId") final int professionalId, final ModelMap model) throws Exception {
+	public String processProfessionalEditForm(@ModelAttribute final Professional professional,
+			final BindingResult result, @PathVariable("professionalId") final int professionalId, final ModelMap model)
+			throws Exception {
 
 		EntityUtils.setRelationshipAttribute(professional, Center.class, this.centerService, "findCenterById");
 		EntityUtils.setRelationshipAttribute(professional, Specialty.class, this.specialtyService, "findSpecialtyById");
@@ -254,6 +255,7 @@ public class AdminController {
 		professionalValidator.validate(professional, result);
 
 		if (result.hasErrors()) {
+			System.out.println("errors" + result.getFieldErrors());
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
 
@@ -285,10 +287,10 @@ public class AdminController {
 	@PostMapping("/professionals/create")
 	public String processProfessionalCreateForm(@Valid final Professional professional, final BindingResult result,
 			final ModelMap model) throws Exception {
-		
+
 		EntityUtils.setRelationshipAttribute(professional, Center.class, this.centerService, "findCenterById");
 		EntityUtils.setRelationshipAttribute(professional, Specialty.class, this.specialtyService, "findSpecialtyById");
-		
+
 		ProfessionalValidator professionalValidator = new ProfessionalValidator();
 		professionalValidator.validate(professional, result);
 
@@ -328,7 +330,7 @@ public class AdminController {
 	public String appointmentDetail(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
 			model.put("appointment", appointment);
-			return "admin/appointments/detail";	
+			return "admin/appointments/detail";
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
@@ -347,7 +349,7 @@ public class AdminController {
 			model.put("specialties", specialties);
 			model.put("statusChoices", AppointmentStatus.values());
 			return "admin/appointments/form";
-			
+
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
@@ -356,8 +358,7 @@ public class AdminController {
 			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
 
 		EntityUtils.setRelationshipAttribute(appointment, Client.class, this.clientService, "findClientById");
-		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService,
-				"findProfessionalById");
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findById");
 		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
 		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
 
@@ -404,13 +405,12 @@ public class AdminController {
 	@PostMapping("/appointments/create")
 	public String processAppointmentCreateForm(@Valid final Appointment appointment, final BindingResult result,
 			final ModelMap model) throws Exception {
-		
+
 		EntityUtils.setRelationshipAttribute(appointment, Client.class, this.clientService, "findClientById");
-		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService,
-				"findProfessionalById");
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findById");
 		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
 		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
-		
+
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
@@ -436,7 +436,7 @@ public class AdminController {
 	@PostMapping("/appointments/{appointmentId}/delete")
 	public String appointmentDelete(@PathVariable("appointmentId") final int appointmentId, final ModelMap model)
 			throws Exception {
-		
+
 		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
 			if (!appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
 				try {
@@ -447,7 +447,7 @@ public class AdminController {
 			}
 			return "redirect:/admin/appointments";
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
-		
+
 	}
 
 	/**
@@ -495,7 +495,7 @@ public class AdminController {
 	@PostMapping("/bills/{billId}/charge")
 	public String processBillChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
 			@PathVariable("billId") final int billId, final ModelMap model) throws Exception {
-		
+
 		return this.billService.findById(billId).map(bill -> {
 			transaction.setBill(bill);
 
@@ -583,7 +583,7 @@ public class AdminController {
 					} catch (Exception e) {
 						return "redirect:/error";
 					}
-					
+
 					transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
 					transactionRefund.setToken(stripeRefund.getId());
 					transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");

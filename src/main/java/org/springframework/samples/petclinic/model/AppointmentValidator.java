@@ -23,7 +23,7 @@ public class AppointmentValidator implements org.springframework.validation.Vali
 		ValidationUtils.rejectIfEmpty(errors, "center", "center must no be empty");
 		ValidationUtils.rejectIfEmpty(errors, "specialty", "specialty must no be empty");
 		ValidationUtils.rejectIfEmpty(errors, "professional", "professional must no be empty");
-
+		
 		Appointment appointment = (Appointment) obj;
 
 		if (!errors.hasFieldErrors("startTime")) {
