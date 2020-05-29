@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.web;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +26,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
@@ -63,6 +63,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Refund;
@@ -137,18 +138,22 @@ public class AdminController {
 
 	@GetMapping("/clients/{clientId}")
 	public String clientDetail(@PathVariable("clientId") final int clientId, final ModelMap model) {
-		Client client = this.clientService.findClientById(clientId);
-		model.put("client", client);
-		return "admin/clients/detail";
+		return this.clientService.findClientById(clientId).map(client -> {
+			model.put("client", client);
+			return "admin/clients/detail";
+
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/clients/{clientId}/edit")
 	public String clientEditForm(@PathVariable("clientId") final int clientId, final ModelMap model) {
-		Client client = this.clientService.findClientById(clientId);
-		model.put("client", client);
-		model.put("documentTypes", DocumentType.getNaturalPersonValues());
-		model.put("healthInsurances", HealthInsurance.values());
-		return "admin/clients/form";
+		return this.clientService.findClientById(clientId).map(client -> {
+			model.put("client", client);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
+			model.put("healthInsurances", HealthInsurance.values());
+			return "admin/clients/form";
+
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@PostMapping("/clients/{clientId}/edit")
@@ -181,6 +186,7 @@ public class AdminController {
 	@PostMapping("/clients/create")
 	public String processClientCreateForm(@Valid final Client client, final BindingResult result,
 			final ModelMap model) {
+		
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 
@@ -214,36 +220,42 @@ public class AdminController {
 
 	@GetMapping("/professionals/{professionalId}")
 	public String professionalDetail(@PathVariable("professionalId") final int professionalId, final ModelMap model) {
-		Professional professional = this.professionalService.findById(professionalId).get();
-		model.put("professional", professional);
-		return "admin/professionals/detail";
+		return this.professionalService.findById(professionalId).map(professional -> {
+			model.put("professional", professional);
+			return "admin/professionals/detail";
+			
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/professionals/{professionalId}/edit")
 	public String professionalEditForm(@PathVariable("professionalId") final int professionalId, final ModelMap model) {
-		Professional professional = this.professionalService.findById(professionalId).get();
-		Iterable<Center> centers = this.centerService.findAll();
-		Iterable<Specialty> specialties = this.specialtyService.findAll();
+		return this.professionalService.findById(professionalId).map(professional -> {
+			Iterable<Center> centers = this.centerService.findAll();
+			Iterable<Specialty> specialties = this.specialtyService.findAll();
 
-		model.put("professional", professional);
-		model.put("centers", centers);
-		model.put("specialties", specialties);
-		model.put("documentTypes", DocumentType.getNaturalPersonValues());
-		return "admin/professionals/form";
+			model.put("professional", professional);
+			model.put("centers", centers);
+			model.put("specialties", specialties);
+			model.put("documentTypes", DocumentType.getNaturalPersonValues());
+			return "admin/professionals/form";
+			
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+
 	}
 
 	@PostMapping("/professionals/{professionalId}/edit")
-	public String processProfessionalEditForm(@Valid final Professional professional, final BindingResult result,
-			@PathVariable("professionalId") final int professionalId, final ModelMap model) {
-		System.out.println("errores");
+	public String processProfessionalEditForm(@ModelAttribute final Professional professional, final BindingResult result,
+			@PathVariable("professionalId") final int professionalId, final ModelMap model) throws Exception {
+
+		EntityUtils.setRelationshipAttribute(professional, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(professional, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
 		ProfessionalValidator professionalValidator = new ProfessionalValidator();
 		professionalValidator.validate(professional, result);
 
 		if (result.hasErrors()) {
-			System.out.println("errores" + result.getFieldErrors());
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
-			
 
 			model.put("professional", professional);
 			model.put("centers", centers);
@@ -272,7 +284,11 @@ public class AdminController {
 
 	@PostMapping("/professionals/create")
 	public String processProfessionalCreateForm(@Valid final Professional professional, final BindingResult result,
-			final ModelMap model) {
+			final ModelMap model) throws Exception {
+		
+		EntityUtils.setRelationshipAttribute(professional, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(professional, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
 		ProfessionalValidator professionalValidator = new ProfessionalValidator();
 		professionalValidator.validate(professional, result);
 
@@ -310,41 +326,41 @@ public class AdminController {
 
 	@GetMapping("/appointments/{appointmentId}")
 	public String appointmentDetail(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		model.put("appointment", appointment);
-		return "admin/appointments/detail";
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			model.put("appointment", appointment);
+			return "admin/appointments/detail";	
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/appointments/{appointmentId}/edit")
 	public String appointmentEditForm(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		Iterable<Client> clients = this.clientService.findAll();
-		Iterable<Professional> professionals = this.professionalService.findAll();
-		Iterable<Center> centers = this.centerService.findAll();
-		Iterable<Specialty> specialties = this.specialtyService.findAll();
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			Iterable<Client> clients = this.clientService.findAll();
+			Iterable<Professional> professionals = this.professionalService.findAll();
+			Iterable<Center> centers = this.centerService.findAll();
+			Iterable<Specialty> specialties = this.specialtyService.findAll();
 
-		model.put("appointment", appointment);
-		model.put("clients", clients);
-		model.put("professionals", professionals);
-		model.put("centers", centers);
-		model.put("specialties", specialties);
-		model.put("statusChoices", AppointmentStatus.values());
-		return "admin/appointments/form";
+			model.put("appointment", appointment);
+			model.put("clients", clients);
+			model.put("professionals", professionals);
+			model.put("centers", centers);
+			model.put("specialties", specialties);
+			model.put("statusChoices", AppointmentStatus.values());
+			return "admin/appointments/form";
+			
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
-	
-	
 
-	
 	@PostMapping("/appointments/{appointmentId}/edit")
 	public String processAppointmentEditForm(@Valid final Appointment appointment, final BindingResult result,
 			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-		
+
 		EntityUtils.setRelationshipAttribute(appointment, Client.class, this.clientService, "findClientById");
-		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findProfessionalById");
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService,
+				"findProfessionalById");
 		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
 		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
-		
-		
+
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
@@ -387,7 +403,14 @@ public class AdminController {
 
 	@PostMapping("/appointments/create")
 	public String processAppointmentCreateForm(@Valid final Appointment appointment, final BindingResult result,
-			final ModelMap model) {
+			final ModelMap model) throws Exception {
+		
+		EntityUtils.setRelationshipAttribute(appointment, Client.class, this.clientService, "findClientById");
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService,
+				"findProfessionalById");
+		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
@@ -413,11 +436,18 @@ public class AdminController {
 	@PostMapping("/appointments/{appointmentId}/delete")
 	public String appointmentDelete(@PathVariable("appointmentId") final int appointmentId, final ModelMap model)
 			throws Exception {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		if (appointment != null && !appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
-			this.appointmentService.delete(appointment);
-		}
-		return "redirect:/admin/appointments";
+		
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			if (!appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
+				try {
+					this.appointmentService.delete(appointment);
+				} catch (Exception e) {
+					new Exception();
+				}
+			}
+			return "redirect:/admin/appointments";
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+		
 	}
 
 	/**
@@ -433,53 +463,17 @@ public class AdminController {
 
 	@GetMapping("/bills/{billId}")
 	public String billDetail(@PathVariable("billId") final int billId, final ModelMap model) {
-		Bill bill = this.billService.findById(billId);
-		model.put("bill", bill);
-		return "admin/bills/detail";
+		return this.billService.findById(billId).map(bill -> {
+			model.put("bill", bill);
+			return "admin/bills/detail";
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/bills/{billId}/charge")
 	public String billChargeForm(@PathVariable("billId") final int billId, final ModelMap model) {
-		Bill bill = this.billService.findById(billId);
-
-		Transaction transaction = new Transaction();
-		transaction.setAmount(bill.getFinalPrice() - bill.getTotalPaid());
-		Client client = bill.getAppointment().getClient();
-
-		List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
-		availablePaymentMethods.add(PaymentMethod.cash());
-		availablePaymentMethods.add(PaymentMethod.bankTransfer());
-
-		if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
-			Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
-			availablePaymentMethods.addAll(clientPaymentMethods);
-		}
-
-		model.put("bill", bill);
-		model.put("transaction", transaction);
-		model.put("paymentMethods", availablePaymentMethods);
-		return "admin/bills/chargeForm";
-	}
-
-	@PostMapping("/bills/{billId}/charge")
-	public String processBillChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
-			@PathVariable("billId") final int billId, final ModelMap model) throws Exception {
-
-		Bill bill = this.billService.findById(billId);
-		transaction.setBill(bill);
-
-		PaymentMethod paymentMethod = transaction.getPaymentMethod();
-		if (paymentMethod != null
-				&& !(paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER"))) {
-
-			transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(paymentMethod.getToken(),
-					bill.getAppointment().getClient()));
-		}
-
-		BillTransactionValidator billTransactionValidator = new BillTransactionValidator();
-		billTransactionValidator.validate(transaction, result);
-
-		if (result.hasErrors()) {
+		return this.billService.findById(billId).map(bill -> {
+			Transaction transaction = new Transaction();
+			transaction.setAmount(bill.getFinalPrice() - bill.getTotalPaid());
 			Client client = bill.getAppointment().getClient();
 
 			List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
@@ -495,29 +489,72 @@ public class AdminController {
 			model.put("transaction", transaction);
 			model.put("paymentMethods", availablePaymentMethods);
 			return "admin/bills/chargeForm";
-		} else {
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+	}
+
+	@PostMapping("/bills/{billId}/charge")
+	public String processBillChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
+			@PathVariable("billId") final int billId, final ModelMap model) throws Exception {
+		
+		return this.billService.findById(billId).map(bill -> {
 			transaction.setBill(bill);
-			transaction.setCreatedAt(LocalDateTime.now());
-			transaction.setType(TransactionType.CHARGE);
 
-			if (paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER")) {
-				transaction.setSuccess(true);
-				transaction.setStatus("succeeded");
-				transaction.setToken(paymentMethod.getToken());
-			} else {
-				PaymentIntent paymentIntent = this.stripeService.charge(transaction.getPaymentMethod().getToken(),
-						transaction.getAmount(), bill.getAppointment().getClient().getStripeId());
+			PaymentMethod paymentMethod = transaction.getPaymentMethod();
+			if (paymentMethod != null
+					&& !(paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER"))) {
 
-				transaction.setAmount(paymentIntent.getAmount() * 0.01);
-				transaction.setToken(paymentIntent.getId());
-				transaction.setStatus(paymentIntent.getStatus());
-				transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
+				transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(paymentMethod.getToken(),
+						bill.getAppointment().getClient()));
 			}
 
-			this.transactionService.saveTransaction(transaction);
+			BillTransactionValidator billTransactionValidator = new BillTransactionValidator();
+			billTransactionValidator.validate(transaction, result);
 
-			return "redirect:/admin/bills/" + billId;
-		}
+			if (result.hasErrors()) {
+				Client client = bill.getAppointment().getClient();
+
+				List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
+				availablePaymentMethods.add(PaymentMethod.cash());
+				availablePaymentMethods.add(PaymentMethod.bankTransfer());
+
+				if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
+					Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
+					availablePaymentMethods.addAll(clientPaymentMethods);
+				}
+
+				model.put("bill", bill);
+				model.put("transaction", transaction);
+				model.put("paymentMethods", availablePaymentMethods);
+				return "admin/bills/chargeForm";
+			} else {
+				transaction.setBill(bill);
+				transaction.setCreatedAt(LocalDateTime.now());
+				transaction.setType(TransactionType.CHARGE);
+
+				if (paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER")) {
+					transaction.setSuccess(true);
+					transaction.setStatus("succeeded");
+					transaction.setToken(paymentMethod.getToken());
+				} else {
+					PaymentIntent paymentIntent;
+					try {
+						paymentIntent = this.stripeService.charge(transaction.getPaymentMethod().getToken(),
+								transaction.getAmount(), bill.getAppointment().getClient().getStripeId());
+					} catch (Exception e) {
+						return "redirect:/error";
+					}
+
+					transaction.setAmount(paymentIntent.getAmount() * 0.01);
+					transaction.setToken(paymentIntent.getId());
+					transaction.setStatus(paymentIntent.getStatus());
+					transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
+				}
+
+				this.transactionService.saveTransaction(transaction);
+
+				return "redirect:/admin/bills/" + billId;
+			}
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
 	}
 
@@ -525,36 +562,41 @@ public class AdminController {
 	public String billRefund(@PathVariable("billId") final int billId,
 			@PathVariable("transactionId") final int transactionId, final ModelMap model) throws Exception {
 
-		Transaction transaction = this.transactionService.findById(transactionId);
+		return this.transactionService.findById(transactionId).map(transaction -> {
+			if (transaction != null && transaction.getType() == TransactionType.CHARGE && transaction.getSuccess()
+					&& !transaction.getRefunded()) {
 
-		if (transaction != null && transaction.getType() == TransactionType.CHARGE && transaction.getSuccess()
-				&& !transaction.getRefunded()) {
+				Transaction transactionRefund = new Transaction();
+				transactionRefund.setBill(transaction.getBill());
+				transactionRefund.setType(TransactionType.REFUND);
+				transactionRefund.setCreatedAt(LocalDateTime.now());
 
-			Transaction transactionRefund = new Transaction();
-			transactionRefund.setBill(transaction.getBill());
-			transactionRefund.setType(TransactionType.REFUND);
-			transactionRefund.setCreatedAt(LocalDateTime.now());
+				if (transaction.getToken().equals("CASH") || transaction.getToken().equals("BANKTRANSFER")) {
+					transactionRefund.setAmount(transaction.getAmount());
+					transactionRefund.setToken(transaction.getToken());
+					transactionRefund.setSuccess(true);
+					transactionRefund.setStatus("succeeded");
+				} else {
+					Refund stripeRefund;
+					try {
+						stripeRefund = this.stripeService.refund(transaction.getToken());
+					} catch (Exception e) {
+						return "redirect:/error";
+					}
+					
+					transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
+					transactionRefund.setToken(stripeRefund.getId());
+					transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");
+					transactionRefund.setStatus(stripeRefund.getStatus());
+				}
 
-			if (transaction.getToken().equals("CASH") || transaction.getToken().equals("BANKTRANSFER")) {
-				transactionRefund.setAmount(transaction.getAmount());
-				transactionRefund.setToken(transaction.getToken());
-				transactionRefund.setSuccess(true);
-				transactionRefund.setStatus("succeeded");
-			} else {
-				Refund stripeRefund = this.stripeService.refund(transaction.getToken());
-				transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
-				transactionRefund.setToken(stripeRefund.getId());
-				transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");
-				transactionRefund.setStatus(stripeRefund.getStatus());
+				transaction.setRefunded(true);
+				this.transactionService.saveTransaction(transaction);
+				this.transactionService.saveTransaction(transactionRefund);
 			}
 
-			transaction.setRefunded(true);
-			this.transactionService.saveTransaction(transaction);
-			this.transactionService.saveTransaction(transactionRefund);
-		}
-
-		return "redirect:/admin/bills/" + billId;
-
+			return "redirect:/admin/bills/" + billId;
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 }

@@ -66,10 +66,10 @@ public abstract class EntityUtils {
 		Object attributeObject = getAttribute.invoke(object);
 		if (attributeObject != null) {
 			Method getId = attributeObject.getClass().getMethod("getId");
-			Integer id = (Integer) getId.invoke(attributeObject);
+			Object id = getId.invoke(attributeObject);
 			if (id != null) {
-				attributeObject = service.getClass().getDeclaredMethod(serviceMethodName, int.class).invoke(service, id);
-				setAttribute.invoke(object, attributeObject);
+				attributeObject = service.getClass().getDeclaredMethod(serviceMethodName, int.class).invoke(service, (Integer) id);
+				setAttribute.invoke(object, attributeObject.getClass().getDeclaredMethod("get").invoke(attributeObject));
 			} else {
 				setAttribute.invoke(object, nullAttribute);
 			}

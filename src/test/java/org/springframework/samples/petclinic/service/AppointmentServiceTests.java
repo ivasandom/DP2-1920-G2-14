@@ -188,7 +188,7 @@ public class AppointmentServiceTests {
 		"pepegotera, 2020-05-04, 08:00, test"
 	})
 	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
-		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1);
+		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1).get();
 
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();

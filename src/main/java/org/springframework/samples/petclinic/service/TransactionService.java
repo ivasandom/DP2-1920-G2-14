@@ -30,12 +30,8 @@ public class TransactionService {
 		return this.transactionRepository.findAll();
 	}
 	
-	public Transaction findById(int id) throws DataAccessException {
-		Optional<Transaction> optional = this.transactionRepository.findById(id);
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
+	public Optional<Transaction> findById(int id) throws DataAccessException {
+		return this.transactionRepository.findById(id);
 	}
 	
 

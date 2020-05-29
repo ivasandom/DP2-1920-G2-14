@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -224,7 +225,7 @@ public class AppointmentControllerTests {
 				.willReturn(Lists.newArrayList(this.appointment));
 		given(this.appointmentService.findTodayCompletedByProfessionalId(this.professional.getId()))
 				.willReturn(Lists.newArrayList(this.appointment));
-		given(this.appointmentService.findAppointmentById(this.appointment.getId())).willReturn(appointment);
+		given(this.appointmentService.findAppointmentById(this.appointment.getId())).willReturn(Optional.of(appointment));
 		given(this.medicineService.findMedicines()).willReturn(Lists.newArrayList(this.medicine));
 		given(this.deseaseService.findAll()).willReturn(Lists.newArrayList(this.desease));
 		given(this.deseaseService.findAll()).willReturn(Lists.newArrayList(this.desease));
@@ -596,7 +597,7 @@ public class AppointmentControllerTests {
 		this.client.setUser(this.user);
 		this.appointment.setSpecialty(this.specialty);
 		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
+				.thenReturn(Optional.of(this.appointment));
 
 		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID))
 				.andExpect(status().isOk())
@@ -613,7 +614,7 @@ public class AppointmentControllerTests {
 		this.client.setUser(this.user);
 		this.appointment.setSpecialty(this.specialty);
 		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
+				.thenReturn(Optional.of(this.appointment));
 
 		this.mockMvc
 				.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID))
@@ -628,7 +629,7 @@ public class AppointmentControllerTests {
 		this.user.setUsername("frankcuesta");
 		this.client.setUser(this.user);
 		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
+				.thenReturn(Optional.of(this.appointment));
 		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
 
 		this.mockMvc
@@ -642,7 +643,7 @@ public class AppointmentControllerTests {
 		this.user.setUsername("frankcuesta");
 		this.client.setUser(this.user);
 		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
+				.thenReturn(Optional.of(this.appointment));
 		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
 
 		this.mockMvc

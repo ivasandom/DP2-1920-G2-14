@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +31,7 @@ import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.stripe.model.Customer;
 
@@ -84,9 +82,9 @@ class ClientControllerTests {
 		pepe.setHealthCardNumber("1234567890");
 		pepe.setStripeId("1");
 		
-		BDDMockito.given(this.clinicService.findClientById(ClientControllerTests.TEST_CLIENT_ID)).willReturn(this.pepe);
+		BDDMockito.given(this.clinicService.findClientById(ClientControllerTests.TEST_CLIENT_ID)).willReturn(Optional.of(this.pepe));
 		BDDMockito.given(this.appointmentService.findAppointmentById(ClientControllerTests.TEST_APPOINMENT_ID))
-				.willReturn(new Appointment());
+				.willReturn(Optional.of(new Appointment()));
 		BDDMockito.given(this.stripeService.createCustomer(this.pepe.getEmail())).willReturn(new Customer());
 
 	}

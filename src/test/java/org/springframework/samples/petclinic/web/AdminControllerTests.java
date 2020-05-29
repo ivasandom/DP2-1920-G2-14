@@ -212,7 +212,7 @@ public class AdminControllerTests {
 		Iterable<Bill> resultadoBuscarBills = billList;
 		
 		
-		given(this.clientService.findClientById(TEST_CLIENT_ID)).willReturn(client);
+		given(this.clientService.findClientById(TEST_CLIENT_ID)).willReturn(Optional.of(client));
 		given(this.clientService.findAll()).willReturn(resultadoBuscarClientes);
 		doNothing().when(this.clientService).deleteById(TEST_CLIENT_ID);
 		
@@ -220,14 +220,14 @@ public class AdminControllerTests {
 		given(this.professionalService.findAll()).willReturn(resultadoBuscarProfessionales);
 		doNothing().when(this.professionalService).deleteById(TEST_PROFESSIONAL_ID);
 		
-		given(this.appointmentService.findAppointmentById(TEST_APPOINTMENT_ID)).willReturn(appointment);
+		given(this.appointmentService.findAppointmentById(TEST_APPOINTMENT_ID)).willReturn(Optional.of(appointment));
 		given(this.appointmentService.listAppointments()).willReturn(resultadoBuscarAppointments);
 		doNothing().when(this.appointmentService).delete(Mockito.mock(Appointment.class));
 		
-		given(this.billService.findById(TEST_APPOINTMENT_ID)).willReturn(bill);
+		given(this.billService.findById(TEST_APPOINTMENT_ID)).willReturn(Optional.of(bill));
 		given(this.billService.findAll()).willReturn(resultadoBuscarBills);
 		
-		given(this.transactionService.findById(TEST_TRANSACTION_ID)).willReturn(transaction);
+		given(this.transactionService.findById(TEST_TRANSACTION_ID)).willReturn(Optional.of(transaction));
 
 	}
 
