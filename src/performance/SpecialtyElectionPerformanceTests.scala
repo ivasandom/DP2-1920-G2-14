@@ -43,7 +43,8 @@ class SpecialtyElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 	).pause(8)
-		.exec(
+	.doIf("${stoken.exists()}") {
+		exec(
 			http("Logged")
 			.post("/signin")
 			.headers(headers_2)
@@ -51,6 +52,7 @@ class SpecialtyElectionPerformanceTests extends Simulation {
 			.formParam("password", "pepegotera")
 			.formParam("_csrf", "${stoken}") 
 		).pause(4) 
+	}
 	}
 
 	object NewAppointmentForm {

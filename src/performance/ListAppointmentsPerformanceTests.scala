@@ -37,7 +37,8 @@ class ListAppointmentsPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
+     .doIf("${stoken.exists()}") {
+    exec(
       http("Logged1")
         .post("/signin")
         .headers(headers_2)
@@ -45,6 +46,7 @@ class ListAppointmentsPerformanceTests extends Simulation {
         .formParam("password", "professional1")        
         .formParam("_csrf", "${stoken}")
     ).pause(142)
+     }
   }
 
   object Login2 {
@@ -54,14 +56,16 @@ class ListAppointmentsPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
-      http("Logged2")
+    .doIf("${stoken.exists()}") {
+    exec(
+      http("Logged1")
         .post("/signin")
         .headers(headers_2)
-        .formParam("username", "professional2")
-        .formParam("password", "professional2")        
+        .formParam("username", "professional1")
+        .formParam("password", "professional1")        
         .formParam("_csrf", "${stoken}")
     ).pause(142)
+     }
   }
 
 	object ListAppointments {

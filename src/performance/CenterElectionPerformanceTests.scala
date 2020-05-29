@@ -43,16 +43,17 @@ class CenterElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 	).pause(8)
-		.exec(
-			http("Logged")
-			.post("/signin")
-			.headers(headers_2)
-			.formParam("username", "pepegotera")
-			.formParam("password", "pepegotera")
-			.formParam("_csrf", "${stoken}") 
-		).pause(4) 
-	}
-
+		.doIf("${stoken.exists()}") {
+     exec(			  
+      http("Logged1")
+        .post("/signin")
+        .headers(headers_2)
+        .formParam("username", "pepegotera")
+        .formParam("password", "pepegotera")        
+        .formParam("_csrf", "${stoken}")			
+      ).pause(142)
+	 }
+  }
 	object NewAppointmentForm {
 		val newAppointmentForm = exec(http("NewAppointmentForm")
 			.get("/appointments/new")

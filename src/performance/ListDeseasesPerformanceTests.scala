@@ -37,14 +37,16 @@ class ListDeseasesPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
-      http("Logged")
+    .doIf("${stoken.exists()}") {
+    exec(
+      http("Logged1")
         .post("/signin")
         .headers(headers_2)
         .formParam("username", "professional1")
         .formParam("password", "professional1")        
         .formParam("_csrf", "${stoken}")
     ).pause(142)
+     }
   }
 
 	object ListAppointments {

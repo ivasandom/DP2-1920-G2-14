@@ -46,7 +46,8 @@ class ReasonElectionPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
+	.doIf("${stoken.exists()}") {
+    exec(
       http("Logged")
         .post("/login")
         .headers(headers_2)
@@ -55,6 +56,7 @@ class ReasonElectionPerformanceTests extends Simulation {
         .formParam("_csrf", "${stoken}")
     ).pause(142)
   }
+   }
 
 	object NewAppointmentForm {
 		val newAppointmentForm = exec(http("NewAppointmentForm")
@@ -83,7 +85,8 @@ class ReasonElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewAppointment1")
+		.doIf("${stoken.exists()}") {
+			exec(http("NewAppointment1")
 			.post("/appointments/new")
 			.headers(headers_2)
 			.formParam("center", "1")
@@ -95,6 +98,7 @@ class ReasonElectionPerformanceTests extends Simulation {
 			.formParam("startTime", "12:30:00")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+		}
 	}
 
 	object NewAppointment2 {
@@ -103,7 +107,8 @@ class ReasonElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewAppointment2")
+		.doIf("${stoken.exists()}") {
+			exec(http("NewAppointment2")
 			.post("/appointments/new")
 			.headers(headers_2)
 			.formParam("center", "1")
@@ -114,6 +119,7 @@ class ReasonElectionPerformanceTests extends Simulation {
 			.formParam("startTime", "12:30:00")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+	}
 	}
 
 		
