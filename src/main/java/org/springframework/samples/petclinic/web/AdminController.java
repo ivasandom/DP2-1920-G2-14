@@ -150,8 +150,8 @@ public class AdminController {
 	}
 
 	@PostMapping("/clients/{clientId}/edit")
-	public String processClientEditForm(@Valid final Client client, @PathVariable("clientId") final int clientId,
-			final BindingResult result, final ModelMap model) throws Exception {
+	public String processClientEditForm(@Valid final Client client, final BindingResult result,
+			@PathVariable("clientId") final int clientId, final ModelMap model) throws Exception {
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 
@@ -231,15 +231,17 @@ public class AdminController {
 	}
 
 	@PostMapping("/professionals/{professionalId}/edit")
-	public String processProfessionalEditForm(@Valid final Professional professional,
-			@PathVariable("professionalId") final int professionalId, final BindingResult result,
-			final ModelMap model) {
+	public String processProfessionalEditForm(@Valid final Professional professional, final BindingResult result,
+			@PathVariable("professionalId") final int professionalId, final ModelMap model) {
+		System.out.println("errores");
 		ProfessionalValidator professionalValidator = new ProfessionalValidator();
 		professionalValidator.validate(professional, result);
 
 		if (result.hasErrors()) {
+			System.out.println("errores" + result.getFieldErrors());
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
+			
 
 			model.put("professional", professional);
 			model.put("centers", centers);
@@ -329,8 +331,8 @@ public class AdminController {
 	}
 
 	@PostMapping("/appointments/{appointmentId}/edit")
-	public String processAppointmentEditForm(@Valid final Appointment appointment,
-			@PathVariable("appointmentId") final int appointmentId, final BindingResult result, final ModelMap model) {
+	public String processAppointmentEditForm(@Valid final Appointment appointment, final BindingResult result,
+			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
@@ -395,9 +397,10 @@ public class AdminController {
 			return "redirect:/admin/appointments";
 		}
 	}
-	
+
 	@PostMapping("/appointments/{appointmentId}/delete")
-	public String appointmentDelete(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	public String appointmentDelete(@PathVariable("appointmentId") final int appointmentId, final ModelMap model)
+			throws Exception {
 		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 		if (appointment != null && !appointment.getStatus().equals(AppointmentStatus.COMPLETED)) {
 			this.appointmentService.delete(appointment);
@@ -434,7 +437,7 @@ public class AdminController {
 		List<PaymentMethod> availablePaymentMethods = new ArrayList<>();
 		availablePaymentMethods.add(PaymentMethod.cash());
 		availablePaymentMethods.add(PaymentMethod.bankTransfer());
-		
+
 		if (bill.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client != null) {
 			Set<PaymentMethod> clientPaymentMethods = client.getPaymentMethods();
 			availablePaymentMethods.addAll(clientPaymentMethods);
@@ -447,15 +450,15 @@ public class AdminController {
 	}
 
 	@PostMapping("/bills/{billId}/charge")
-	public String billChargeForm(@ModelAttribute Transaction transaction, @PathVariable("billId") final int billId,
-			final BindingResult result, final ModelMap model) throws Exception {
+	public String billChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
+			@PathVariable("billId") final int billId, final ModelMap model) throws Exception {
 
 		Bill bill = this.billService.findById(billId);
 		transaction.setBill(bill);
 
 		PaymentMethod paymentMethod = transaction.getPaymentMethod();
-		if (paymentMethod != null && !(paymentMethod.getToken().equals("CASH")
-				|| paymentMethod.getToken().equals("BANKTRANSFER"))) {
+		if (paymentMethod != null
+				&& !(paymentMethod.getToken().equals("CASH") || paymentMethod.getToken().equals("BANKTRANSFER"))) {
 
 			transaction.setPaymentMethod(this.paymentMethodService.findByTokenAndClient(paymentMethod.getToken(),
 					bill.getAppointment().getClient()));
@@ -514,7 +517,7 @@ public class AdminController {
 
 		if (transaction != null && transaction.getType() == TransactionType.CHARGE && transaction.getSuccess()
 				&& !transaction.getRefunded()) {
-			
+
 			Transaction transactionRefund = new Transaction();
 			transactionRefund.setBill(transaction.getBill());
 			transactionRefund.setType(TransactionType.REFUND);

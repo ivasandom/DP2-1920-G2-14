@@ -284,6 +284,7 @@ public class AppointmentController {
 					bill.setName(appointmentClient.getHealthInsurance().getLegalName());
 				}
 				
+				appointment.getDiagnosis().setDate(LocalDate.now());
 				a.setDiagnosis(appointment.getDiagnosis());
 				a.setStatus(AppointmentStatus.COMPLETED);
 

@@ -50,7 +50,7 @@ public class PaymentController {
 	@Value("${STRIPE_PUBLIC_KEY}")
 	private String					API_PUBLIC_KEY;
 	
-	private static final String		VIEWS_PAYMENT_METHOD_FORM	= "payments/creditCardForm";
+	private static final String		VIEWS_PAYMENT_METHOD_FORM	= "payments/paymentMethodForm";
 
 	private PaymentMethodService	paymentMethodService;
 	private ClientService			clientService;
@@ -71,16 +71,16 @@ public class PaymentController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@GetMapping(value = "/cards")
+	@GetMapping(value = "/methods")
 	public String paymentMethodList(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
 
 		model.put("paymentMethods", this.paymentMethodService.findByClient(currentClient));
-		return "payments/creditCardList";
+		return "payments/paymentMethodList";
 	}
 
-	@GetMapping(value = "/new-card")
+	@GetMapping(value = "/new-method")
 	public String paymentMethodForm(final Map<String, Object> model) throws Exception {
 		org.springframework.samples.petclinic.model.PaymentMethod paymentMethod = new org.springframework.samples.petclinic.model.PaymentMethod();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -117,7 +117,7 @@ public class PaymentController {
 		
 		
 	
-	@PostMapping(value = "/new-card")
+	@PostMapping(value = "/new-method")
 	public String processCreditCardForm(@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result, final ModelMap model) throws Exception {
 		if (result.hasErrors()) {
 			System.out.println(result.getAllErrors());
@@ -146,6 +146,6 @@ public class PaymentController {
 			}
 		}
 
-		return "redirect:/payments/cards";
+		return "redirect:/payments/methods";
 	}
 }

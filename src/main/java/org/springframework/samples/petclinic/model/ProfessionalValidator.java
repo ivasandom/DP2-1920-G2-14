@@ -43,13 +43,13 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 			}
 		}
 		
-		if (!errors.hasFieldErrors("registrationDate")) {
-			if (professional.getRegistrationDate().after(Calendar.getInstance().getTime())) {
-				errors.rejectValue("registrationDate", "the date must be in past",
-						new Object[] { "'registrationDate'" }, "the date must be in past");
-
-			}
-		}
+//		if (!errors.hasFieldErrors("registrationDate")) {
+//			if (professional.getRegistrationDate().after(Calendar.getInstance().getTime())) {
+//				errors.rejectValue("registrationDate", "the date must be in past",
+//						new Object[] { "'registrationDate'" }, "the date must be in past");
+//
+//			}
+//		}
 		
 		if (!errors.hasFieldErrors("email")) {
 			if (!professional.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
@@ -59,13 +59,13 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 			}
 		}
 		
-		if (!errors.hasFieldErrors("birthDate")) {
-			if (professional.getBirthDate().after(Calendar.getInstance().getTime())) {
-				errors.rejectValue("birthDate", "the date must be in past",
-						new Object[] { "'birthDate'" }, "the date must be in past");
-
-			}
-		}
+//		if (!errors.hasFieldErrors("birthDate")) {
+//			if (professional.getBirthDate().after(Calendar.getInstance().getTime())) {
+//				errors.rejectValue("birthDate", "the date must be in past",
+//						new Object[] { "'birthDate'" }, "the date must be in past");
+//
+//			}
+//		}
 	}
 
 }

@@ -23,6 +23,7 @@ public class ClientValidator implements org.springframework.validation.Validator
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "must not be empty");
 
 
 		Client client = (Client) obj;
@@ -69,13 +70,13 @@ public class ClientValidator implements org.springframework.validation.Validator
 			}
 		}
 		
-		if (!errors.hasFieldErrors("registrationDate")) {
-			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
-				errors.rejectValue("registrationDate", "the date must be in past",
-						new Object[] { "'registrationDate'" }, "the date must be in past");
-
-			}
-		}
+//		if (!errors.hasFieldErrors("registrationDate")) {
+//			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
+//				errors.rejectValue("registrationDate", "the date must be in past",
+//						new Object[] { "'registrationDate'" }, "the date must be in past");
+//
+//			}
+//		}
 		
 		if (!errors.hasFieldErrors("email")) {
 			if (!client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
