@@ -316,7 +316,9 @@ public class AppointmentControllerTests {
 	void testListAppointmentsProfessional() throws Exception {
 
 		this.mockMvc.perform(get("/appointments/pro"))
-				.andExpect(model().attributeExists("appointments"))
+				.andExpect(model().attributeExists("nextAppointment"))
+				.andExpect(model().attributeExists("pendingAppointments"))
+				.andExpect(model().attributeExists("completedAppointments"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("appointments/pro"));
 	}

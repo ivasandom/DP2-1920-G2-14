@@ -58,7 +58,7 @@ public class PaymentMethodNegativeUITest {
 	    driver.findElement(By.id("document")).sendKeys(Keys.TAB);
 	    driver.findElement(By.id("healthInsurance")).click();
 	    new Select(driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Adeslas");
-	    driver.findElement(By.xpath("//option[@value='Adeslas']")).click();
+	    driver.findElement(By.xpath("//option[@value='ADESLAS']")).click();
 	    driver.findElement(By.id("healthCardNumber")).click();
 	    driver.findElement(By.id("healthCardNumber")).clear();
 	    driver.findElement(By.id("healthCardNumber")).sendKeys("28334457853");
