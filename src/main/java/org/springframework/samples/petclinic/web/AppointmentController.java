@@ -186,6 +186,7 @@ public class AppointmentController {
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
 			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
 			return "appointments/new";

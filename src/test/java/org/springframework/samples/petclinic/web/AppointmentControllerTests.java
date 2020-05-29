@@ -247,7 +247,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("appointments/new"));
 	}
 
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "client")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
 		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -278,14 +278,7 @@ public class AppointmentControllerTests {
 						.param("client.type.name", "revision")
 						.param("center.address", "Sevilla")
 						.param("specialty.name", sp)
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K"))
+						.param("professional.firstName", "Manuel"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/appointments"));
 	}

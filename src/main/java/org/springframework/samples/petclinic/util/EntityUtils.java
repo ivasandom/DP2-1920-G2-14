@@ -16,6 +16,7 @@
 
 package org.springframework.samples.petclinic.util;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -48,6 +49,35 @@ public abstract class EntityUtils {
 			}
 		}
 		throw new ObjectRetrievalFailureException(entityClass, entityId);
+	}
+	
+	
+	
+	
+	/**
+	 * Comprueba que el objecto de la relación existe en la base de datos y si no le asigna null.
+	 */
+	public static <T> void setRelationshipAttribute(Object object, Class<T> attributeClass, Object service, String serviceMethodName) throws Exception {
+		
+		Method setAttribute = object.getClass().getDeclaredMethod("set" + attributeClass.getSimpleName(), attributeClass);
+		Object nullAttribute = null;
+
+		Method getAttribute = object.getClass().getDeclaredMethod("get" +  attributeClass.getSimpleName());
+		Object attributeObject = getAttribute.invoke(object);
+		if (attributeObject != null) {
+			Method getId = attributeObject.getClass().getMethod("getId");
+			Integer id = (Integer) getId.invoke(attributeObject);
+			if (id != null) {
+				attributeObject = service.getClass().getDeclaredMethod(serviceMethodName, int.class).invoke(service, id);
+				setAttribute.invoke(object, attributeObject);
+			} else {
+				setAttribute.invoke(object, nullAttribute);
+			}
+		} else {
+			setAttribute.invoke(object, nullAttribute);
+		}
+			
+		
 	}
 
 }

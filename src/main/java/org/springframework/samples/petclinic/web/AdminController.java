@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.TransactionService;
+import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -329,10 +331,20 @@ public class AdminController {
 		model.put("statusChoices", AppointmentStatus.values());
 		return "admin/appointments/form";
 	}
+	
+	
 
+	
 	@PostMapping("/appointments/{appointmentId}/edit")
 	public String processAppointmentEditForm(@Valid final Appointment appointment, final BindingResult result,
-			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+		
+		EntityUtils.setRelationshipAttribute(appointment, Client.class, this.clientService, "findClientById");
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findProfessionalById");
+		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
+		
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
@@ -450,7 +462,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/bills/{billId}/charge")
-	public String billChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
+	public String processBillChargeForm(@ModelAttribute Transaction transaction, final BindingResult result,
 			@PathVariable("billId") final int billId, final ModelMap model) throws Exception {
 
 		Bill bill = this.billService.findById(billId);
