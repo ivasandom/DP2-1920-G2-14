@@ -70,13 +70,13 @@ public class ClientValidator implements org.springframework.validation.Validator
 			}
 		}
 		
-		if (!errors.hasFieldErrors("registrationDate")) {
-			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
-				errors.rejectValue("registrationDate", "the date must be in past",
-						new Object[] { "'registrationDate'" }, "the date must be in past");
-
-			}
-		}
+//		if (!errors.hasFieldErrors("registrationDate")) {
+//			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
+//				errors.rejectValue("registrationDate", "the date must be in past",
+//						new Object[] { "'registrationDate'" }, "the date must be in past");
+//
+//			}
+//		}
 		
 		if (!errors.hasFieldErrors("email")) {
 			if (!client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
