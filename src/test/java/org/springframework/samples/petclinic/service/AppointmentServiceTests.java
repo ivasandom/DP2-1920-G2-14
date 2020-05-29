@@ -219,9 +219,7 @@ public class AppointmentServiceTests {
 		"-1", "1000", "1000000000"
 	})
 	void shouldNotFindAppointmentWithWrongId(final int id) {
-		org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
-			this.appointmentService.findAppointmentById(id);
-		});
+		Assertions.assertThat(this.appointmentService.findAppointmentById(id).isPresent()).isEqualTo(false);
 	}
 
 	@Test

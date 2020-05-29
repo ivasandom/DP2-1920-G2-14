@@ -306,6 +306,7 @@ public class AppointmentControllerTests {
 	void testlistAppointments() throws Exception {
 
 		this.mockMvc.perform(get("/appointments"))
+				.andExpect(model().attributeExists("appointments"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("appointments/list"));
 	}
@@ -315,6 +316,7 @@ public class AppointmentControllerTests {
 	void testListAppointmentsProfessional() throws Exception {
 
 		this.mockMvc.perform(get("/appointments/pro"))
+				.andExpect(model().attributeExists("appointments"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("appointments/pro"));
 	}
@@ -424,22 +426,11 @@ public class AppointmentControllerTests {
 
 		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",AppointmentControllerTests.TEST_APPOINTMENT_ID)
 						.with(csrf())
-						.param("Date", dia)
+						.param("date", dia)
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
-						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
 						.param("type", AppointmentType.ANALISIS.name())
-						.param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'")
-						.param("client.paymentMethod.brand", "visa")
-						.param("center.address", "Sevilla")
+						.param("center.", "Sevilla")
 						.param("specialty.name", sp)
 						.param("professional.center.address", "Sevilla")
 						.param("professional.specialty.name", sp2)
@@ -459,73 +450,6 @@ public class AppointmentControllerTests {
 //				.andExpect(status().is3xxRedirection())
 //				.andExpect(view().name("redirect:/appointments/pro"));
 	}
-
-//	@WithMockUser(value = "spring")
-//	@Test
-//	void testProcessUpdateAppFormHasErrors() throws Exception {
-//		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-//
-//		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//
-//		Specialty specialty = new Specialty();
-//		specialty.setName("dermatology");
-//		String sp = specialty.getName();
-//
-//		Specialty specialty2 = new Specialty();
-//		specialty2.setName("dermatology");
-//		String sp2 = specialty2.getName();
-//
-//		Medicine med = new Medicine();
-//		med.setName("paracetamol");
-//		med.setPrice(12.);
-//		String medName = med.getName();
-//		String medPrice = Double.toString(med.getPrice());
-//		Collection<Desease> deseases = new ArrayList<>();
-//		Desease des = new Desease();
-//		des.setName("Acné");
-//		deseases.add(des);
-//		String desName = des.getName();
-//
-//		this.mockMvc
-//			.perform(post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(csrf()).param("Date", dia).param("reason", "my head hurts")
-//				.with(csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.NIF.toString()).param("client.email", "frankcuesta@gmail.com")
-//				.param("client.firstName", "Frank").param("client.healthCardNumber", "0000000003").param("client.healthInsurance", HealthInsurance.ADESLAS.name()).param("client.lastName", "Cuesta").param("client.user.username", "frankcuesta")
-//				.param("client.user.password", "frankcuesta").param("client.type.name", "revision").param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'").param("client.paymentMethod.brand", "visa").param("center.address", "Sevilla")
-//				.param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco").param("professional.email", "mancar@gmail.com")
-//				.param("professional.document", "29334485").param("professional.documentType", "NIF").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
-//				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
-//			.andExpect(model().attributeHasErrors("appointment")).andExpect(model().attributeHasFieldErrors("appointment", "specialty"))
-//			.andExpect(view().name("appointments/consultationPro"));
-//	}
-
-//	@WithMockUser(username = "frankcuesta", authorities = {
-//		"client"
-//	})
-//	@Test
-//	void shouldShowAppointmentDetails() throws Exception {
-//		this.specialty.setId(1);
-//		this.specialty.setName("dermatology");
-//		this.appointment.setSpecialty(this.specialty);
-//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
-//
-//		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(status().isOk()).andExpect(flash().attributeCount(1))
-//			.andExpect(view().name("appointments/details"));
-//	}
-
-//	@WithMockUser(username = "frankcuesta", authorities = {
-//		"client"
-//	})
-//	@Test
-//	void shouldNotShowAppointmentDetails() throws Exception {
-//		this.specialty.setId(1);
-//		this.specialty.setName("dermatology");
-//		this.appointment.setSpecialty(this.specialty);
-//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
-//
-//		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(status().isOk()).andExpect(flash().attributeCount(1))
-//			.andExpect(view().name("appointments/details"));
-//	}
 
 	@WithMockUser(username = "frankcuesta", authorities = { "client" })
 	@Test
