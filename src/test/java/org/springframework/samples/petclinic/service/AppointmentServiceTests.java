@@ -116,11 +116,11 @@ public class AppointmentServiceTests {
 		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
-		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
+		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
 	}
 
 	@Test
