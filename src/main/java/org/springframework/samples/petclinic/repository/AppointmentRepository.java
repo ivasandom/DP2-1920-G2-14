@@ -12,14 +12,16 @@ import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
 
 public interface AppointmentRepository extends CrudRepository<Appointment, Integer> {
 
 	@Query("SELECT a.startTime FROM Appointment a WHERE a.date = :date and a.professional = :professional")
 	Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(@Param("date") LocalDate date, @Param("professional") Professional professional);
 
-	@Query("SELECT a FROM Appointment a WHERE a.client.id = :id ORDER BY a.id")
-	Collection<Appointment> findAppointmentByClientId(@Param("id") int clientId);
+	@Query("SELECT a.date AS date, a.startTime AS startTime, a.id AS id "
+			+ "FROM Appointment a WHERE a.client.id = :id ORDER BY a.id")
+	Collection<ListAppointmentsClient> findAppointmentByClientId(@Param("id") int clientId);
 
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id ORDER BY a.id")
 	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);

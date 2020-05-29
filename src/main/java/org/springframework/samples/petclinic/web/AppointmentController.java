@@ -49,6 +49,7 @@ import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.BillService;
@@ -131,7 +132,7 @@ public class AppointmentController {
 	public String listAppointments(final Map<String, Object> model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
-		Iterable<Appointment> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
+		Iterable<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(currentClient.getId());
 		model.put("appointments", appointments);
 		return "appointments/list";
 	}
