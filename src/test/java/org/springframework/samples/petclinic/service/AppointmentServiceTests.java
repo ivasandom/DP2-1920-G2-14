@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -400,4 +400,54 @@ public class AppointmentServiceTests {
 		transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		Assertions.assertThat(transactions.size()).isEqualTo(found + 1);
 	}
+
+	@ParameterizedTest
+
+	@CsvSource({
+		"123, pepegotera", "122, pepegotera"
+	})
+	@Transactional
+	void shouldDeleteAppointment(final int id, final String username) throws Exception {
+
+		Client client = this.clientService.findClientByUsername(username);
+
+		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
+
+		int count = appointments.size();
+
+		org.assertj.core.api.Assertions.assertThat(appointment).isPresent();
+
+		this.appointmentService.delete(appointment.get());
+
+		appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		org.assertj.core.api.Assertions.assertThat(appointments.size()).isEqualTo(count - 1);
+
+	}
+
+	@Test
+	@Transactional
+	void shouldNotDeleteAppointment() {
+
+		org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> {
+			this.appointmentService.delete(null);
+		});
+
+	}
+
+	@ParameterizedTest
+
+	@CsvSource({
+		"124", "126"
+	})
+	@Transactional
+	void shouldNotDeletePassedApp(final int id) throws Exception {
+
+		Optional<Appointment> app = this.appointmentService.findAppointmentById(id);
+
+		org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {
+			this.appointmentService.delete(app.get());
+		}, "You cannot delete a passed appointment");
+	}
+
 }
