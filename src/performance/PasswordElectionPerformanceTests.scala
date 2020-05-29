@@ -44,7 +44,8 @@ class PasswordElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewClient1")
+		    .doIf("${stoken.exists()}") {
+			exec(http("NewClient1")
 			.post("/clients/new")
 			.headers(headers_3)
 			.formParam("firstName", "Manu")
@@ -58,6 +59,7 @@ class PasswordElectionPerformanceTests extends Simulation {
 			.formParam("user.password", "manureina")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+			}
 	}
 
 	object NewClient2 {
@@ -66,7 +68,8 @@ class PasswordElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewClient2")
+		    .doIf("${stoken.exists()}") {
+			exec(http("NewClient2")
 			.post("/clients/new")
 			.headers(headers_3)
 			.formParam("firstName", "Rubén")
@@ -80,6 +83,7 @@ class PasswordElectionPerformanceTests extends Simulation {
 			.formParam("user.password", "rubd")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+			}
 	}
 
 	val passwordElectionPositiveSnc = scenario("PasswordElectionPositive").exec(Home.home,

@@ -37,7 +37,8 @@ class ProfessionalSearchPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
+    .doIf("${stoken.exists()}") {
+	exec(
       http("Logged")
         .post("/signin")
         .headers(headers_2)
@@ -46,6 +47,7 @@ class ProfessionalSearchPerformanceTests extends Simulation {
         .formParam("_csrf", "${stoken}")
     ).pause(142)
   }
+   }
 
 	object FindProfessionals {
 		val findProfessionals = exec(http("FindProfessionals")
@@ -79,8 +81,8 @@ class ProfessionalSearchPerformanceTests extends Simulation {
 
 
 	setUp(
-		professionalSearchPositiveSnc.inject(rampUsers(6000) during (50 seconds)),
-		professionalSearchNegativeSnc.inject(rampUsers(6000) during (50 seconds))
+		professionalSearchPositiveSnc.inject(rampUsers(3000) during (50 seconds)),
+		professionalSearchNegativeSnc.inject(rampUsers(3000) during (50 seconds))
 	).protocols(httpProtocol)
      .assertions(
         global.responseTime.max.lt(5000),    

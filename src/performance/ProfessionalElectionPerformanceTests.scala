@@ -46,14 +46,16 @@ class ProfessionalElectionPerformanceTests extends Simulation {
         .headers(headers_0)
         .check(css("input[name=_csrf]", "value").saveAs("stoken"))
     ).pause(20)
-    .exec(
-      http("Logged")
-        .post("/login")
+    .doIf("${stoken.exists()}") {
+    exec(
+      http("Logged1")
+        .post("/signin")
         .headers(headers_2)
         .formParam("username", "pepegotera")
         .formParam("password", "pepegotera")        
         .formParam("_csrf", "${stoken}")
     ).pause(142)
+     }
   }
 
 	object NewAppointmentForm {
@@ -90,7 +92,8 @@ class ProfessionalElectionPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewAppointment")
+			.doIf("${stoken.exists()}") {
+			exec(http("NewAppointment")
 			.post("/appointments/new")
 			.headers(headers_2)
 			.formParam("center", "1")
@@ -102,6 +105,7 @@ class ProfessionalElectionPerformanceTests extends Simulation {
 			.formParam("startTime", "12:30:00")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+			}
 	}
 	
 	val professionalElectionPositiveSnc = scenario("ProfessionalElectionPositive").exec(Home.home,

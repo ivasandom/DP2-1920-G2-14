@@ -44,7 +44,8 @@ class EmailPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewClient1")
+		 .doIf("${stoken.exists()}") {
+			exec(http("NewClient1")
 			.post("/clients/new")
 			.headers(headers_3)
 			.formParam("firstName", "Luis")
@@ -58,6 +59,7 @@ class EmailPerformanceTests extends Simulation {
 			.formParam("user.password", "luisperez")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+		 }
 	}
 
 	object NewClient2 {
@@ -66,7 +68,8 @@ class EmailPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.exec(http("NewClient2")
+		 .doIf("${stoken.exists()}") {
+			exec(http("NewClient2")
 			.post("/clients/new")
 			.headers(headers_3)
 			.formParam("firstName", "María")
@@ -79,6 +82,7 @@ class EmailPerformanceTests extends Simulation {
 			.formParam("user.password", "marisan")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+		 }
 	}
 
 	val emailPositiveSnc = scenario("EmailPositive").exec(Home.home,
