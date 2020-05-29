@@ -188,7 +188,7 @@ public class AppointmentServiceTests {
 		"pepegotera, 2020-05-04, 08:00, test"
 	})
 	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
-		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1);
+		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1).get();
 
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -219,9 +219,7 @@ public class AppointmentServiceTests {
 		"-1", "1000", "1000000000"
 	})
 	void shouldNotFindAppointmentWithWrongId(final int id) {
-		org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
-			this.appointmentService.findAppointmentById(id);
-		});
+		Assertions.assertThat(this.appointmentService.findAppointmentById(id).isPresent()).isEqualTo(false);
 	}
 
 	@Test

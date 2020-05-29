@@ -80,12 +80,9 @@ public class ListMedicinesPositiveUITest {
 		keyDown1.sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ARROW_DOWN).sendKeys(Keys.ENTER).perform();
 
 		this.driver.findElement(By.xpath("//form[@id='appointment']/div/div/div/a[3]")).click();
-		this.driver.findElement(By.id("receipt.price")).click();
-		this.driver.findElement(By.id("receipt.price")).clear();
-		this.driver.findElement(By.id("receipt.price")).sendKeys("100.00");
-		Select sel = new Select(this.driver.findElement(By.xpath("//div[@id='list-billing']/div[2]/select")));
-		sel.deselectByVisibleText("card");
-		this.driver.findElement(By.xpath("//option[@value='']")).click();
+		this.driver.findElement(By.id("bill.price")).click();
+		this.driver.findElement(By.id("bill.price")).clear();
+		this.driver.findElement(By.id("bill.price")).sendKeys("100.00");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).click();
 		Assert.assertEquals("COMPLETED", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[4]/span")).getText());
