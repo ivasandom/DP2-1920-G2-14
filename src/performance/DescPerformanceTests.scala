@@ -128,8 +128,8 @@ object NewConsultation1 {
 		desc2Snc.inject(rampUsers(400) during (60 seconds))
 	).protocols(httpProtocol)
      .assertions(
-        global.responseTime.max.lt(5000),    
-        global.responseTime.mean.lt(1000),
+        global.responseTime.max.lt(6000),    
+        global.responseTime.mean.lt(1200),
         global.successfulRequests.percent.gt(95)
      )
 	 }
