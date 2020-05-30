@@ -29,13 +29,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfessionalService {
 
 	private ProfessionalRepository professionalRepository;
+	
+	@Autowired
+	private UserService			userService;
+	
+	@Autowired
+	private AuthoritiesService	authoritiesService;
 
 
 	@Autowired
 	public ProfessionalService(final ProfessionalRepository professionalRepository) {
 		this.professionalRepository = professionalRepository;
 	}
-
+	
+	@Transactional
+	public int professionalCount() {
+		return (int) this.professionalRepository.count();
+	}
+	
 	@Transactional(readOnly = true)
 	public Iterable<Professional> findAll() throws DataAccessException {
 		return this.professionalRepository.findAll();
@@ -64,6 +75,23 @@ public class ProfessionalService {
 	@Transactional(readOnly = true)
 	public Object findProfessionalById(final int id) throws DataAccessException {
 		return this.professionalRepository.findById(id);
+	}
+	
+	
+	@Transactional
+	public void deleteById(final Integer id) throws DataAccessException {
+		this.professionalRepository.deleteById(id);
+	}
+	
+	
+	@Transactional
+	public void saveProfessional(final Professional professional) throws DataAccessException {
+		//creating professional
+		this.professionalRepository.save(professional);
+		//creating user
+		this.userService.saveUser(professional.getUser());
+		//creating authorities
+		this.authoritiesService.saveAuthorities(professional.getUser().getUsername(), "professional");
 	}
 
 }

@@ -111,7 +111,7 @@
                                     <tr>
                                         <th>Type</th>
                                         <td>
-                                            <c:out value="${appointment.type.name}" />
+                                            <c:out value="${appointment.type}" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -186,15 +186,15 @@
             <div class="form-group">                        
             <h4>Receipt</h4>
 		 	<table class="table table-striped">
-	        <c:if test="${not empty appointment.receipt}">
+	        <c:if test="${not empty appointment.bill}">
 	        <tr>
-                                    <th>Receipt</th>
+                                    <th>Bill</th>
                                         <td>
-                                            <c:out value="${appointment.receipt.price}" />
+                                            <c:out value="${appointment.bill.price}" />
                                         </td>
                                     </tr>
 			</c:if>
-			<c:if test="${empty appointment.receipt}">
+			<c:if test="${empty appointment.bill}">
                 	<tr style="text-align:center;">
                 		<td colspan="5">No hay datos</td>
                 	</tr>

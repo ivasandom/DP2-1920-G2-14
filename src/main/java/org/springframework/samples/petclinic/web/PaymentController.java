@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.samples.petclinic.model.Client;
+import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.PaymentMethodService;
 import org.springframework.samples.petclinic.service.StripeService;
@@ -48,19 +49,21 @@ public class PaymentController {
 
 	@Value("${STRIPE_PUBLIC_KEY}")
 	private String					API_PUBLIC_KEY;
-
+	
 	private static final String		VIEWS_PAYMENT_METHOD_FORM	= "payments/paymentMethodForm";
 
 	private PaymentMethodService	paymentMethodService;
 	private ClientService			clientService;
 	private StripeService			stripeService;
+	private BillService				billService;
 
 
 	@Autowired
-	public PaymentController(final PaymentMethodService paymentMethodService, final StripeService stripeService, final ClientService clientService) {
+	public PaymentController(final PaymentMethodService paymentMethodService, final StripeService stripeService, final ClientService clientService, final BillService billService) {
 		this.paymentMethodService = paymentMethodService;
 		this.stripeService = stripeService;
 		this.clientService = clientService;
+		this.billService = billService;
 	}
 
 	@InitBinder
@@ -74,19 +77,25 @@ public class PaymentController {
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
 
 		model.put("paymentMethods", this.paymentMethodService.findByClient(currentClient));
-		System.out.println(this.paymentMethodService.findByClient(currentClient));
 		return "payments/paymentMethodList";
 	}
 
 	@GetMapping(value = "/new-method")
 	public String paymentMethodForm(final Map<String, Object> model) throws Exception {
-		org.springframework.samples.petclinic.model.PaymentMethod method = new org.springframework.samples.petclinic.model.PaymentMethod();
+		org.springframework.samples.petclinic.model.PaymentMethod paymentMethod = new org.springframework.samples.petclinic.model.PaymentMethod();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
-
-		String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId()).getClientSecret();
+		
+		String stripeCustomerId = currentClient.getStripeId();
+		if (stripeCustomerId == null) {
+			stripeCustomerId = this.stripeService.createCustomer(currentClient.getEmail()).getId();
+			currentClient.setStripeId(stripeCustomerId);
+			this.clientService.saveClient(currentClient);
+		}
+		
+		String intentClientSecret = this.stripeService.setupIntent(stripeCustomerId).getClientSecret();
 		model.put("intentClientSecret", intentClientSecret);
-		model.put("paymentMethod", method);
+		model.put("paymentMethod", paymentMethod);
 		model.put("apiKey", this.API_PUBLIC_KEY);
 
 		return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
@@ -109,7 +118,7 @@ public class PaymentController {
 		
 	
 	@PostMapping(value = "/new-method")
-	public String paymentMethodStore(@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result, final ModelMap model) throws Exception {
+	public String processCreditCardForm(@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result, final ModelMap model) throws Exception {
 		if (result.hasErrors()) {
 			System.out.println(result.getAllErrors());
 			return "redirect:/error";
@@ -130,6 +139,8 @@ public class PaymentController {
 			} else {
 				if (paymentMethod != null) {
 					method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+					method.setBrand(paymentMethod.getCard().getBrand().toUpperCase());
+					method.setLast4(paymentMethod.getCard().getLast4());
 					this.paymentMethodService.savePaymentMethod(method);
 				}
 			}

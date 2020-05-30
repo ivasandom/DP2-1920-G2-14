@@ -66,6 +66,5 @@ public class CenterServiceTests {
 	public void shouldFindCenterById(final String name) {
 		Center center = this.centerService.findCenterById(1).get();
 		Assertions.assertTrue(center.getAddress().equals(name));
-		Assertions.assertTrue(center.getSchedules().isEmpty());
 	}
 }

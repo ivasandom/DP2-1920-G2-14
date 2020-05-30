@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -32,9 +31,6 @@ public class Professional extends Person {
 	private User				user;
 
 	//Relations
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "professional", fetch = FetchType.EAGER)
-	private Set<Schedule>		schedules;
 
 	@ManyToOne
 	@JoinColumn(name = "center_id")
