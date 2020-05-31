@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,21 +24,17 @@ public class ClientService {
 	private AuthoritiesService	authoritiesService;
 
 
-	@Transactional
 	public int clientCount() {
 		return (int) this.clientRepository.count();
 	}
-	@Transactional(readOnly = true)
-	public Client findClientById(final int id) throws DataAccessException {
-		return this.clientRepository.findById(id).get();
+	public Optional<Client> findClientById(final int id) throws DataAccessException {
+		return this.clientRepository.findById(id);
 	}
 
-	@Transactional
 	public Client findClientByUsername(final String username) throws DataAccessException {
 		return this.clientRepository.findClientByUsername(username);
 	}
 
-	@Transactional
 	public Collection<Client> findAll() throws DataAccessException {
 		return this.clientRepository.findAll();
 	}

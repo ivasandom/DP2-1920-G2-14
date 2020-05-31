@@ -56,7 +56,7 @@ public class PasswordElectionPositiveUITest {
 		this.driver.findElement(By.id("document")).sendKeys("12345679L");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Axa");
-		this.driver.findElement(By.xpath("//option[@value='Axa']")).click();
+		this.driver.findElement(By.xpath("//option[@value='AXA']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("42431");

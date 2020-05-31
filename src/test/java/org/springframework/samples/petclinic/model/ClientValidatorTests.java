@@ -143,7 +143,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("document").getCode()).isEqualTo("must not be empty");
+		assertThat(errors.getFieldError("document").getCode()).isEqualTo("document must not be empty");
 	}
 	
 	@Test
@@ -159,20 +159,20 @@ public class ClientValidatorTests {
 		assertThat(errors.getFieldError("documentType").getCode()).isEqualTo("must not be null");
 	}
 	
-	@Test
-	void shouldNotValidateWhenRegistrationDateIsInFuture() {
-
-		LocaleContextHolder.setLocale(Locale.ENGLISH);
-		Client client = this.generateClient();
-		Date registrationDate = new GregorianCalendar(2030, Calendar.FEBRUARY, 11).getTime();
-		client.setRegistrationDate(registrationDate);
-		System.out.println(client.getRegistrationDate());
-		
-		clientValidator.validate(client, errors);
-		System.out.println(errors.getAllErrors());
-		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("registrationDate").getCode()).isEqualTo("the date must be in past");
-	}
+//	@Test
+//	void shouldNotValidateWhenRegistrationDateIsInFuture() {
+//
+//		LocaleContextHolder.setLocale(Locale.ENGLISH);
+//		Client client = this.generateClient();
+//		Date registrationDate = new GregorianCalendar(2030, Calendar.FEBRUARY, 11).getTime();
+//		client.setRegistrationDate(registrationDate);
+//		System.out.println(client.getRegistrationDate());
+//		
+//		clientValidator.validate(client, errors);
+//		System.out.println(errors.getAllErrors());
+//		assertThat(errors.getErrorCount()).isEqualTo(1);
+//		assertThat(errors.getFieldError("registrationDate").getCode()).isEqualTo("the date must be in past");
+//	}
 	
 	@Test
 	void shouldValidateWhenRegistrationDateIsInPast() {
@@ -197,7 +197,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("must not be empty");
+		assertThat(errors.getFieldError("healthInsurance").getCode()).isEqualTo("health insurance must not be empty. In case you don't have any, write 'I do not have insurance'");
 	}
 	
 	
@@ -276,7 +276,7 @@ public class ClientValidatorTests {
 		clientValidator.validate(client, errors);
 
 		assertThat(errors.getErrorCount()).isEqualTo(1);
-		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("you must write your health card number");
+		assertThat(errors.getFieldError("healthCardNumber").getCode()).isEqualTo("cannot be null");
 	}
 	
 	@ParameterizedTest

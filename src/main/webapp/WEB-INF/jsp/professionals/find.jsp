@@ -18,14 +18,14 @@
                 <div class="col-sm-10">
                    <div class="form-group">
                         <label for="id-center">Center</label>
-                        <form:select class="form-control" id="center" path="center">
+                        <form:select class="form-control" id="center" path="center.id">
                             <option disabled selected hidden>Choose a center</option>
                             <form:options items="${centers}" itemLabel="address" itemValue="id" />
                         </form:select>
                     </div>
                     <div class="form-group">
                         <label for="id-specialty">Specialty</label>
-                        <form:select class="form-control" id="specialty" path="specialty">
+                        <form:select class="form-control" id="specialty" path="specialty.id">
                             <option disabled selected hidden>Choose a specialty</option>
                             <form:options items="${specialties}" itemLabel="name" itemValue="id" />
                         </form:select>

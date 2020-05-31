@@ -16,6 +16,9 @@
 
 package org.springframework.samples.petclinic.web;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -78,6 +81,7 @@ public class ClientController {
 
 	@PostMapping(value = "/new")
 	public String processCreationForm(@Valid final Client client, final BindingResult result, final ModelMap model) throws Exception {
+		client.setRegistrationDate(Date.from(Instant.now()));
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 		
@@ -85,7 +89,8 @@ public class ClientController {
 			model.put("client", client);
 			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			model.put("healthInsurances", HealthInsurance.values());
-			
+			System.out.println(result.getFieldErrors());
+			System.out.println("hola");
 			return ClientController.VIEWS_CLIENTS_SIGN_UP;
 		} else {
 			//creating owner, user and authorities

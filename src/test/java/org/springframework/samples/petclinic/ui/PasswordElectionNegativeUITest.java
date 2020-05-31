@@ -56,7 +56,7 @@ public class PasswordElectionNegativeUITest {
 		this.driver.findElement(By.id("document")).sendKeys("87234561P");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Fiatc");
-		this.driver.findElement(By.xpath("//option[@value='Fiatc']")).click();
+		this.driver.findElement(By.xpath("//option[@value='FIATC']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("4325");

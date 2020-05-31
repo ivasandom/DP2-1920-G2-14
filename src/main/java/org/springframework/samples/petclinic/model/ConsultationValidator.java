@@ -20,7 +20,6 @@ public class ConsultationValidator implements Validator {
 
 		Appointment appointment = (Appointment) obj;
 		
-		/** FIXME NULL POINTER EXCEPTION CONTROLLER TEST **/
 		
 		if (!errors.hasFieldErrors("diagnosis.medicines")) {
 			if (appointment.getDiagnosis().getMedicines().isEmpty()) {
@@ -36,6 +35,12 @@ public class ConsultationValidator implements Validator {
 			}
 		}
 
+		if (!errors.hasFieldErrors("bill.price")) {
+			if(appointment.getBill().getPrice() <= 0.) {
+				errors.rejectValue("bill.price", "price must be positive");
+			}
+		}
+		
 		if (appointment.getBill().getIva() == null || appointment.getBill().getIva() < 0. || appointment.getBill().getIva() > 100.) {
 			errors.rejectValue("bill.iva", "iva must be between 0 and 100");
 		}

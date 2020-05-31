@@ -25,7 +25,6 @@ public class DiagnosisService {
 		this.diagnosisRepository.save(diagnosis);
 	}
 
-	@Transactional
 	public Iterable<Diagnosis> findAll() throws DataAccessException {
 		return this.diagnosisRepository.findAll();
 	}

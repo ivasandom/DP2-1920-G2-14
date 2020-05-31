@@ -55,7 +55,7 @@ public class HealthCardNumberNegativeUITest {
     driver.findElement(By.id("document")).sendKeys(Keys.TAB);
     driver.findElement(By.id("healthInsurance")).click();
     new Select(driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Sanitas");
-    driver.findElement(By.xpath("//option[@value='Sanitas']")).click();
+    driver.findElement(By.xpath("//option[@value='SANITAS']")).click();
     driver.findElement(By.id("email")).click();
     driver.findElement(By.id("email")).clear();
     driver.findElement(By.id("email")).sendKeys("elenanito@gmail.com");

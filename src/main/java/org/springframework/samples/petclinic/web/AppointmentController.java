@@ -58,7 +58,7 @@ import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
-import org.springframework.samples.petclinic.service.StripeService;
+import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -74,6 +74,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -87,7 +88,6 @@ public class AppointmentController {
 	private final CenterService centerService;
 	private final MedicineService medicineService;
 	private final DeseaseService deseaseService;
-	private final StripeService stripeService;
 	private final BillService billService;
 
 	@Autowired
@@ -95,7 +95,7 @@ public class AppointmentController {
 			final ProfessionalService professionalService, final SpecialtyService specialtyService,
 			final ClientService clientService, final CenterService centerService,
 			final AuthoritiesService authoritiesService, final MedicineService medicineService,
-			final DeseaseService deseaseService, final StripeService stripeService, final BillService billService) {
+			final DeseaseService deseaseService, final BillService billService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
@@ -103,7 +103,6 @@ public class AppointmentController {
 		this.centerService = centerService;
 		this.medicineService = medicineService;
 		this.deseaseService = deseaseService;
-		this.stripeService = stripeService;
 		this.billService = billService;
 	}
 
@@ -139,13 +138,14 @@ public class AppointmentController {
 	@GetMapping("/{appointmentId}")
 	public ModelAndView detailAppointment(@PathVariable("appointmentId") final int appointmentId,
 			final ModelMap model) {
-		ModelAndView mav = new ModelAndView("appointments/new");
-		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
-		Client c = this.clientService.findClientById(a.getClient().getId());
 
-		model.put("client", c);
-		mav.addObject(a);
-		return mav;
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			ModelAndView mav = new ModelAndView("appointments/new");
+			model.put("client", appointment.getClient());
+			mav.addObject(appointment);
+			return mav;
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+
 	}
 
 	@GetMapping("/pro")
@@ -179,13 +179,19 @@ public class AppointmentController {
 
 	@PostMapping(value = "/new")
 	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result,
-			final ModelMap model) {
+			final ModelMap model) throws Exception {
+		
+		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findById");
+		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
+		EntityUtils.setRelationshipAttribute(appointment, Specialty.class, this.specialtyService, "findSpecialtyById");
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		appointment.setClient(this.clientService.findClientByUsername(auth.getName()));
 		AppointmentValidator appointmentValidator = new AppointmentValidator();
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
 			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
 			return "appointments/new";
@@ -221,147 +227,147 @@ public class AppointmentController {
 
 	@PostMapping("/{appointmentId}/absent")
 	public String markAbsent(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		if (appointment.getStatus() != AppointmentStatus.COMPLETED) {
-			appointment.setStatus(AppointmentStatus.ABSENT);
-		}
-		this.appointmentService.saveAppointment(appointment);
-		return "redirect:/appointments/pro";
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			if (appointment.getStatus() != AppointmentStatus.COMPLETED) {
+				appointment.setStatus(AppointmentStatus.ABSENT);
+			}
+			this.appointmentService.saveAppointment(appointment);
+			return "redirect:/appointments/pro";
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/{appointmentId}/consultation")
 	public String showAppointment(@PathVariable("appointmentId") final int appointmentId,
 			final Map<String, Object> model) throws Exception {
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
 
-		if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
-			return "redirect:/appointments/pro";
-		} else {
-			Collection<Medicine> medicines = this.medicineService.findMedicines();
-			Iterable<Desease> deseases = this.deseaseService.findAll();
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
+				return "redirect:/appointments/pro";
+			} else {
+				Collection<Medicine> medicines = this.medicineService.findMedicines();
+				Iterable<Desease> deseases = this.deseaseService.findAll();
 
-			model.put("medicineList", medicines);
-			model.put("appointment", appointment);
-			model.put("deseaseList", deseases);
-			return "appointments/consultationPro";
-		}
+				model.put("medicineList", medicines);
+				model.put("appointment", appointment);
+				model.put("deseaseList", deseases);
+				return "appointments/consultationPro";
+			}
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 
 	}
 
 	@PostMapping(value = "/{appointmentId}/consultation")
 	public String processUpdateAppointmentForm(@Valid final Appointment appointment, final BindingResult result,
 			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
-		Appointment a = this.appointmentService.findAppointmentById(appointmentId);
 
-		if (a.getStatus() == AppointmentStatus.COMPLETED) {
-			return "redirect:/appointments/pro";
-		} else {
-			ConsultationValidator consultationValidator = new ConsultationValidator();
-			consultationValidator.validate(appointment, result);
+		return this.appointmentService.findAppointmentById(appointmentId).map(a -> {
 
-			if (result.hasErrors()) {
-				Iterable<Desease> deseases = this.deseaseService.findAll();
-				Collection<Medicine> medicines = this.medicineService.findMedicines();
-				model.put("medicineList", medicines);
-				model.put("deseaseList", deseases);
-				model.put("appointment", a);
-				return "appointments/consultationPro";
-			} else {
-				Client appointmentClient = a.getClient();
-				
-				Bill bill = appointment.getBill();
-				bill.setAppointment(a);
-				bill.setHealthInsurance(appointmentClient.getHealthInsurance());
-				bill.setCreatedAt(LocalDateTime.now());
-				
-				if (appointmentClient.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
-					bill.setDocument(appointmentClient.getDocument());
-					bill.setDocumentType(appointmentClient.getDocumentType());
-					bill.setName(appointmentClient.getFullName());
-				} else {
-					bill.setDocument(appointmentClient.getHealthInsurance().getCif());
-					bill.setDocumentType(DocumentType.CIF);
-					bill.setName(appointmentClient.getHealthInsurance().getLegalName());
-				}
-				
-				a.setDiagnosis(appointment.getDiagnosis());
-				a.setStatus(AppointmentStatus.COMPLETED);
-
-				this.appointmentService.saveAppointment(a);
-				this.billService.saveBill(bill);
+			if (a.getStatus() == AppointmentStatus.COMPLETED) {
 				return "redirect:/appointments/pro";
-			}
+			} else {
+				ConsultationValidator consultationValidator = new ConsultationValidator();
+				consultationValidator.validate(appointment, result);
 
-		}
+				if (result.hasErrors()) {
+					Iterable<Desease> deseases = this.deseaseService.findAll();
+					Collection<Medicine> medicines = this.medicineService.findMedicines();
+					model.put("medicineList", medicines);
+					model.put("deseaseList", deseases);
+					model.put("appointment", a);
+					return "appointments/consultationPro";
+				} else {
+					Client appointmentClient = a.getClient();
+
+					Bill bill = appointment.getBill();
+					bill.setAppointment(a);
+					bill.setHealthInsurance(appointmentClient.getHealthInsurance());
+					bill.setCreatedAt(LocalDateTime.now());
+
+					if (appointmentClient.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)) {
+						bill.setDocument(appointmentClient.getDocument());
+						bill.setDocumentType(appointmentClient.getDocumentType());
+						bill.setName(appointmentClient.getFullName());
+					} else {
+						bill.setDocument(appointmentClient.getHealthInsurance().getCif());
+						bill.setDocumentType(DocumentType.CIF);
+						bill.setName(appointmentClient.getHealthInsurance().getLegalName());
+					}
+
+					appointment.getDiagnosis().setDate(LocalDate.now());
+					a.setDiagnosis(appointment.getDiagnosis());
+					a.setStatus(AppointmentStatus.COMPLETED);
+
+					this.appointmentService.saveAppointment(a);
+					this.billService.saveBill(bill);
+					return "redirect:/appointments/pro";
+				}
+
+			}
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping("/{appointmentId}/details")
-	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model)
-			throws Exception {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		Collection<Medicine> medicines = new ArrayList<Medicine>();
-		Collection<Desease> deseases = new ArrayList<Desease>();
-		List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream()
-				.collect(Collectors.toList());
-		// Collection<String> brands = Collections.emptyList();
-		for (int i = 0; i < paymentMethods.size(); i++) {
-			com.stripe.model.PaymentMethod pM = this.stripeService
-					.retrievePaymentMethod(paymentMethods.get(i).getToken());
-			String brand = pM.getType();
-			// brands.add(brand);
-			paymentMethods.get(i).setBrand(brand);
-		}
-		if (appointment.getDiagnosis() != null) {
-			medicines = appointment.getDiagnosis().getMedicines();
-			deseases = appointment.getDiagnosis().getDeseases();
-		}
-		try {
-			if (!authentication.getName().equals(
-					this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
-				model.addAttribute("message", "You cannot show another user's appointment");
-				return "exception";
-			} else {
-				PaymentMethod p = new PaymentMethod();
-				p.setBrand("efectivo");
-				p.setClient(appointment.getClient());
-				p.setToken("efective_token");
-				paymentMethods.add(p);
-				appointment.getClient().getPaymentMethods().add(p);
-				System.out.println(appointment.getDiagnosis());
-				// Diagnosis
-				model.put("medicines", medicines);
-				// model.put("brands", brands);
-				model.put("appointment", appointment);
-				model.put("deseases", deseases);
-				return "appointments/details";
+	public String showAppointmentByClient(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
+
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Collection<Medicine> medicines = new ArrayList<Medicine>();
+			Collection<Desease> deseases = new ArrayList<Desease>();
+			List<PaymentMethod> paymentMethods = appointment.getClient().getPaymentMethods().stream()
+					.collect(Collectors.toList());
+			// Collection<String> brands = Collections.emptyList();
+			if (appointment.getDiagnosis() != null) {
+				medicines = appointment.getDiagnosis().getMedicines();
+				deseases = appointment.getDiagnosis().getDeseases();
 			}
-		} catch (Exception e) {
-			model.addAttribute("message", "Error: " + e.getMessage());
-			return "exception";
-		}
+			try {
+				if (!authentication.getName().equals(appointment.getClient().getUser().getUsername())) {
+					model.addAttribute("message", "You cannot show another user's appointment");
+					return "exception";
+				} else {
+					PaymentMethod p = new PaymentMethod();
+					p.setBrand("efectivo");
+					p.setClient(appointment.getClient());
+					p.setToken("efective_token");
+					paymentMethods.add(p);
+					appointment.getClient().getPaymentMethods().add(p);
+					System.out.println(appointment.getDiagnosis());
+					// Diagnosis
+					model.put("medicines", medicines);
+					// model.put("brands", brands);
+					model.put("appointment", appointment);
+					model.put("deseases", deseases);
+					return "appointments/details";
+				}
+			} catch (Exception e) {
+				model.addAttribute("message", "Error: " + e.getMessage());
+				return "exception";
+			}
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 	@GetMapping(path = "/delete/{appointmentId}")
 	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId,
 			final ModelMap modelMap) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String vista = "redirect:/appointments";
-		Appointment appointment = this.appointmentService.findAppointmentById(appointmentId);
-		try {
-			if (!authentication.getName().equals(
-					this.appointmentService.findAppointmentById(appointmentId).getClient().getUser().getUsername())) {
-				modelMap.addAttribute("message", "You cannot delete another user's appointment");
+
+		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String vista = "redirect:/appointments";
+
+			try {
+				if (!authentication.getName().equals(appointment.getClient().getUser().getUsername())) {
+					modelMap.addAttribute("message", "You cannot delete another user's appointment");
+					return "exception";
+				} else {
+					this.appointmentService.delete(appointment);
+					modelMap.addAttribute("message", "Appointment successfully deleted");
+				}
+			} catch (Exception e) {
+				modelMap.addAttribute("message", "Error: " + e.getMessage());
 				return "exception";
-			} else {
-				this.appointmentService.delete(appointment);
-				modelMap.addAttribute("message", "Appointment successfully deleted");
 			}
-		} catch (Exception e) {
-			modelMap.addAttribute("message", "Error: " + e.getMessage());
-			return "exception";
-		}
-		return vista;
+			return vista;
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
 
 }

@@ -57,7 +57,7 @@ public class ReasonElectionPositiveUITest {
 		new Select(this.driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
 		this.driver.findElement(By.id("professional")).click();
-		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Díaz");
+		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Diaz");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[3]")).click();
 		this.driver.findElement(By.id("reason")).click();
 		this.driver.findElement(By.id("reason")).clear();
