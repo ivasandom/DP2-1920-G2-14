@@ -2,56 +2,170 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<petclinic:staffLayout currentPage="dashboard">
+<petclinic:staffLayout currentPage="dashboard" pageTitle="Dashboard">
+	
+	<jsp:attribute name="customScript">		
+	   	
+	   	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	    
+	    <script>
+	    	
+		    var ctx1 = document.getElementById('billedPerDay').getContext('2d');
+		    var chart = new Chart(ctx1, {
+		        type: 'bar',
+		        data: {
+		            labels: [
+		            	<c:forEach items="${billedPerDay}" var="day">
+                			'<c:out value="${day[1]}" />',
+                		</c:forEach>
+		            ],
+		            datasets: [{
+		                label: 'Billed per day',
+		                backgroundColor: '#17a2b8',
+		                borderColor: '#17a2b8',
+		                data: [
+		                	<c:forEach items="${billedPerDay}" var="day">
+                				<c:out value="${day[0]}" />,
+                			</c:forEach>
+		                ]
+		            }]
+		        },
+		        options: {}
+		    });
+	    
+		    var ctx2 = document.getElementById('appointmentsDonut').getContext('2d');
+		    var chart = new Chart(ctx2, {
+		        type: 'pie',
+		        data: {
+		            labels: ['Pending', 'Completed', 'Absent'],
+		            datasets: [{
+		                label: 'My First dataset',
+		                backgroundColor: ['#dc3545', '#28a745', '#ffc107'],
+		                borderColor: ['#dc3545', '#28a745', '#ffc107'],
+		                data: [
+		        			<c:out value='${numPendingAppointments}' />,
+		        			<c:out value='${numCompletedAppointments}' />,
+		        			<c:out value='${numAbsentAppointments}' />,
+		        			
+		        		]
+		            }]
+		        },
+		        options: {}
+		    });
+		    
+		   
+	      
+	      
+	
+	    </script>
+	  </jsp:attribute>
+	<jsp:body>
+  
+    <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><c:out value="${numClients}" /></h3>
 
-    <div class="container">
-        <h2 class="my-5">Admin Dashboard</h2>
+                <p>Clients</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="/admin/clients/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3><c:out value="${numProfessionals}" /></h3>
+
+                <p>Professionals</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="/admin/professionals/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3><c:out value="${numAppointments}" /></h3>
+
+                <p>Appointments</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="/admin/appointments" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+           <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>$ <c:out value="${totalBilled > 0 ? totalBilled : '0.00'}" /></h3>
+
+                <p>Total billed</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a href="/admin/bills" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
         <div class="row">
-        	<div style="background:green; color:#fff;font-size:2em;padding:20px;" class="col-md-3">
-        		X Users
-        	</div>
-        	<div style="background:#529362; color:#fff;font-size:2em;padding:20px;" class="col-md-3">
-        		X,XX $ Billed
-        	</div>
-        	<div style="background:green; color:#fff;font-size:2em;padding:20px;" class="col-md-3">
-        		X Professionals
-        	</div>
-        	<div style="background:#529362; color:#fff;font-size:2em;padding:20px;" class="col-md-3">
-        		X Centers
-        	</div>
-        </div> 
-	    <br>
-        
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque purus diam, viverra a sagittis eu,
-            mattis eu tortor. Morbi malesuada at ipsum pellentesque ultrices. Praesent id porttitor lacus. Vestibulum
-            sit amet enim in massa commodo laoreet. Duis faucibus ante condimentum, feugiat magna sed, tincidunt urna.
-            Duis varius consectetur tempor. Sed consequat interdum magna at placerat. Nam gravida augue justo, sed
-            convallis orci aliquet quis. Ut ut lorem quam. Aenean nec dolor neque. Etiam ultrices imperdiet urna eget
-            euismod. Fusce consequat malesuada libero aliquam scelerisque. Nunc tincidunt tellus at enim gravida
-            scelerisque. Integer luctus tortor et massa aliquet porttitor. Phasellus blandit maximus orci imperdiet
-            imperdiet. Nulla in enim et odio vulputate dignissim.
-		</p>
-        <p>
-		    Integer vestibulum nisl vel lorem ultrices, posuere porttitor quam tempor. Integer suscipit rutrum velit at
-            elementum. Sed vestibulum interdum elit vitae aliquet. Aenean cursus velit sed urna imperdiet scelerisque.
-            Nullam sit amet ante tempor tortor faucibus hendrerit. Maecenas ultrices sit amet nulla sit amet rhoncus.
-            Praesent ipsum quam, placerat id eleifend et, congue vel sem. Quisque a lacus tempor, auctor purus vehicula,
-            congue magna. Phasellus imperdiet urna in est ultricies, eget congue augue vehicula. Pellentesque vel est
-            sit amet sapien pellentesque dictum. Cras ultrices commodo quam quis congue. Praesent a sagittis libero.
-            Donec iaculis nunc ac elit aliquet ullamcorper. Aenean pellentesque turpis sit amet quam dapibus, id
-            accumsan urna venenatis.
-		</p>
-		<p>
-        	Sed eu consectetur velit. Duis pellentesque posuere erat, et interdum ligula pellentesque non. Vestibulum eu
-            ultricies erat, ac dictum libero. Vivamus pulvinar quis lacus nec sodales. Phasellus eu lectus et ipsum
-            viverra vestibulum. In hac habitasse platea dictumst. Aliquam porta mattis magna, nec efficitur ante luctus
-            a. Morbi sed suscipit velit, id varius quam. Morbi finibus pharetra justo, non ultricies dolor suscipit nec.
-            Curabitur feugiat augue velit. Pellentesque pellentesque velit nec ligula dignissim tempor. Quisque ut
-            blandit turpis, vitae scelerisque nisl. Proin posuere ex quam, eget gravida urna pretium eu. Etiam interdum
-            vel quam quis faucibus.
-        </p>
-    </div>
+        	<div class="col-md-8">
+            	  <!-- PIE CHART -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Bills per day</h3>
 
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+        
+                </div>
+              </div>
+              <div class="card-body">
+              	<canvas id="billedPerDay"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          	</div>
+        	<div class="col-md-4">
+            	  <!-- PIE CHART -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Appointments by status</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+        
+                </div>
+              </div>
+              <div class="card-body">
+              	<canvas id="appointmentsDonut"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          	</div>
+  		</div>
+       </jsp:body>
+       
 </petclinic:staffLayout>

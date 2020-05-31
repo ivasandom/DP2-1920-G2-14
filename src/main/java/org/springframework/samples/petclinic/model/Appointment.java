@@ -54,11 +54,9 @@ public class Appointment extends BaseEntity {
 	@Column(name = "reason")
 	//@NotEmpty(message = "*")
 	private String				reason;
-
-	@ManyToOne(cascade = {
-		CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH
-	})
-	@JoinColumn(name = "type_id")
+	
+	@Column(name = "type")
+	@Enumerated(value = EnumType.STRING)
 	private AppointmentType		type;
 
 	// Relations
@@ -86,9 +84,8 @@ public class Appointment extends BaseEntity {
 	@JoinColumn(name = "diagnosis_id")
 	private Diagnosis			diagnosis;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "receipt_id")
-	private Receipt				receipt;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "appointment")
+	private Bill				bill;
 
 	@Column(length = 32, columnDefinition = "varchar(32) default 'PENDING'")
 	@Enumerated(value = EnumType.STRING)

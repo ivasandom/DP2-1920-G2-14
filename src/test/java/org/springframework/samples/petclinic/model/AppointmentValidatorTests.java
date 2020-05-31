@@ -34,13 +34,10 @@ public class AppointmentValidatorTests {
 		this.appointment.setReason("my head hurts");
 		this.appointment.setStartTime(LocalTime.of(10, 15));
 
-		this.appointment.setReceipt(null);
+		this.appointment.setBill(null);
 		this.appointment.setDiagnosis(null);
 		this.appointment.setClient(null);
-
-		AppointmentType appointmentType = new AppointmentType();
-		appointmentType.setName("revision");
-		this.appointment.setType(appointmentType);
+		this.appointment.setType(AppointmentType.PERIODIC_CONSULTATION);
 
 		this.appointment.setStatus(AppointmentStatus.COMPLETED);
 
@@ -51,6 +48,10 @@ public class AppointmentValidatorTests {
 		Specialty specialty = new Specialty();
 		specialty.setName("dermatology");
 		this.appointment.setSpecialty(specialty);
+		
+		Client client = new Client();
+		client.setEmail("client@gmail.com");
+		this.appointment.setClient(client);
 
 		Professional professional = new Professional();
 		professional.setCenter(center);
@@ -59,7 +60,7 @@ public class AppointmentValidatorTests {
 		professional.setLastName("Carrasco");
 		professional.setEmail("mancar@gmail.com");
 		professional.setDocument("29334485");
-		professional.setDocumentType(DocumentType.nif);
+		professional.setDocumentType(DocumentType.NIF);
 		professional.setCollegiateNumber("413123122-K");
 		this.appointment.setProfessional(professional);
 

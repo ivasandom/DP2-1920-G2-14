@@ -25,6 +25,13 @@ public class TransactionServiceTests {
 	protected TransactionService transactionService;
 
 
+	@Test
+	@Transactional
+	public void testCountWithInitialData() {
+		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
+		Assertions.assertEquals(transactions.size(), 0);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"10.0, tok_visa, finished"
@@ -44,12 +51,6 @@ public class TransactionServiceTests {
 
 		transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		org.assertj.core.api.Assertions.assertThat(transactions.size()).isEqualTo(found + 1);
-	}
-
-	@Test
-	public void testCountWithInitialData() {
-		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		Assertions.assertEquals(transactions.size(), 0);
 	}
 
 }

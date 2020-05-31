@@ -36,9 +36,11 @@
 	                <a class="nav-link" href="/appointments/pro">Consultation mode</a>
 	            </li>
             </sec:authorize>
-			<li class="nav-item ${currentPage eq 'error' ? 'active' : ''}">
-                <a class="nav-link" href="/oups">Error</a>
-            </li>
+            <sec:authorize access="hasAuthority('admin')">
+	            <li class="nav-item ${currentPage eq 'administration' ? 'active' : ''}">
+	                <a class="nav-link" href="/admin">Administration</a>
+	            </li>
+            </sec:authorize>
         </ul>
         <ul class="navbar-nav">
             <sec:authorize access="!isAuthenticated()">
@@ -53,9 +55,10 @@
                         <sec:authentication property="name" />
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    	<a class="dropdown-item" href="/appointments">Mis citas</a>
-                    	<a class="dropdown-item" href="/payments/methods">My payment methods</a>
-                        <a class="dropdown-item disabled" href="#">My profile</a>
+                    	<sec:authorize access="hasAuthority('client')">
+	                    	<a class="dropdown-item" href="/appointments">Mis citas</a>
+	                    	<a class="dropdown-item" href="/payments/methods">My payment methods</a>
+                    	</sec:authorize>
                         <a class="dropdown-item" href="/logout">Logout</a>
                     </div>
                 </li>

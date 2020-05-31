@@ -25,6 +25,7 @@ public class AuthoritiesServiceTests {
 
 
 	@Test
+	@Transactional
 	public void testCountWithInitialData() {
 		Collection<Authorities> authorities = (Collection<Authorities>) this.authoritiesService.findAll();
 		org.junit.jupiter.api.Assertions.assertEquals(authorities.size(), 9);
@@ -34,7 +35,7 @@ public class AuthoritiesServiceTests {
 	@CsvSource({
 		"aitortilla, client"
 	})
-	@Transactional
+	@Transactional(readOnly = true)
 	public void shouldSaveAuthortities(final String username, final String role) {
 		Authorities authorities = new Authorities();
 		authorities.setUsername(username);

@@ -29,7 +29,13 @@ public class DiagnosisServiceTests {
 	@Autowired
 	protected DiagnosisService diagnosisService;
 
-
+	
+	@Test
+	public void testCountWithInitialData() {
+		Collection<Diagnosis> diagnosis = (Collection<Diagnosis>) this.diagnosisService.findAll();
+		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 7);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"2020-02-03, diagnosis description"
@@ -57,9 +63,4 @@ public class DiagnosisServiceTests {
 		Assertions.assertThat(diagnosisCollection.size()).isEqualTo(found + 1);
 	}
 
-	@Test
-	public void testCountWithInitialData() {
-		Collection<Diagnosis> diagnosis = (Collection<Diagnosis>) this.diagnosisService.findAll();
-		org.junit.jupiter.api.Assertions.assertEquals(diagnosis.size(), 7);
-	}
 }

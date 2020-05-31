@@ -19,13 +19,42 @@ public class PaymentMethod extends BaseEntity {
 
 	@Column(name = "brand")
 	private String	brand;
+	
+	@Column(name = "last4")
+	private String last4;
 
 	@Column(name = "token")
 	@NotBlank
-	private String	token;
+	private String	token; // Stripe payment method token or empty
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private Client	client;
+	
+	
+	public static PaymentMethod cash() {
+		PaymentMethod result = new PaymentMethod();
+		result.setToken("CASH");
+		return result;
+	}
+	
+	public static PaymentMethod bankTransfer() {
+		PaymentMethod result = new PaymentMethod();
+		result.setToken("BANKTRANSFER");
+		return result;
+	}
+
+	public String getDisplayName() {
+		switch (token) {
+		case "CASH":
+			return "Cash";
+		case "BANKTRANSFER":
+			return "Bank transfer";
+		default:
+			return String.format("%s **** **** **** %s", brand, last4);
+		}
+	}
+	
+	
 
 }

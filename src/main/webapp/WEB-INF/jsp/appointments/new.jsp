@@ -178,7 +178,7 @@
                     <div id="appointment-date-group" style="display: none;">
                         <petclinic:inputField label="Reason" name="reason" />
                         <div class="control-group">
-                            <petclinic:selectField name="type.name" label="Type" names="${types}" size="7" />
+                            <petclinic:enumField label="Type" name="type" names="${types}" />
                         </div>
                         <h4 class="mt-5">Choose date:</h4>
                         <p>Choose the date of your appointment.</p>
@@ -276,25 +276,10 @@
                     <div id="appointment-date-group" style="display: none;">
                         <petclinic:inputField label="Reason" name="reason" />
                         <div class="control-group">
-                            <petclinic:selectField name="type.name" label="Type" names="${types}" size="7" />
+                        	<petclinic:enumField label="Type" name="type" names="${types}" />
                         </div>
                         
-                        
-						<div class="form-group">
-                            <label for="id-type">Type</label>
-                            <form:select
-                                class="form-control ${status.error ? 'is-invalid' : ''} ${valid ? 'is-valid' : ''}"
-                                id="type" path="type">
-                                <option disabled selected hidden>Choose a type</option>
-                                <form:options items="${type}" itemLabel="name" itemValue="id" />
-                            </form:select>
-                            <c:if test="${status.error}">
-                                <div class="invalid-feedback">
-                                    ${status.errorMessage}
-                                </div>
-                            </c:if>
-                        </div>
-                    
+       
                         <h4 class="mt-5">Choose date:</h4>
                         <p>Choose the date of your appointment.</p>
                         <spring:bind path="date">

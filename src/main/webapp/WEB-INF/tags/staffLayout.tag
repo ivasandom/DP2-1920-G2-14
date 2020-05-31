@@ -1,4 +1,5 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <%@ attribute name="currentPage" required="true" %>
@@ -8,96 +9,208 @@
 
 
 
-
-<!doctype html>
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
 <html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
   <petclinic:head pageTitle="${pageTitle}" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+  <!-- Theme style -->
+  <spring:url value="/resources/adminlte/adminlte.min.css" var="adminlteCss" />
+  <link href="${adminlteCss}" rel="stylesheet" />
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <!-- Datatable -->
+  <spring:url value="/resources/adminlte/dataTables.bootstrap4.min.css" var="dataTablesBs4CSS" />
+  <link href="${dataTablesBs4CSS}" rel="stylesheet" />
+
+
   <style>
-/*!
- * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
- * Copyright 2013-2019 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
- */
-body {
-  overflow-x: hidden;
-}
+    [class*='col-']>.card {
+      height: calc(100% - 1rem)
+    }
 
-#sidebar-wrapper {
-  min-height: 100vh;
-  margin-left: -15rem;
-  -webkit-transition: margin .25s ease-out;
-  -moz-transition: margin .25s ease-out;
-  -o-transition: margin .25s ease-out;
-  transition: margin .25s ease-out;
-}
+  </style>
+</head>
 
-#sidebar-wrapper .sidebar-heading {
-  padding: 0.875rem 1.25rem;
-  font-size: 1.2rem;
-}
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
 
-#sidebar-wrapper .list-group {
-  width: 15rem;
-}
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+    </nav>
+    <!-- /.navbar -->
 
-#page-content-wrapper {
-  min-width: 100vw;
-}
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="/admin" class="brand-link" style="color:#fff;text-align center">
 
-#wrapper.toggled #sidebar-wrapper {
-  margin-left: 0;
-}
+        <span class="brand-text font-weight-light">	    
+	    	A C M E 
+	    		<sec:authorize access="hasAnyAuthority('admin', 'professional')">
+	    			<strong style="
+					    margin-left: 1px;
+					    letter-spacing: 7px;
+					    text-transform: uppercase;
+					    font-size: 0.9rem;
+					    font-style: oblique;
+					    color: gold;
+					">Staff</strong>
+				</sec:authorize></span>
+      </a>
 
-@media (min-width: 768px) {
-  #sidebar-wrapper {
-    margin-left: 0;
-  }
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional)        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img
+              src="https://w7.pngwing.com/pngs/682/576/png-transparent-willyrex-youtuber-spain-wigetta-en-las-dinolimpiadas-youtube-thumbnail.png"
+              class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="#" class="d-block">Admin name</a>
+          </div>
+        </div> -->
+        
 
-  #page-content-wrapper {
-    min-width: 0;
-    width: 100%;
-  }
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <li class="nav-item ">
+              <a href="/admin" class="nav-link">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Dashboard
+                  <span class="right badge badge-danger">New</span>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/clients" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Clients
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/professionals" class="nav-link">
+                <i class="nav-icon fas fa-user-nurse"></i>
+                <p>
+                  Professionals
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/appointments" class="nav-link">
+                <i class="nav-icon fas fa-syringe"></i>
+                <p>
+                  Appointments
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/admin/bills" class="nav-link">
+                <i class="nav-icon fas fa-file-invoice"></i>
+                <p>
+                  Bills
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
 
-  #wrapper.toggled #sidebar-wrapper {
-    margin-left: -15rem;
-  }
-}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">${pageTitle}</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Starter Page</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
 
-</style>
-  <body>
-	<petclinic:navbar currentPage="${currentPage}" />
-	 <div class="d-flex" id="wrapper">
-	 
-	    <div class="bg-light border-right" id="sidebar-wrapper">
-	      <div class="list-group list-group-flush">
-	        <a href="/admin/dashboard" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-	        <a href="/professionals/clientList" class="list-group-item list-group-item-action bg-light">Clients</a>
-            <a href="/admin/professionals" class="list-group-item list-group-item-action bg-light">Professionals</a>
-	        <a href="/admin/settings" class="list-group-item list-group-item-action bg-light">Settings</a>
-	      </div>
-	    </div>
-	    
-	     <!-- Page Content -->
-	    <div id="page-content-wrapper">
-		    <div>
-		        <jsp:doBody/>
-		        <%-- <petclinic:pivotal/> --%>
-		    </div>
-	    </div>
+      <!-- Main content -->
+      <div class="content">
+        <div class="container-fluid">
+          <jsp:doBody />
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content -->
     </div>
-    
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <jsp:invoke fragment="customScript" />
-  
-  </body>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+      <div class="p-3">
+        <h5>Title</h5>
+        <p>Sidebar content</p>
+      </div>
+    </aside>
+    <!-- /.control-sidebar -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+      <!-- To the right -->
+      <div class="float-right d-none d-sm-inline">
+        Anything you want
+      </div>
+      <!-- Default to the left -->
+      <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    </footer>
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED SCRIPTS -->
+
+  <!-- jQuery -->
+  <spring:url value="/resources/adminlte/jquery.min.js" var="jqueryJS" />
+  <script src="${jqueryJS}"></script>
+  <!-- Bootstrap 4 -->
+  <spring:url value="/resources/adminlte/bootstrap.bundle.min.js" var="bootstrapJS" />
+  <script src="${bootstrapJS}"></script>
+  <!-- AdminLTE App -->
+  <spring:url value="/resources/adminlte/adminlte.min.js" var="adminlteJS" />
+  <script src="${adminlteJS}"></script>
+  <!-- jQuery Datatable -->
+  <spring:url value="/resources/adminlte/jquery.dataTables.min.js" var="datatablesJS" />
+  <script src="${datatablesJS}"></script>
+
+  <jsp:invoke fragment="customScript" />
+
+</body>
+
 </html>

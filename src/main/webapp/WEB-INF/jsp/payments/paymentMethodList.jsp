@@ -11,13 +11,14 @@
 
       <div class="container">
           <h2 class="mt-5">My payment methods</h2>
-          <a href="/payments/new-method" class="btn btn-outline-primary">+ Add method</a>
+          <a href="/payments/new-method" class="btn btn-outline-primary">+ Add card</a>
           <hr />
 			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>Token</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -25,6 +26,7 @@
 						<tr>
 							<td>#</td>
 							<td><c:out value="${paymentMethod.token}"/></td>
+							<td><c:out value="${paymentMethod.brand}"/> **** **** **** <c:out value="${paymentMethod.last4}"/></td>
 						</tr>
 					</c:forEach>
 				</tbody>

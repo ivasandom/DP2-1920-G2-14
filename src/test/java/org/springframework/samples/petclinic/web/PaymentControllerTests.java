@@ -20,13 +20,12 @@ public class PaymentControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-
-	@WithMockUser(username = "admin1", authorities = {
-		"admin"
-	})
+	@WithMockUser(username = "admin1", authorities = { "admin" })
 	@Test
 	void testPaymentMethodList() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/payments/methods")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("payments/paymentMethodList"));
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/payments/methods"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.view().name("payments/paymentMethodList"));
 
 	}
 }

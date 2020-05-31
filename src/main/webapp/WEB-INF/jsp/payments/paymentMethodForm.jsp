@@ -80,7 +80,7 @@
 
             <form:form modelAttribute="paymentMethod" action="/payments/new-method" method="post"
                 id="payment-method-form">
-                <input type="hidden" name="token" id="token" />
+                <input type="hidden" name="token" id="token"/>
 
                 <label for="card-element">
                     Credit or debit card
@@ -95,7 +95,7 @@
 				
                 <hr />
                 <form:errors path="token"  cssClass="alert alert-danger" element="div" />
-                <button id="add-button" class="btn btn-primary">Add card</button>
+                <button id="add-button" class="btn btn-primary">+ Add payment method</button>
             </form:form>
         </div>
     </jsp:body>

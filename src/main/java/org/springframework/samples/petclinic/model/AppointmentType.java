@@ -1,11 +1,17 @@
 
 package org.springframework.samples.petclinic.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public enum AppointmentType {
+	CHECKING("Checking"), ANALISIS("Analisis"), ILLNESS_CONSULTATION("Illness consultation"),
+	PRESCRIPTION_ISSUANCE("Prescription Issuance"), VACCINATION("Vaccination"), PERIODIC_CONSULTATION("Periodic Consultation"), ANOTHER("Another");
+	
+	private String displayName;
 
-@Entity
-@Table(name = "types")
-public class AppointmentType extends NamedEntity {
+	private AppointmentType(final String displayName) {
+		this.displayName = displayName;
+	}
 
+	public String getDisplayName() {
+		return this.displayName;
+	}
 }

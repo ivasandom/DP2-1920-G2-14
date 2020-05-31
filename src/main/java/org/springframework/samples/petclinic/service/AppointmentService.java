@@ -4,6 +4,7 @@ package org.springframework.samples.petclinic.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -35,59 +36,49 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository	appointmentRepository;
+	
 
-
+	public int appointmentCount() {
+		return (int) this.appointmentRepository.count();
+	}
+	
 	@Autowired
 	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
 	}
 
-	@Transactional(readOnly = true)
 	public Iterable<Appointment> listAppointments() throws DataAccessException {
 		return this.appointmentRepository.findAll();
 	}
 
-	@Transactional
 	public Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(final LocalDate date, final Professional professional) {
 		return this.appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 	}
 
-	@Transactional
 	public Collection<Appointment> findAppointmentByUserId(final int id) {
 		return this.appointmentRepository.findAppointmentByClientId(id);
 	}
 
-	@Transactional
 	public Collection<Appointment> findAppointmentByProfessionalId(final int id) {
 		return this.appointmentRepository.findAppointmentByProfessionalId(id);
 	}
 
-	@Transactional
-	public Collection<String> findAppointmentByTypes() throws DataAccessException {
-		return this.appointmentRepository.findAppointmentTypes();
-	}
-
-	@Transactional
 	public Collection<Appointment> findTodayPendingByProfessionalId(final int id) {
 		return this.appointmentRepository.findTodayPendingByProfessionalId(id);
 	}
 
-	@Transactional
 	public Collection<Appointment> findTodayCompletedByProfessionalId(final int id) {
 		return this.appointmentRepository.findTodayCompletedByProfessionalId(id);
 	}
 
-	@Transactional
-	public Appointment findAppointmentById(final int id) {
-		return this.appointmentRepository.findById(id).get();
+	public Optional<Appointment> findAppointmentById(final int id) {
+		return this.appointmentRepository.findById(id);
 	}
 
-	@Transactional
 	public Collection<Medicine> findMedicines(final int id) {
 		return this.appointmentRepository.findMedicines(id);
 	}
 
-	@Transactional
 	public Collection<Desease> findDeseases(final int id) {
 		return this.appointmentRepository.findDeseases(id);
 	}
@@ -104,22 +95,22 @@ public class AppointmentService {
 
 	@Transactional
 	public void chargeAppointment(final Appointment appointment) throws Exception {
-		if (appointment.getReceipt() != null && appointment.getReceipt().getPrice() != null && appointment.getReceipt().getPrice() > .0) {
+		if (appointment.getBill() != null && appointment.getBill().getPrice() != null && appointment.getBill().getPrice() > .0) {
 			Client client = appointment.getClient();
 			Collection<PaymentMethod> paymentMethods = client.getPaymentMethods();
-			System.out.println("step1");
+			
 			if (paymentMethods.size() > 0) {
-				System.out.println("step2");
 				PaymentMethod primary = paymentMethods.iterator().next();
-				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getReceipt().getPrice(), appointment.getClient().getStripeId());
+				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getBill().getFinalPrice(), appointment.getClient().getStripeId());
 				// Client charged successfully!
 				Transaction transaction = new Transaction();
 				transaction.setType(TransactionType.CHARGE);
-				transaction.setReceipt(appointment.getReceipt());
+				transaction.setBill(appointment.getBill());
 				transaction.setToken(paymentIntent.getId());
 				transaction.setAmount((double) paymentIntent.getAmount() / 100);
 				transaction.setStatus(paymentIntent.getStatus());
 				transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
+				transaction.setBill(appointment.getBill());
 				this.transactionService.saveTransaction(transaction);
 			}
 		}
@@ -135,4 +126,18 @@ public class AppointmentService {
 		}
 		this.appointmentRepository.delete(appointment);
 	}
+	
+	public Long getNumberOfPendingAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
+	}
+	
+	public Long getNumberOfAbsentAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
+	}
+	
+	public Long getNumberOfCompletedAppointments() throws DataAccessException {
+		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
+	}
+	
+	
 }
