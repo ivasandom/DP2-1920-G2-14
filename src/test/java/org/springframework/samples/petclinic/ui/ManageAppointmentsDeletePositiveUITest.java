@@ -57,7 +57,7 @@ public class ManageAppointmentsDeletePositiveUITest {
 		this.driver.findElement(By.linkText("Mis citas")).click();
 		this.driver.findElement(By.xpath("(//a[contains(text(),'View more')])[124]")).click();
 		this.driver.findElement(By.linkText("CANCEL APPOINTMENT")).click();
-		Assert.assertEquals("Guillermo Díaz", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr[123]/td[4]")).getText());
+		Assert.assertEquals("Guillermo Diaz", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr[123]/td[4]")).getText());
 	}
 
 	@AfterEach

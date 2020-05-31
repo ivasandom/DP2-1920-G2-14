@@ -60,7 +60,7 @@ public class PaymentRepeatedPositiveUITest {
 		this.driver.findElement(By.id("document")).sendKeys("12343213J");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Caser");
-		this.driver.findElement(By.xpath("//option[@value='Caser']")).click();
+		this.driver.findElement(By.xpath("//option[@value='CASER']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("12346");
