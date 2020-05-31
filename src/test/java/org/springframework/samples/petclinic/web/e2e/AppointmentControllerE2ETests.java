@@ -36,8 +36,6 @@ public class AppointmentControllerE2ETests {
 	private static final int	TEST_APPOINTMENT_ID	= 1;
 
 
-	private static final int TEST_APPOINTMENT_ID = 28;
-
 	@BeforeEach
 	void setup() {
 	}
