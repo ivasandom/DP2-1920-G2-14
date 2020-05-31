@@ -120,7 +120,10 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
+                                <spring:url value="/professionals/{clientId}" var="clientUrl">
+                        			<spring:param name="clientId" value="${appointment.client.id}"/>
+                    			</spring:url>
+                    			<a href="${fn:escapeXml(clientUrl)}" class="btn btn-sm btn-primary mb-3">View clinical history</a>
                             </div>
 
                         </div>

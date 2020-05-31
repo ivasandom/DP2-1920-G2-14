@@ -1,9 +1,15 @@
 
 package org.springframework.samples.petclinic.web;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +22,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
+import org.springframework.samples.petclinic.model.HealthInsurance;
+import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.User;
@@ -72,6 +81,10 @@ class ProfessionalControllerTests {
 
 	private Center				center;
 
+	private Client				client;
+
+	private static final int	TEST_CLIENT_ID			= 1;
+
 
 	@BeforeEach
 	void setup() {
@@ -80,6 +93,11 @@ class ProfessionalControllerTests {
 		user.setEnabled(true);
 		user.setUsername("frankcuesta");
 		user.setPassword("frankcuesta");
+
+		User user2 = new User();
+		user2.setEnabled(true);
+		user2.setUsername("manucar");
+		user2.setPassword("manucar");
 
 		this.specialty = new Specialty();
 		this.specialty.setId(ProfessionalControllerTests.TEST_SPECIALTY_ID);
@@ -92,6 +110,8 @@ class ProfessionalControllerTests {
 
 		Date birthdate = new Date(1955 - 12 - 01);
 		Date registrationDate = new Date(2015 - 10 - 02);
+
+		Date birthDate = new GregorianCalendar(1950, Calendar.FEBRUARY, 11).getTime();
 
 		this.professional = new Professional();
 		this.professional.setId(ProfessionalControllerTests.TEST_PROFESSIONAL_ID);
@@ -106,12 +126,34 @@ class ProfessionalControllerTests {
 		this.professional.setCenter(this.center);
 		this.professional.setUser(user);
 
+		this.client = new Client();
+		this.client.setId(ProfessionalControllerTests.TEST_CLIENT_ID);
+		this.client.setDocument("29334456");
+		this.client.setDocumentType(DocumentType.NIF);
+		this.client.setEmail("frankcuesta@gmail.com");
+		this.client.setFirstName("Frank");
+		this.client.setHealthCardNumber("0000000003");
+		this.client.setHealthInsurance(HealthInsurance.ADESLAS);
+		this.client.setLastName("Cuesta");
+		this.client.setStripeId("1");
+		this.client.setUser(user2);
+		this.client.setBirthDate(birthDate);
+		this.client.setRegistrationDate(Date.from(Instant.now()));
+		this.client.setPaymentMethods(new HashSet<PaymentMethod>());
+
 		List<Professional> professionalList = new ArrayList<Professional>();
 		professionalList.add(this.professional);
 		Iterable<Professional> resultadoBuscarProfessionales = professionalList;
 
+		List<Client> clientList = new ArrayList<Client>();
+		clientList.add(this.client);
+		Collection<Client> resultadoBuscarClientes = clientList;
+
 		BDDMockito.given(this.professionalService.findProfessionalById(ProfessionalControllerTests.TEST_PROFESSIONAL_ID)).willReturn(this.professional);
 		BDDMockito.given(this.professionalService.findProfessionalBySpecialtyAndCenter(ProfessionalControllerTests.TEST_SPECIALTY_ID, ProfessionalControllerTests.TEST_CENTER_ID)).willReturn(resultadoBuscarProfessionales);
+
+		BDDMockito.given(this.clientService.findClientById(ProfessionalControllerTests.TEST_CLIENT_ID)).willReturn(Optional.of(this.client));
+		BDDMockito.given(this.clientService.findAll()).willReturn(resultadoBuscarClientes);
 
 	}
 
@@ -129,20 +171,21 @@ class ProfessionalControllerTests {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals").queryParam("center.id", "1").queryParam("specialty.id", "1")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("professionals/list"));
 	}
 
-	@WithMockUser(value = "professional1")
+	@WithMockUser(value = "frankcuesta", authorities = {
+		"professional"
+	})
 	@Test
 	void testShowClient() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/clients/{clientId}", 1))//
-			.andExpect(MockMvcResultMatchers.status().isOk())//
-			.andExpect(MockMvcResultMatchers.model().attributeExists("client")).andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Gotera"))))//
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Pepe")))).andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("document", Matchers.is("28334456"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("birthDate", Matchers.is("1992-02-02")))).andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("documentType", Matchers.is("1"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("email", Matchers.is("pepegotera@gmail.com"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("registrationDate", Matchers.is("2020-03-12"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthCardNumber", Matchers.is("00001"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is("I_DO_NOT_HAVE_INSURANCE"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("username", Matchers.is("pepegotera"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("stripe_id", Matchers.is("cus_HFLSuDf4wEoVn7"))))
-			.andExpect(MockMvcResultMatchers.view().name("/professionals/1"));
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/{clientId}", TEST_CLIENT_ID))
+			.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("client"))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Cuesta"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Frank"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("document", Matchers.is("29334456"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("documentType", Matchers.is(DocumentType.NIF))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("email", Matchers.is("frankcuesta@gmail.com"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthCardNumber", Matchers.is("0000000003"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is(HealthInsurance.ADESLAS))))
+			.andExpect(MockMvcResultMatchers.view().name("professionals/clientShow"));
+		
 	}
 }

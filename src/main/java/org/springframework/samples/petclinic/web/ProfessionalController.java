@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +30,6 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
-import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
@@ -104,11 +101,13 @@ public class ProfessionalController {
 
 	@GetMapping(value = "/professionals")
 	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
-		if (professional.getCenter() == null || professional.getCenter().getId() == null)
+		if (professional.getCenter() == null || professional.getCenter().getId() == null) {
 			result.addError(new FieldError("professional", "center", "must not be empty"));
-		if (professional.getSpecialty() == null || professional.getSpecialty().getId() == null)
+		}
+		if (professional.getSpecialty() == null || professional.getSpecialty().getId() == null) {
 			result.addError(new FieldError("professional", "specialty", "must not be empty"));
-		
+		}
+
 		if (result.hasErrors()) {
 			model.put("professional", professional);
 			return "professionals/find";
@@ -156,8 +155,10 @@ public class ProfessionalController {
 		ModelAndView mav = new ModelAndView("professionals/clientShow");
 		Collection<Medicine> medicines = this.appointmentService.findMedicines(clientId);
 		Collection<Desease> deseases = this.appointmentService.findDeseases(clientId);
+		Client client = this.clientService.findClientById(clientId).get();
 		model.put("medicines", medicines);
 		model.put("deseases", deseases);
+		model.put("client", client);
 		mav.addObject(this.clientService.findClientById(clientId));
 		return mav;
 	}

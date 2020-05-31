@@ -55,6 +55,9 @@
                         <sec:authentication property="name" />
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <sec:authorize access="hasAuthority('professional')">
+	                    	<a class="dropdown-item" href="/professionals/clientList">Client List</a>
+                    	</sec:authorize>
                     	<sec:authorize access="hasAuthority('client')">
 	                    	<a class="dropdown-item" href="/appointments">Mis citas</a>
 	                    	<a class="dropdown-item" href="/payments/methods">My payment methods</a>
