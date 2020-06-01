@@ -53,9 +53,10 @@ public class DeseasesPositiveUITest {
 		this.driver.findElement(By.id("password")).sendKeys("professional1");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.linkText("Consultation mode")).click();
-		this.driver.findElement(By.linkText("Clients")).click();
-		this.driver.findElement(By.linkText("Pepe Gotera")).click();
-		Assert.assertEquals("Deseases", this.driver.findElement(By.xpath("//h2[3]")).getText());
+		this.driver.findElement(By.linkText("> Start consultation")).click();
+		this.driver.findElement(By.linkText("View clinical history")).click();
+		Assert.assertEquals("Acidez de estómago", this.driver.findElement(By.xpath("//table[3]/tbody/tr/td/dl/dd")).getText());
+
 	}
 
 	@AfterEach
