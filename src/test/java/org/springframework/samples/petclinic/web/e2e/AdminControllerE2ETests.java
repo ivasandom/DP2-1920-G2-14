@@ -1,8 +1,6 @@
 
-package org.springframework.samples.petclinic.web;
+package org.springframework.samples.petclinic.web.e2e;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,98 +8,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
-import org.springframework.samples.petclinic.model.Appointment;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
-import org.springframework.samples.petclinic.model.AppointmentType;
-import org.springframework.samples.petclinic.model.Bill;
-import org.springframework.samples.petclinic.model.Center;
-import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
-import org.springframework.samples.petclinic.model.PaymentMethod;
-import org.springframework.samples.petclinic.model.Professional;
-import org.springframework.samples.petclinic.model.Specialty;
-import org.springframework.samples.petclinic.model.Transaction;
-import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.service.AppointmentService;
-import org.springframework.samples.petclinic.service.BillService;
-import org.springframework.samples.petclinic.service.CenterService;
-import org.springframework.samples.petclinic.service.ClientService;
-import org.springframework.samples.petclinic.service.PaymentMethodService;
-import org.springframework.samples.petclinic.service.ProfessionalService;
-import org.springframework.samples.petclinic.service.SpecialtyService;
-import org.springframework.samples.petclinic.service.StripeService;
-import org.springframework.samples.petclinic.service.TransactionService;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-@WebMvcTest(controllers = AdminController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
-public class AdminControllerTests {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+@Transactional
+public class AdminControllerE2ETests {
 
-	@MockBean
-	private AppointmentService appointmentService;
-
-	@MockBean
-	private ProfessionalService professionalService;
-	
-	@MockBean
-	private ClientService clientService;
-	
-	@MockBean
-	private CenterService centerService;
-	
-	@MockBean
-	private SpecialtyService specialtyService;
-	
-	@MockBean
-	private BillService billService;
-	
-	@MockBean
-	private StripeService stripeService;
-	
-	@MockBean
-	private TransactionService transactionService;
-	
-	@MockBean
-	private PaymentMethodService paymentMethodService;
-	
 	@Autowired
-	private MockMvc mockMvc;
-	
-	private Client client;
-	
-	private Professional professional;
-	
-	private Appointment appointment;
-	
-	private Bill bill;
-	
-	private Transaction transaction;
-	
+	private MockMvc				mockMvc;
+
 	private static final int TEST_CLIENT_ID = 1;
 	
 	private static final int TEST_PROFESSIONAL_ID = 1;
@@ -111,135 +40,10 @@ public class AdminControllerTests {
 	private static final int TEST_BILL_ID = 1;
 	
 	private static final int TEST_TRANSACTION_ID = 1;
-	
-	private static final int TEST_CENTER_ID = 1;
-	
-	private static final int TEST_SPECIALTY_ID = 1;
-	
-	
+
+
 	@BeforeEach
-	void setup() throws Exception {
-		String par = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		Date birthDate = new GregorianCalendar(1950, Calendar.FEBRUARY, 11).getTime();
-		
-		User user = new User();
-		user.setEnabled(true);
-		user.setUsername("frankcuesta");
-		user.setPassword("frankcuesta");
-		
-		User user2 = new User();
-		user2.setEnabled(true);
-		user2.setUsername("manucar");
-		user2.setPassword("manucar");
-		
-		client = new Client();
-		client.setId(TEST_CLIENT_ID);
-		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.NIF);
-		client.setEmail("frankcuesta@gmail.com");
-		client.setFirstName("Frank");
-		client.setHealthCardNumber("0000000003");
-		client.setHealthInsurance(HealthInsurance.ADESLAS);
-		client.setLastName("Cuesta");
-		client.setStripeId("1");
-		client.setUser(user);
-		client.setBirthDate(birthDate);
-		client.setRegistrationDate(Date.from(Instant.now()));
-		client.setPaymentMethods(new HashSet<PaymentMethod>());
-		
-		Center center = new Center();
-		center.setId(TEST_CENTER_ID);
-		center.setAddress("Sevilla");
-
-		Specialty specialty = new Specialty();
-		specialty.setId(TEST_SPECIALTY_ID);
-		specialty.setName("dermatology");
-
-		professional = new Professional();
-		professional.setId(TEST_PROFESSIONAL_ID);
-		professional.setCenter(center);
-		professional.setSpecialty(specialty);
-		professional.setFirstName("Guillermo");
-		professional.setLastName("Díaz");
-		professional.setEmail("mancar@gmail.com");
-		professional.setDocument("29334485");
-		professional.setDocumentType(DocumentType.NIF);
-		professional.setCollegiateNumber("413123122-K");
-		professional.setUser(user2);
-		
-		appointment = new Appointment();
-		appointment.setId(TEST_APPOINTMENT_ID);
-		appointment.setDate(LocalDate.parse(par, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		appointment.setReason("my head hurts");
-		appointment.setStartTime(LocalTime.of(10, 15, 00));
-		appointment.setBill(null);
-		appointment.setDiagnosis(null);
-		appointment.setClient(client);
-		appointment.setType(AppointmentType.PERIODIC_CONSULTATION);
-		appointment.setCenter(center);
-		appointment.setSpecialty(specialty);
-		appointment.setProfessional(professional);
-		appointment.setStatus(AppointmentStatus.PENDING);
-		
-		bill = new Bill();
-		bill.setId(TEST_BILL_ID);
-		bill.setCreatedAt(LocalDateTime.now());
-		bill.setPrice(50.0);
-		bill.setDocument(client.getDocument());
-		bill.setDocumentType(client.getDocumentType());
-		bill.setHealthInsurance(HealthInsurance.I_DO_NOT_HAVE_INSURANCE);
-		bill.setIva(21.0);
-		bill.setAppointment(appointment);
-		bill.setTransactions(new HashSet<Transaction>());
-		
-		transaction = new Transaction();
-		transaction.setId(TEST_TRANSACTION_ID);
-		transaction.setBill(bill);
-		transaction.setCreatedAt(LocalDateTime.now());
-		transaction.setStatus("succeeded");
-		transaction.setSuccess(true);
-		transaction.setAmount(bill.getFinalPrice());
-		transaction.setToken("CASH");
-		
-		
-		List<Client> clientList = new ArrayList<Client>();
-		clientList.add(client);
-		Collection<Client> resultadoBuscarClientes = clientList;
-		
-		List<Professional> professionalList = new ArrayList<Professional>();
-		professionalList.add(professional);
-		Iterable<Professional> resultadoBuscarProfessionales = professionalList;
-		
-		List<Appointment> appointmentList = new ArrayList<Appointment>();
-		appointmentList.add(appointment);
-		Iterable<Appointment> resultadoBuscarAppointments = appointmentList;
-		
-		List<Bill> billList = new ArrayList<Bill>();
-		billList.add(bill);
-		Iterable<Bill> resultadoBuscarBills = billList;
-		
-		
-		given(this.clientService.findClientById(TEST_CLIENT_ID)).willReturn(Optional.of(client));
-		given(this.clientService.findAll()).willReturn(resultadoBuscarClientes);
-		doNothing().when(this.clientService).deleteById(TEST_CLIENT_ID);
-		
-		given(this.professionalService.findById(TEST_CLIENT_ID)).willReturn(Optional.of(professional));
-		given(this.professionalService.findAll()).willReturn(resultadoBuscarProfessionales);
-		doNothing().when(this.professionalService).deleteById(TEST_PROFESSIONAL_ID);
-		
-		given(this.appointmentService.findAppointmentById(TEST_APPOINTMENT_ID)).willReturn(Optional.of(appointment));
-		given(this.appointmentService.listAppointments()).willReturn(resultadoBuscarAppointments);
-		doNothing().when(this.appointmentService).delete(Mockito.mock(Appointment.class));
-		
-		given(this.billService.findById(TEST_APPOINTMENT_ID)).willReturn(Optional.of(bill));
-		given(this.billService.findAll()).willReturn(resultadoBuscarBills);
-		
-		given(this.transactionService.findById(TEST_TRANSACTION_ID)).willReturn(Optional.of(transaction));
-		
-		given(this.centerService.findCenterById(TEST_CENTER_ID)).willReturn(Optional.of(center));
-		
-		given(this.specialtyService.findSpecialtyById(TEST_SPECIALTY_ID)).willReturn(Optional.of(specialty));
-
+	void setup() {
 	}
 
 	@WithMockUser(value = "admin", authorities = {"admin"})
@@ -271,7 +75,7 @@ public class AdminControllerTests {
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
 	void testClientDetailNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/clients/{clientId}", 2))
+		this.mockMvc.perform(get("/admin/clients/{clientId}", 2000))
 				.andExpect(status().isNotFound())
 				.andExpect(view().name("errors/404"));
 	}
@@ -291,16 +95,16 @@ public class AdminControllerTests {
 	void testProcessClientEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/{clientId}/edit", TEST_CLIENT_ID)
 						.with(csrf())
-						.param("firstName", client.getFirstName())
-						.param("lastName", client.getLastName())
+						.param("firstName", "Frank")
+						.param("lastName", "Cuesta")
 						.param("birthDate", "1999-05-05")
-						.param("document", client.getDocument())
-						.param("documentType", client.getDocumentType().name())
-						.param("healthInsurance", client.getHealthInsurance().name())
-						.param("healthCardNumber", client.getHealthCardNumber())
-						.param("email", client.getEmail())
-						.param("user.username", client.getUser().getUsername())
-						.param("user.password", client.getUser().getPassword()))
+						.param("document", "29334456")
+						.param("documentType", DocumentType.NIF.name())
+						.param("healthInsurance", HealthInsurance.ADESLAS.name())
+						.param("healthCardNumber", "0000000003")
+						.param("email", "frankcuesta@gmail.com")
+						.param("user.username", "frankcuesta")
+						.param("user.password", "frankcuesta"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/admin/clients/" + TEST_CLIENT_ID));
 	}
@@ -314,8 +118,8 @@ public class AdminControllerTests {
 						.param("lastName", "")
 						.param("birthDate", "1999-05-05")
 						.param("document", "")
-						.param("documentType", client.getDocumentType().name())
-						.param("healthInsurance", client.getHealthInsurance().name())
+						.param("documentType", DocumentType.NIF.name())
+						.param("healthInsurance", HealthInsurance.ADESLAS.name())
 						.param("healthCardNumber", "")
 						.param("email", "")
 						.param("user.username", "")
@@ -414,7 +218,7 @@ public class AdminControllerTests {
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
 	void testProfessionalDetailNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/professionals/{professionalId}", 2))
+		this.mockMvc.perform(get("/admin/professionals/{professionalId}", 2000))
 				.andExpect(status().isNotFound())
 				.andExpect(view().name("errors/404"));
 	}
@@ -431,7 +235,7 @@ public class AdminControllerTests {
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
 	void testProfessionalEditFormNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", 2))
+		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", 2000))
 				.andExpect(status().isNotFound())
 				.andExpect(view().name("errors/404"));
 	}
@@ -441,15 +245,15 @@ public class AdminControllerTests {
 	void testProcessProfessionalEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/{professionalId}/edit", TEST_PROFESSIONAL_ID)
 						.with(csrf())
-						.param("firstName", professional.getFirstName())
-						.param("lastName", professional.getLastName())
+						.param("firstName", "Guillermo")
+						.param("lastName", "Díaz")
 						.param("birthDate", "1999-05-05")
-						.param("document", professional.getDocument())
-						.param("documentType", professional.getDocumentType().name())
-						.param("collegiateNumber", professional.getCollegiateNumber())
-						.param("email", professional.getEmail())
-						.param("user.username", professional.getUser().getUsername())
-						.param("user.password", professional.getUser().getPassword())
+						.param("document", "29334485")
+						.param("documentType", DocumentType.NIF.name())
+						.param("collegiateNumber", "413123122-K")
+						.param("email", "mancar@gmail.com")
+						.param("user.username", "manucar")
+						.param("user.password", "manucar")
 						.param("center.id", "1")
 						.param("specialty.id", "1"))
 				.andExpect(status().is3xxRedirection())
@@ -465,7 +269,7 @@ public class AdminControllerTests {
 						.param("lastName", "")
 						.param("birthDate", "1999-05-05")
 						.param("document", "")
-						.param("documentType", professional.getDocumentType().name())
+						.param("documentType", DocumentType.NIF.name())
 						.param("collegiateNumber", "")
 						.param("email", "")
 						.param("user.username", "")
@@ -563,7 +367,7 @@ public class AdminControllerTests {
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
 	void testAppointmentDetailNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/appointments/{appointmentId}", 2))
+		this.mockMvc.perform(get("/admin/appointments/{appointmentId}", 2000))
 				.andExpect(status().isNotFound())
 				.andExpect(view().name("errors/404"));
 	}

@@ -48,8 +48,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -59,6 +61,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Michael Isvy
  */
 @Controller
+@RequestMapping("professionals")
 public class ProfessionalController {
 
 	private final ProfessionalService	professionalService;
@@ -93,13 +96,13 @@ public class ProfessionalController {
 		return this.centerService.findAll();
 	}
 
-	@GetMapping(value = "/professionals/find")
+	@GetMapping(value = "/find")
 	public String initFindForm(final Map<String, Object> model) {
 		model.put("professional", new Professional());
 		return "professionals/find";
 	}
 
-	@GetMapping(value = "/professionals")
+	@GetMapping(value = "")
 	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		if (professional.getCenter() == null || professional.getCenter().getId() == null) {
 			result.addError(new FieldError("professional", "center", "must not be empty"));
@@ -126,7 +129,7 @@ public class ProfessionalController {
 		}
 	}
 
-	@GetMapping("/professionals/filter")
+	@GetMapping("/filter")
 	@ResponseBody
 	public ResponseEntity<Object> filterJSON(@RequestParam final Optional<Integer> centerId, @RequestParam final Optional<Integer> specialtyId, final Model model) {
 		if (centerId.isPresent() && specialtyId.isPresent()) {
@@ -145,28 +148,27 @@ public class ProfessionalController {
 		}
 	}
 
-	//
-	//ClientService
-	//
+
 
 	//Show de cliente para profesional
-	@GetMapping("/professionals/{clientId}")
+	@GetMapping("/clients/{clientId}")
 	public ModelAndView showClient(@PathVariable("clientId") final int clientId, final ModelMap model) {
-		ModelAndView mav = new ModelAndView("professionals/clientShow");
-		Collection<Medicine> medicines = this.appointmentService.findMedicines(clientId);
-		Collection<Desease> deseases = this.appointmentService.findDeseases(clientId);
-		Client client = this.clientService.findClientById(clientId).get();
-		model.put("medicines", medicines);
-		model.put("deseases", deseases);
-		model.put("client", client);
-		mav.addObject(this.clientService.findClientById(clientId));
-		return mav;
+		return this.clientService.findClientById(clientId).map(client -> {
+			ModelAndView mav = new ModelAndView("professionals/clientShow");
+			Collection<Medicine> medicines = this.appointmentService.findMedicines(clientId);
+			Collection<Desease> deseases = this.appointmentService.findDeseases(clientId);
+			
+			model.put("medicines", medicines);
+			model.put("deseases", deseases);
+			model.put("client", client);
+			return mav;
+			
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+		
 	}
 
 	//List de clientes para profesional
-	@GetMapping(value = {
-		"/professionals/clientList"
-	})
+	@GetMapping("/clients")
 	public String showClientsList(final Map<String, Object> model) {
 		Collection<Client> clients = this.clientService.findAll();
 		model.put("clients", clients);
