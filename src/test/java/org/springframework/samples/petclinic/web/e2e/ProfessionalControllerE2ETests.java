@@ -56,11 +56,33 @@ class ProfessionalControllerE2ETests {
 			    .andExpect(MockMvcResultMatchers.view().name("professionals/list"));
 	}
 	
+	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@Test
+	void testProcessFindFormNotFound() throws Exception {
+		this.mockMvc.perform(get("/professionals")
+							.queryParam("center.id", "1")
+							.queryParam("specialty.id", "2"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeHasFieldErrors("professional", "specialty"))
+				.andExpect(view().name("professionals/find"));
+	}
+	
+	
+	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@Test
+	void testProcessFindFormHasErrors() throws Exception {
+		this.mockMvc.perform(get("/professionals")
+							.queryParam("center.id", "")
+							.queryParam("specialty.id", ""))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeHasFieldErrors("professional", "center", "specialty"))
+				.andExpect(view().name("professionals/find"));
+	}
 
-	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
+	@WithMockUser(value = "guillermodiaz", authorities = {"professional"})
 	@Test
 	void testShowClient() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/{clientId}", TEST_CLIENT_ID))
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/clients/{clientId}", TEST_CLIENT_ID))
 			.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("client"))
 			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Gotera"))))
 			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Pepe"))))
@@ -73,17 +95,18 @@ class ProfessionalControllerE2ETests {
 		
 	}
 	
-	@WithMockUser(value = "manucar", authorities = {"client"})
+	@WithMockUser(value = "guillermodiaz", authorities = {"professional"})
 	@Test
 	void testClientShowNotFound() throws Exception {
-		this.mockMvc.perform(get("/professionals/{clientId}", 1))
-				.andExpect(status().is4xxClientError());
+		this.mockMvc.perform(get("/professionals/clients/{clientId}", 999))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
 	}
 	
-	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
+	@WithMockUser(value = "guillermodiaz", authorities = {"professional"})
 	@Test
 	void testClientList() throws Exception {
-		this.mockMvc.perform(get("/professionals/clientList"))
+		this.mockMvc.perform(get("/professionals/clients"))
 				.andExpect(model().attributeExists("clients"))
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(view().name("professionals/clientList"));

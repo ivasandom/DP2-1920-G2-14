@@ -56,7 +56,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <sec:authorize access="hasAuthority('professional')">
-	                    	<a class="dropdown-item" href="/professionals/clientList">Client List</a>
+	                    	<a class="dropdown-item" href="/professionals/clients">Client List</a>
                     	</sec:authorize>
                     	<sec:authorize access="hasAuthority('client')">
 	                    	<a class="dropdown-item" href="/appointments">Mis citas</a>

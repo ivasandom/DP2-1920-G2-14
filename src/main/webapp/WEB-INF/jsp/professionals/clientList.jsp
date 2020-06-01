@@ -26,7 +26,7 @@
         <c:forEach items="${clients}" var="client">
             <tr>
                 <td>
-                    <spring:url value="/professionals/{clientId}" var="clientUrl">
+                    <spring:url value="/professionals/clients/{clientId}" var="clientUrl">
                         <spring:param name="clientId" value="${client.id}"/>
                     </spring:url>
                     <a href="${fn:escapeXml(clientUrl)}"><c:out value="${client.firstName} ${client.lastName}"/></a>

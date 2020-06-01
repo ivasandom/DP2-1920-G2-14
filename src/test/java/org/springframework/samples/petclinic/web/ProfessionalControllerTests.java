@@ -44,6 +44,8 @@ import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = ProfessionalController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 class ProfessionalControllerTests {
@@ -183,8 +185,6 @@ class ProfessionalControllerTests {
 	}
 	
 	@WithMockUser(value = "spring")
-
-	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
 	@Test
 	void testProcessFindFormNotFound() throws Exception {
 		this.mockMvc.perform(get("/professionals")
@@ -193,19 +193,8 @@ class ProfessionalControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasFieldErrors("professional", "specialty"))
 				.andExpect(view().name("professionals/find"));
-	void testShowClient() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/{clientId}", TEST_CLIENT_ID))
-			.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("client"))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Cuesta"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Frank"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("document", Matchers.is("29334456"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("documentType", Matchers.is(DocumentType.NIF))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("email", Matchers.is("frankcuesta@gmail.com"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthCardNumber", Matchers.is("0000000003"))))
-			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is(HealthInsurance.ADESLAS))))
-			.andExpect(MockMvcResultMatchers.view().name("professionals/clientShow"));
-		
 	}
+	
 	
 	@WithMockUser(value = "spring")
 	@Test
@@ -217,48 +206,35 @@ class ProfessionalControllerTests {
 				.andExpect(model().attributeHasFieldErrors("professional", "center", "specialty"))
 				.andExpect(view().name("professionals/find"));
 	}
-
-//	@WithMockUser(value = "professional1")
-//	@Test
-//	void testShowClient() throws Exception {
-//		this.mockMvc.perform(get("/professionals/clients/{clientId}", 1))
-//				.andExpect(status().isOk())
-//				.andExpect(model().attributeExists("client"))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Gotera"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Pepe"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("document", Matchers.is("28334456"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("birthDate", Matchers.is("1992-02-02"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("documentType", Matchers.is("1"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("email", Matchers.is("pepegotera@gmail.com"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("registrationDate", Matchers.is("2020-03-12"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("healthCardNumber", Matchers.is("00001"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is("I_DO_NOT_HAVE_INSURANCE"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("username", Matchers.is("pepegotera"))))
-//				.andExpect(model().attribute("client", Matchers.hasProperty("stripe_id", Matchers.is("cus_HFLSuDf4wEoVn7"))))
-//				.andExpect(view().name("/professionals/1"));
-//	}
-//	
-//	@WithMockUser(value = "professional1")
-//	@Test
-//	void testShowClientNotFound() throws Exception {
-//		this.mockMvc.perform(get("/professionals/clients/{clientId}", 2))
-//				.andExpect(status().isNotFound())
-//				.andExpect(view().name("/errors/404"));
-//	}
+		
+	@WithMockUser(value = "spring")
+	@Test	
+	void testShowClient() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/clients/{clientId}", TEST_CLIENT_ID))
+			.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("client"))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("lastName", Matchers.is("Cuesta"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("firstName", Matchers.is("Frank"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("document", Matchers.is("29334456"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("documentType", Matchers.is(DocumentType.NIF))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("email", Matchers.is("frankcuesta@gmail.com"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthCardNumber", Matchers.is("0000000003"))))
+			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is(HealthInsurance.ADESLAS))))
+			.andExpect(MockMvcResultMatchers.view().name("professionals/clientShow"));
+		
+	}	
 	
-	
-	@WithMockUser(value = "manucar", authorities = {"client"})
+	@WithMockUser(value = "spring")
 	@Test
 	void testClientShowNotFound() throws Exception {
-		this.mockMvc.perform(get("/professionals/{clientId}", 999))
-				.andExpect(status().isOk())
-				.andExpect(view().name("errors/generic"));
+		this.mockMvc.perform(get("/professionals/clients/{clientId}", 999))
+				.andExpect(status().isNotFound())
+				.andExpect(view().name("errors/404"));
 	}
 	
-	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
+	@WithMockUser(value = "spring")
 	@Test
 	void testClientList() throws Exception {
-		this.mockMvc.perform(get("/professionals/clientList"))
+		this.mockMvc.perform(get("/professionals/clients"))
 				.andExpect(model().attributeExists("clients"))
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(view().name("professionals/clientList"));
