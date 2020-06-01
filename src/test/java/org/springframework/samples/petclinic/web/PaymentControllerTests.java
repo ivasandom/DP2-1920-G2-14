@@ -144,7 +144,7 @@ public class PaymentControllerTests {
 	@WithMockUser(value = "client", authorities = { "client" })
 	@Test
 	void testProcessPaymentMethodFormSuccess() throws Exception {
-		this.mockMvc.perform(post("/payments/new-method", TEST_CLIENT_ID)
+		this.mockMvc.perform(post("/payments/new-method")
 							.with(csrf())
 							.param("token", paymentMethod.getToken()))
 				.andExpect(status().is3xxRedirection())
@@ -154,7 +154,7 @@ public class PaymentControllerTests {
 	@WithMockUser(value = "client", authorities = { "client" })
 	@Test
 	void testProcessPaymentMethodFormHasErrors() throws Exception {
-		this.mockMvc.perform(post("/payments/new-method", TEST_CLIENT_ID)
+		this.mockMvc.perform(post("/payments/new-method")
 							.with(csrf())
 							.param("token", "notAValidToken"))
 				.andExpect(status().is2xxSuccessful())
@@ -166,7 +166,7 @@ public class PaymentControllerTests {
 	@WithMockUser(value = "client", authorities = { "client" })
 	@Test
 	void testProcessPaymentMethodDuplicated() throws Exception {
-		this.mockMvc.perform(post("/payments/new-method", TEST_CLIENT_ID)
+		this.mockMvc.perform(post("/payments/new-method")
 							.with(csrf())
 							.param("token", duplicatedPaymentMethod.getToken()))
 				.andExpect(status().is2xxSuccessful())
