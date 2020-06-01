@@ -1,6 +1,11 @@
 
 package org.springframework.samples.petclinic.web;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -171,9 +176,7 @@ class ProfessionalControllerTests {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals").queryParam("center.id", "1").queryParam("specialty.id", "1")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("professionals/list"));
 	}
 
-	@WithMockUser(value = "frankcuesta", authorities = {
-		"professional"
-	})
+	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
 	@Test
 	void testShowClient() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/professionals/{clientId}", TEST_CLIENT_ID))
@@ -187,5 +190,22 @@ class ProfessionalControllerTests {
 			.andExpect(MockMvcResultMatchers.model().attribute("client", Matchers.hasProperty("healthInsurance", Matchers.is(HealthInsurance.ADESLAS))))
 			.andExpect(MockMvcResultMatchers.view().name("professionals/clientShow"));
 		
+	}
+	
+	@WithMockUser(value = "manucar", authorities = {"client"})
+	@Test
+	void testClientShowNotFound() throws Exception {
+		this.mockMvc.perform(get("/professionals/{clientId}", 999))
+				.andExpect(status().isOk())
+				.andExpect(view().name("errors/generic"));
+	}
+	
+	@WithMockUser(value = "frankcuesta", authorities = {"professional"})
+	@Test
+	void testClientList() throws Exception {
+		this.mockMvc.perform(get("/professionals/clientList"))
+				.andExpect(model().attributeExists("clients"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(view().name("professionals/clientList"));
 	}
 }
