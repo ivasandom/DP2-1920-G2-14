@@ -61,8 +61,8 @@ class ListAppointmentsPerformanceTests extends Simulation {
       http("Logged1")
         .post("/signin")
         .headers(headers_2)
-        .formParam("username", "professional1")
-        .formParam("password", "professional1")        
+        .formParam("username", "professional2")
+        .formParam("password", "professional2")        
         .formParam("_csrf", "${stoken}")
     ).pause(142)
      }
