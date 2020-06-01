@@ -56,7 +56,6 @@ public class DeseasesPositiveUITest {
 		this.driver.findElement(By.linkText("> Start consultation")).click();
 		this.driver.findElement(By.linkText("View clinical history")).click();
 		Assert.assertEquals("Acidez de estómago", this.driver.findElement(By.xpath("//table[3]/tbody/tr/td/dl/dd")).getText());
-
 	}
 
 	@AfterEach

@@ -18,7 +18,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -87,7 +86,10 @@ public class PriceNegativeUITest {
 		this.driver.findElement(By.id("bill.price")).click();
 		this.driver.findElement(By.id("bill.price")).clear();
 		this.driver.findElement(By.id("bill.price")).sendKeys("-5");
-		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
+		WebElement element3 = this.driver.findElement(By.xpath("//div[@class='col-12 text-center']"));
+		((JavascriptExecutor) this.driver).executeScript("arguments[0].style.visibility='hidden'", element3);
+		WebElement element2 = this.driver.findElement(By.xpath("//button[@type='submit']"));
+		element2.click();
 		Assert.assertEquals("Consultation 08:00", this.driver.findElement(By.xpath("//form[@id='appointment']/div/h1")).getText());
 	}
 
