@@ -68,7 +68,7 @@ public class TransactionServiceTests {
 	public void shouldNotFindTransactionById() {
 		Optional<Transaction> transaction = this.transactionService.findById(2);
 
-		org.assertj.core.api.Assertions.assertThat(transaction).isEmpty();
+		org.assertj.core.api.Assertions.assertThat(transaction.isPresent()).isEqualTo(false);
 	}
 	
 	
