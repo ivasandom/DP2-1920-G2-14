@@ -3,11 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
@@ -15,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -107,19 +102,8 @@ public class ConsultationValidatorTests {
 		this.appointment.setDiagnosis(null);
 		this.consultationValidator.validate(this.appointment, this.errors);
 
-		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(3);
-		Assertions.assertThat(this.errors.getFieldError("diagnosis.description").getCode()).isEqualTo("description must no be empty");
-		Assertions.assertThat(this.errors.getFieldError("diagnosis.deseases").getCode()).isEqualTo("deseases must no be empty");
-		Assertions.assertThat(this.errors.getFieldError("diagnosis.medicines").getCode()).isEqualTo("medicines must no be empty");
-	}
-	
-	@Test
-	void shouldNotValidateEmptyBill() {
-		this.appointment.setBill(null);
-		this.consultationValidator.validate(this.appointment, this.errors);
-
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("bill").getCode()).isEqualTo("bill must not be empty");
+		Assertions.assertThat(this.errors.getFieldError("diagnosis.description").getCode()).isEqualTo("description must no be empty");
 	}
 
 	@Test
@@ -131,24 +115,6 @@ public class ConsultationValidatorTests {
 		Assertions.assertThat(this.errors.getFieldError("diagnosis.description").getCode()).isEqualTo("description must no be empty");
 	}
 
-	@Test
-	void shouldNotValidateEmptyDiagnosisDeseases() {
-		this.appointment.getDiagnosis().setDeseases(new HashSet<Desease>());
-		this.consultationValidator.validate(this.appointment, this.errors);
-
-		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("diagnosis.deseases").getCode()).isEqualTo("deseases must no be empty");
-	}
-	
-	@Test
-	void shouldNotValidateEmptyDiagnosisMedicines() {
-		this.appointment.getDiagnosis().setMedicines(new HashSet<Medicine>());
-		this.consultationValidator.validate(this.appointment, this.errors);
-
-		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("diagnosis.medicines").getCode()).isEqualTo("medicines must no be empty");
-	}
-	
 	@Test
 	void shouldNotValidateEmptyPrice() {
 		this.appointment.getBill().setPrice(null);
