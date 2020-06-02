@@ -120,10 +120,13 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <spring:url value="/professionals/clients/{clientId}" var="clientUrl">
-                        			<spring:param name="clientId" value="${appointment.client.id}"/>
-                    			</spring:url>
-                    			<a href="${fn:escapeXml(clientUrl)}" class="btn btn-sm btn-primary mb-3">View clinical history</a>
+                                <%-- <a class="btn btn-sm btn-primary mb-3" href="#professionals/clientList" role="button">View clinical history </a>--%>
+                                <spring:url value="/professionals/{clientId}" var="proUrl">
+                        	    	<spring:param name="clientId" value="${appointment.client.id}" />
+		                        </spring:url>
+		                         <a class="btn btn-primary btn-sm" href="${fn:escapeXml(proUrl)}">
+	                            <c:out value="View clinical history" /></a>
+
                             </div>
 
                         </div>
