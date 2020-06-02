@@ -13,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -328,7 +326,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
-	@WithMockUser(username = "manucar", authorities = { "professional" })
+	@WithMockUser(username = "manucar")
 	@Test
 	void testAppointmentConsultationForm() throws Exception {
 		this.mockMvc.perform(get("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID))
@@ -338,7 +336,7 @@ public class AppointmentControllerTests {
 
 	}
 	
-	@WithMockUser(username = "manucar", authorities = { "professional" })
+	@WithMockUser(username = "manucar")
 	@Test
 	void testAppointmentConsultationFormCompletedRedirect() throws Exception {
 		this.appointment.setStatus(AppointmentStatus.COMPLETED);
@@ -387,7 +385,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
-	@WithMockUser(username = "frankcuesta", authorities = { "client" })
+	@WithMockUser(username = "frankcuesta")
 	@Test
 	void testShouldShowAppointment() throws Exception {
 		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
@@ -396,7 +394,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("appointments/details"));
 	}
 
-	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@WithMockUser(username = "pepegotera")
 	@Test
 	void testShouldNotShowAppointment() throws Exception {
 		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
@@ -405,7 +403,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("errors/generic"));
 	}
 
-	@WithMockUser(username = "frankcuesta", authorities = { "client" })
+	@WithMockUser(username = "frankcuesta")
 	@Test
 	void testShouldDeleteAppointment() throws Exception {
 		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
@@ -413,7 +411,7 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("redirect:/appointments"));
 	}
 
-	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@WithMockUser(username = "pepegotera")
 	@Test
 	void testShouldNotDeleteAppointmentOfOtherUser() throws Exception {
 		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
