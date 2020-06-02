@@ -59,7 +59,7 @@ public class ProfessionalServiceTests {
 	@Transactional
 	public void shouldNotFindProfessionalById() {
 		Optional<Professional> pro = this.professionalService.findById(100);
-		Assertions.assertTrue(pro.isEmpty());
+		Assertions.assertFalse(pro.isPresent());
 	}
 
 	@ParameterizedTest
