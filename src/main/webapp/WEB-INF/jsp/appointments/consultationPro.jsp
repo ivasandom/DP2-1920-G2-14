@@ -70,13 +70,7 @@
                             </div>
                             <p class="mb-1 text-center">Charge patient</p>
                         </a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-summary"
-                            role="tab" aria-controls="summary">
-                            <div class="justify-content-between">
-                                <h5 class="mb-1 text-center">4. Summary</h5>
-                            </div>
-                            <p class="mb-1 text-center">Ready, go!</p>
-                        </a>
+
                     </div>
                 </div>
 
@@ -181,10 +175,6 @@
                             
                            
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="list-summary" role="tabpanel"
-                            aria-labelledby="list-summary-list">
-                            <p>Summary</p>
                         </div>
                   
                 </div>
