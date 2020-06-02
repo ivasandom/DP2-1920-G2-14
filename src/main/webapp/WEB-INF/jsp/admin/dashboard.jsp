@@ -18,7 +18,7 @@
 		        data: {
 		            labels: [
 		            	<c:forEach items="${billedPerDay}" var="day">
-                			'<c:out value="${day[1]}" />',
+                			'<c:out value="${day.date}" />',
                 		</c:forEach>
 		            ],
 		            datasets: [{
@@ -27,7 +27,7 @@
 		                borderColor: '#17a2b8',
 		                data: [
 		                	<c:forEach items="${billedPerDay}" var="day">
-                				<c:out value="${day[0]}" />,
+                				<c:out value="${day.amount}" />,
                 			</c:forEach>
 		                ]
 		            }]

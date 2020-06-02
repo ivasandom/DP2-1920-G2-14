@@ -43,6 +43,7 @@ import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Transaction;
 import org.springframework.samples.petclinic.model.TransactionType;
+import org.springframework.samples.petclinic.projections.BilledPerDay;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.CenterService;
@@ -109,11 +110,11 @@ public class AdminController {
 		Integer numProfessionals = this.professionalService.professionalCount();
 		Integer numAppointments = this.appointmentService.appointmentCount();
 		Double totalBilled = this.billService.getTotalBilled();
-		Object[] billedPerDay = this.billService.getBilledPerDay();
+		Collection<BilledPerDay> billedPerDay = this.billService.getBilledPerDay();
 		Long numCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
 		Long numPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
 		Long numAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
-		System.out.println(Arrays.toString(billedPerDay));
+
 		model.put("numClients", numClients);
 		model.put("numProfessionals", numProfessionals);
 		model.put("numAppointments", numAppointments);

@@ -1,6 +1,12 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,9 +17,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Center;
+import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.web.DuplicatedUsernameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,19 +48,18 @@ public class ProfessionalServiceTests {
 	}
 	
 	@ParameterizedTest
-	@CsvSource({"Guillermo Diaz"})
+	@CsvSource({"1, Guillermo Diaz"})
 	@Transactional
-	public void shouldFindProfessionalById(final String name) {
-		Professional pro = this.professionalService.findById(1).get();
-		Assertions.assertTrue(pro.getFullName().equals(name));
+	public void shouldFindProfessionalById(final int id, final String name) {
+		Optional<Professional> pro = this.professionalService.findById(1);
+		Assertions.assertTrue(pro.isPresent());
+		Assertions.assertTrue(pro.get().getFullName().equals(name));
 	}
 
-	@ParameterizedTest
-	@CsvSource({"Guillermo Diaz"})
 	@Transactional
-	public void shouldNotFindProfessionalById(final String name) {
-		Professional pro = this.professionalService.findById(2).get();
-		Assertions.assertFalse(pro.getFullName().equals(name));
+	public void shouldNotFindProfessionalById() {
+		Optional<Professional> pro = this.professionalService.findById(100);
+		Assertions.assertTrue(pro.isEmpty());
 	}
 
 	@ParameterizedTest
@@ -86,5 +96,87 @@ public class ProfessionalServiceTests {
 		Iterable<Professional> pros = professionalService.findProfessionalBySpecialtyAndCenter(specialtyId, centerId);
 		Assertions.assertNotEquals(pros.iterator().next().getFullName(), "Guillermo Díaz");	
 
+	}
+	
+	@Test
+	@Transactional
+	public void shouldSaveProfessional() throws DataAccessException, DuplicatedUsernameException {
+		Collection<Professional> professionals = (Collection<Professional>)this.professionalService.findAll();
+		int found = professionals.size();
+
+		
+		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
+		Date registrationDate = new Date(2020-03-03);
+		Set<Appointment> appointments = Collections.emptySet();
+		
+		User user = new User();
+		user.setEnabled(true);
+		user.setUsername("professional4");
+		user.setPassword("professional4");
+
+		Professional professional =new Professional();
+		professional.setBirthDate(birthdate);
+		professional.setDocument("29334456");
+		professional.setDocumentType(DocumentType.NIF);
+		professional.setEmail("frankcuesta@gmail.com");
+		professional.setFirstName("Frank");
+		professional.setLastName("Cuesta");
+		professional.setCollegiateNumber("77777777K");
+		professional.setRegistrationDate(registrationDate);
+		professional.setAppointments(appointments);
+		professional.setUser(user);
+		
+		this.professionalService.saveProfessional(professional);
+		org.assertj.core.api.Assertions.assertThat(professional.getId().longValue()).isNotEqualTo(0);
+
+		professionals = (Collection<Professional>)this.professionalService.findAll();
+		org.assertj.core.api.Assertions.assertThat(professionals.size()).isEqualTo(found + 1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({"professional1", "professional2", "professional3"})
+	@Transactional
+	public void shouldNotSaveProfessional() throws DataAccessException, DuplicatedUsernameException {
+		Collection<Professional> professionals = (Collection<Professional>)this.professionalService.findAll();
+		int found = professionals.size();
+
+		
+		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
+		Date registrationDate = new Date(2020-03-03);
+		Set<Appointment> appointments = Collections.emptySet();
+		
+		User user = new User();
+		user.setEnabled(true);
+		user.setUsername("professional1");
+		user.setPassword("professional1");
+
+		Professional professional =new Professional();
+		professional.setBirthDate(birthdate);
+		professional.setDocument("29334456");
+		professional.setDocumentType(DocumentType.NIF);
+		professional.setEmail("frankcuesta@gmail.com");
+		professional.setFirstName("Frank");
+		professional.setLastName("Cuesta");
+		professional.setCollegiateNumber("77777777K");
+		professional.setRegistrationDate(registrationDate);
+		professional.setAppointments(appointments);
+		professional.setUser(user);
+		
+		Assertions.assertThrows(DuplicatedUsernameException.class, () -> this.professionalService.saveProfessional(professional));
+
+		professionals = (Collection<Professional>)this.professionalService.findAll();
+		org.assertj.core.api.Assertions.assertThat(professionals.size()).isEqualTo(found);
+	}
+	
+	@Test
+	@Transactional
+	public void shouldDeleteProfessionalById() throws DataAccessException, DuplicatedUsernameException {
+		Collection<Professional> professionals = (Collection<Professional>)this.professionalService.findAll();
+		int found = professionals.size();
+		
+		this.professionalService.deleteById(1);
+		
+		professionals = (Collection<Professional>)this.professionalService.findAll();
+		org.assertj.core.api.Assertions.assertThat(professionals.size()).isEqualTo(found - 1);
 	}
 }

@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -52,5 +53,24 @@ public class TransactionServiceTests {
 		transactions = (Collection<Transaction>) this.transactionService.listTransactions();
 		org.assertj.core.api.Assertions.assertThat(transactions.size()).isEqualTo(found + 1);
 	}
+	
+	@Test
+	@Transactional
+	public void shouldFindTransactionById() {
+		Optional<Transaction> transaction = this.transactionService.findById(1);
+
+		org.assertj.core.api.Assertions.assertThat(transaction).isPresent();
+		org.assertj.core.api.Assertions.assertThat(transaction.get().getAmount()).isEqualTo(1000.0);
+	}
+	
+	@Test
+	@Transactional
+	public void shouldNotFindTransactionById() {
+		Optional<Transaction> transaction = this.transactionService.findById(2);
+
+		org.assertj.core.api.Assertions.assertThat(transaction).isEmpty();
+	}
+	
+	
 
 }
