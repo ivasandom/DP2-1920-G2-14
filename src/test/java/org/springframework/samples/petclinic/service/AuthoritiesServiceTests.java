@@ -43,7 +43,9 @@ public class AuthoritiesServiceTests {
 
 		this.authoritiesService.saveAuthorities(authorities);
 
-		Assertions.assertThat(AuthoritiesServiceTests.getLastElement(this.authoritiesService.findAll()).equals(authorities));
+		Authorities aut = AuthoritiesServiceTests.getLastElement(this.authoritiesService.findAll());
+
+		Assertions.assertThat(aut.equals(authorities));
 	}
 
 	public static <T> T getLastElement(final Iterable<T> elements) {
