@@ -417,9 +417,9 @@ INSERT IGNORE INTO appointments (client_id, center_id, diagnosis_id, specialty_i
 
 -- Bills
 
-INSERT IGNORE INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (1, 'Pepe Gotera', '28334456', 1, '1800.0', '0.21', 1, 'I_DO_NOT_HAVE_INSURANCE', '2020-05-05 15:00:00');
-INSERT IGNORE INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 3, '150.0', '0.21', 2, 'ADESLAS', '2020-05-06 15:00:00');
-INSERT IGNORE INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 3, '70.0', '0.21', 3, 'ADESLAS', '2020-05-07 15:00:00');
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (1, 'Pepe Gotera', '28334456', 1, '1800.0', '21.0', 1, 'I_DO_NOT_HAVE_INSURANCE', '2020-05-05 15:00:00');
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 3, '15000.0', '21.0', 2, 'ADESLAS', '2020-05-06 15:00:00');
+INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 3, '70.0', '21.0', 3, 'ADESLAS', '2020-05-07 15:00:00');
 
 INSERT INTO transactions (type, amount, token, success, refunded, status, bill_id) VALUES (0, '1000.0', 'CASH', 1, 0, 'succeeded', 1);
 -- INSERT IGNORE INTO vets VALUES (1, 'James', 'Carter');

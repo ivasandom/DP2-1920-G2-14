@@ -442,7 +442,7 @@ public class AdminController {
 				try {
 					this.appointmentService.delete(appointment);
 				} catch (Exception e) {
-					new Exception();
+					return "redirect:/error";
 				}
 			}
 			return "redirect:/admin/appointments";
@@ -586,7 +586,7 @@ public class AdminController {
 
 					transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
 					transactionRefund.setToken(stripeRefund.getId());
-					transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");
+					transactionRefund.setSuccess(stripeRefund.getStatus().equals("succeeded"));
 					transactionRefund.setStatus(stripeRefund.getStatus());
 				}
 

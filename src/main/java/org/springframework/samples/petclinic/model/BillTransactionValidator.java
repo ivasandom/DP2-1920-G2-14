@@ -19,7 +19,7 @@ public class BillTransactionValidator implements org.springframework.validation.
 		Transaction transaction = (Transaction) obj;
 		
 		if (!errors.hasFieldErrors("amount")) {
-			if (transaction.getAmount().compareTo(0.0) != 1) {
+			if (transaction.getAmount().compareTo(0.0) < 1) {
 				errors.rejectValue("amount", "amount must be bigger than zero");
 			}
 			if (transaction.getAmount() > transaction.getBill().getFinalPrice() - transaction.getBill().getTotalPaid()) {
