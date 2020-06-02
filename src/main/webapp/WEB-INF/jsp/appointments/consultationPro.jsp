@@ -194,7 +194,7 @@
 
             </div>
             <div
-                style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
+                style="position:relative;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
                 <div class="text-right">
                     <a href="/appointments/pro" class="btn btn-outline-secondary">BACK</a>
                     <button class="btn btn-primary" type="submit">SAVE & CLOSE</button>
