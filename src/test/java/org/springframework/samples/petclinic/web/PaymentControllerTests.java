@@ -123,7 +123,7 @@ public class PaymentControllerTests {
 
 	}
 
-	@WithMockUser(value = "client", authorities = { "client" })
+	@WithMockUser(value = "client")
 	@Test
 	void testPaymentMethodList() throws Exception {
 		this.mockMvc.perform(get("/payments/methods"))
@@ -132,7 +132,7 @@ public class PaymentControllerTests {
 				.andExpect(view().name("payments/paymentMethodList"));
 	}
 
-	@WithMockUser(value = "client", authorities = { "client" })
+	@WithMockUser(value = "client")
 	@Test
 	void testPaymentMethodForm() throws Exception {
 		this.mockMvc.perform(get("/payments/new-method"))
@@ -141,7 +141,7 @@ public class PaymentControllerTests {
 				.andExpect(view().name("payments/paymentMethodForm"));
 	}
 
-	@WithMockUser(value = "client", authorities = { "client" })
+	@WithMockUser(value = "client")
 	@Test
 	void testProcessPaymentMethodFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/payments/new-method")
@@ -151,7 +151,7 @@ public class PaymentControllerTests {
 				.andExpect(view().name("redirect:/payments/methods"));
 	}
 	
-	@WithMockUser(value = "client", authorities = { "client" })
+	@WithMockUser(value = "client")
 	@Test
 	void testProcessPaymentMethodFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/payments/new-method")
@@ -163,7 +163,7 @@ public class PaymentControllerTests {
 				.andExpect(view().name("payments/paymentMethodForm"));
 	}
 	
-	@WithMockUser(value = "client", authorities = { "client" })
+	@WithMockUser(value = "client")
 	@Test
 	void testProcessPaymentMethodDuplicated() throws Exception {
 		this.mockMvc.perform(post("/payments/new-method")
