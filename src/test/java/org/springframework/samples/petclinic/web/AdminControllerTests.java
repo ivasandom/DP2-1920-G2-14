@@ -242,7 +242,7 @@ public class AdminControllerTests {
 
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testShowDashboard() throws Exception {
 		this.mockMvc.perform(get("/admin"))
@@ -250,7 +250,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/dashboard"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientList() throws Exception {
 		this.mockMvc.perform(get("/admin/clients"))
@@ -259,7 +259,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/list"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientDetail() throws Exception {
 		this.mockMvc.perform(get("/admin/clients/{clientId}", TEST_CLIENT_ID))
@@ -268,7 +268,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/detail"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientDetailNotFound() throws Exception {
 		this.mockMvc.perform(get("/admin/clients/{clientId}", 2))
@@ -277,7 +277,7 @@ public class AdminControllerTests {
 	}
 
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientEditForm() throws Exception {
 		this.mockMvc.perform(get("/admin/clients/{clientId}/edit", TEST_CLIENT_ID))
@@ -286,7 +286,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/form"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessClientEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/{clientId}/edit", TEST_CLIENT_ID)
@@ -305,7 +305,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/clients/" + TEST_CLIENT_ID));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessClientEditFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/{clientId}/edit", TEST_CLIENT_ID)
@@ -327,7 +327,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientCreateForm() throws Exception {
 		this.mockMvc.perform(get("/admin/clients/create"))
@@ -337,7 +337,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/form"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessClientCreateFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/create")
@@ -356,7 +356,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/clients"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessClientCreateFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/create")
@@ -378,7 +378,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/clients/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testClientDelete() throws Exception {
 		this.mockMvc.perform(post("/admin/clients/{clientId}/delete", TEST_CLIENT_ID)
@@ -393,7 +393,7 @@ public class AdminControllerTests {
 	 */
 	
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalList() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals"))
@@ -402,7 +402,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/list"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalDetail() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/{professionalId}", TEST_PROFESSIONAL_ID))
@@ -411,7 +411,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/detail"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalDetailNotFound() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/{professionalId}", 2))
@@ -419,7 +419,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("errors/404"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalEditForm() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", TEST_PROFESSIONAL_ID))
@@ -428,7 +428,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalEditFormNotFound() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/{professionalId}/edit", 2))
@@ -436,7 +436,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("errors/404"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessProfessionalEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/{professionalId}/edit", TEST_PROFESSIONAL_ID)
@@ -456,7 +456,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/professionals/" + TEST_PROFESSIONAL_ID));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessProfessionalEditFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/{professionalId}/edit", TEST_PROFESSIONAL_ID)
@@ -477,7 +477,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalCreateForm() throws Exception {
 		this.mockMvc.perform(get("/admin/professionals/create"))
@@ -486,7 +486,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/form"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessProfessionalCreateFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/create")
@@ -506,7 +506,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/professionals"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessProfessionalCreateFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/create")
@@ -527,7 +527,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/professionals/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProfessionalDelete() throws Exception {
 		this.mockMvc.perform(post("/admin/professionals/{professionalId}/delete", TEST_PROFESSIONAL_ID)
@@ -542,7 +542,7 @@ public class AdminControllerTests {
 	 */
 	
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentList() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments"))
@@ -551,7 +551,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/list"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentDetail() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments/{appointmentId}", TEST_APPOINTMENT_ID))
@@ -560,7 +560,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/detail"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentDetailNotFound() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments/{appointmentId}", 2))
@@ -568,7 +568,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("errors/404"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentEditForm() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments/{appointmentId}/edit", TEST_APPOINTMENT_ID))
@@ -577,7 +577,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/form"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessAppointmentEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/{appointmentId}/edit", TEST_APPOINTMENT_ID)
@@ -594,7 +594,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/appointments/" + TEST_APPOINTMENT_ID));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessAppointmentEditFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/{appointmentId}/edit", TEST_APPOINTMENT_ID)
@@ -614,7 +614,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentCreateForm() throws Exception {
 		this.mockMvc.perform(get("/admin/appointments/create"))
@@ -623,7 +623,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/form"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessAppointmentCreateFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/create")
@@ -640,7 +640,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/appointments"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessAppointmentCreateFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/create")
@@ -660,7 +660,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/appointments/form"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testAppointmentDelete() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/{appointmentId}/delete", TEST_APPOINTMENT_ID)
@@ -675,7 +675,7 @@ public class AdminControllerTests {
 	 */
 	
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testBillList() throws Exception {
 		this.mockMvc.perform(get("/admin/bills"))
@@ -684,7 +684,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/bills/list"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testBillDetail() throws Exception {
 		this.mockMvc.perform(get("/admin/bills/{billId}", TEST_BILL_ID))
@@ -693,7 +693,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/bills/detail"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testBillChargeForm() throws Exception {
 		this.mockMvc.perform(get("/admin/bills/{billId}/charge", TEST_BILL_ID))
@@ -703,7 +703,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/bills/chargeForm"));
 	}
 
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessBillChargeFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/bills/{billId}/charge", TEST_BILL_ID)
@@ -714,7 +714,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("redirect:/admin/bills/" + TEST_BILL_ID));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testProcessBillChargeFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/bills/{billId}/charge", TEST_BILL_ID)
@@ -728,7 +728,7 @@ public class AdminControllerTests {
 				.andExpect(view().name("admin/bills/chargeForm"));
 	}
 	
-	@WithMockUser(value = "admin", authorities = {"admin"})
+	@WithMockUser(value = "admin")
 	@Test
 	void testBillRefund() throws Exception {
 		this.mockMvc.perform(post("/admin/bills/{billId}/refund/{transactionId}", TEST_BILL_ID, TEST_TRANSACTION_ID)
