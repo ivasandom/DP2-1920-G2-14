@@ -158,7 +158,7 @@ public class AdminController {
 
 	@PostMapping("/clients/{clientId}/edit")
 	public String processClientEditForm(@Valid final Client client, final BindingResult result,
-			@PathVariable("clientId") final int clientId, final ModelMap model) throws Exception {
+			@PathVariable("clientId") final int clientId, final ModelMap model) {
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 
@@ -169,7 +169,18 @@ public class AdminController {
 			return "admin/clients/form";
 		} else {
 			client.setId(clientId);
-			this.clientService.saveClient(client);
+			
+			try {
+				this.clientService.saveClient(client);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				model.put("client", client);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				model.put("healthInsurances", HealthInsurance.values());
+				return "admin/clients/form";
+			}
+			
 			return "redirect:/admin/clients/" + clientId;
 		}
 	}
@@ -196,7 +207,17 @@ public class AdminController {
 			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
-			this.clientService.saveClient(client);
+			try {
+				this.clientService.saveClient(client);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				model.put("client", client);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				model.put("healthInsurances", HealthInsurance.values());
+				return "admin/clients/form";
+			}
+			
 			return "redirect:/admin/clients";
 		}
 	}
@@ -255,7 +276,6 @@ public class AdminController {
 		professionalValidator.validate(professional, result);
 
 		if (result.hasErrors()) {
-			System.out.println("errors" + result.getFieldErrors());
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
 
@@ -266,7 +286,21 @@ public class AdminController {
 			return "admin/professionals/form";
 		} else {
 			professional.setId(professionalId);
-			this.professionalService.saveProfessional(professional);
+			try {
+				this.professionalService.saveProfessional(professional);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("professional", professional);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				return "admin/professionals/form";
+			}
+			
 			return "redirect:/admin/professionals/" + professionalId;
 		}
 	}
@@ -304,7 +338,22 @@ public class AdminController {
 			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			return "admin/professionals/form";
 		} else {
-			this.professionalService.saveProfessional(professional);
+			
+			try {
+				this.professionalService.saveProfessional(professional);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("professional", professional);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				return "admin/professionals/form";
+			}
+			
 			return "redirect:/admin/professionals";
 		}
 	}

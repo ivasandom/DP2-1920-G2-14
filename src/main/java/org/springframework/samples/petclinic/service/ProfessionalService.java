@@ -20,8 +20,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.repository.ProfessionalRepository;
+import org.springframework.samples.petclinic.web.DuplicatedUsernameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,24 +31,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfessionalService {
 
 	private ProfessionalRepository professionalRepository;
-	
-	@Autowired
-	private UserService			userService;
-	
-	@Autowired
-	private AuthoritiesService	authoritiesService;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private ClientService clientService;
+
+	@Autowired
+	private AuthoritiesService authoritiesService;
 
 	@Autowired
 	public ProfessionalService(final ProfessionalRepository professionalRepository) {
 		this.professionalRepository = professionalRepository;
 	}
-	
+
 	@Transactional
 	public int professionalCount() {
 		return (int) this.professionalRepository.count();
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Iterable<Professional> findAll() throws DataAccessException {
 		return this.professionalRepository.findAll();
@@ -62,13 +66,9 @@ public class ProfessionalService {
 		return this.professionalRepository.findProByUsername(username);
 	}
 
-	//	@Transactional(readOnly = true)
-	//	public Collection<Appointment> findProfessionalByUsername(final String username) throws DataAccessException {
-	//		return this.professionalRepository.findByUsername(username);
-	//	}
-
 	@Transactional(readOnly = true)
-	public Iterable<Professional> findProfessionalBySpecialtyAndCenter(final int specialtyId, final int centerId) throws DataAccessException {
+	public Iterable<Professional> findProfessionalBySpecialtyAndCenter(final int specialtyId, final int centerId)
+			throws DataAccessException {
 		return this.professionalRepository.findBySpecialtyAndCenter(specialtyId, centerId);
 	}
 
@@ -76,22 +76,30 @@ public class ProfessionalService {
 	public Object findProfessionalById(final int id) throws DataAccessException {
 		return this.professionalRepository.findById(id);
 	}
-	
-	
+
 	@Transactional
 	public void deleteById(final Integer id) throws DataAccessException {
 		this.professionalRepository.deleteById(id);
 	}
-	
-	
+
 	@Transactional
-	public void saveProfessional(final Professional professional) throws DataAccessException {
-		//creating professional
-		this.professionalRepository.save(professional);
-		//creating user
-		this.userService.saveUser(professional.getUser());
-		//creating authorities
-		this.authoritiesService.saveAuthorities(professional.getUser().getUsername(), "professional");
+	public void saveProfessional(final Professional professional)
+			throws DataAccessException, DuplicatedUsernameException {
+		Professional professionalWithSameUsername = this.findProByUsername(professional.getUser().getUsername());
+		Client clientWithSameUsername = this.clientService.findClientByUsername(professional.getUser().getUsername());
+
+		if (clientWithSameUsername != null || professionalWithSameUsername != null
+				&& !professionalWithSameUsername.getId().equals(professional.getId())) {
+			throw new DuplicatedUsernameException();
+		} else {
+			// creating professional
+			this.professionalRepository.save(professional);
+			// creating user
+			this.userService.saveUser(professional.getUser());
+			// creating authorities
+			this.authoritiesService.saveAuthorities(professional.getUser().getUsername(), "professional");
+		}
+
 	}
 
 }

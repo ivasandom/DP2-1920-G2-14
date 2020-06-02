@@ -28,6 +28,7 @@
                     <petclinic:inputField label="Last name" name="lastName" />
                   </div>
                 </div>
+                <petclinic:inputField label="Birth date" name="birthDate" />
                 <div class="row">
                   <div class="col-md-6">
                     <petclinic:inputField label="Document" name="document" />
