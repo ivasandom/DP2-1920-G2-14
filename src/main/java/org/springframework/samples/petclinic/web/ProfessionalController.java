@@ -32,8 +32,8 @@ import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
-import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
@@ -105,7 +105,6 @@ public class ProfessionalController {
 	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		ProfessionalValidator proValidator = new ProfessionalValidator();
 		proValidator.validate(professional, result);
-		System.out.println(result.getFieldError("center") + "======================================" + result.hasFieldErrors("specialty"));
 		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {
 			model.put("professional", professional);
 			return "professionals/find";
@@ -168,5 +167,12 @@ public class ProfessionalController {
 		model.put("clients", clients);
 		return "professionals/clientList";
 	}
-
+	@GetMapping(value = {
+		"/professionals/proList"
+	})
+	public String professionalList(final Map<String, Object> model) {
+		Iterable<Professional> professionals = this.professionalService.findAll();
+		model.put("professionals", professionals);
+		return "professionals/proList";
+	}
 }
