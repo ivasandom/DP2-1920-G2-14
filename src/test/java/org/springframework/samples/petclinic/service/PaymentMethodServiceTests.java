@@ -25,6 +25,9 @@ public class PaymentMethodServiceTests {
 
 	@Autowired
 	protected ClientService			clientService;
+	
+	@Autowired
+	protected StripeService			stripeService;
 
 
 	@ParameterizedTest
@@ -32,7 +35,7 @@ public class PaymentMethodServiceTests {
 		"pepegotera"
 	})
 	@Transactional
-	public void shouldFindPaymentMethodsfindByClient(final String name) {
+	public void shouldFindPaymentMethodsByClient(final String name) {
 
 		Client client = this.clientService.findClientByUsername(name);
 		Collection<PaymentMethod> paymentMethods = this.paymentMethodService.findByClient(client);
@@ -44,11 +47,37 @@ public class PaymentMethodServiceTests {
 		"elenanito"
 	})
 	@Transactional
-	public void shouldNotFindPaymentMethodsfindByClient(final String name) {
+	public void shouldNotFindPaymentMethodsByClient(final String name) {
 
 		Client client = this.clientService.findClientByUsername(name);
 		Collection<PaymentMethod> paymentMethods = this.paymentMethodService.findByClient(client);
 		org.assertj.core.api.Assertions.assertThat(paymentMethods.size()).isEqualTo(0);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"pepegotera, pm_1Ggr7GDfDQNZdQMbCcCoxzEI"
+	})
+	@Transactional
+	public void shouldFindByTokenAndClient(final String name, final String token) {
+
+		Client client = this.clientService.findClientByUsername(name);
+		PaymentMethod paymentMethod = this.paymentMethodService.findByTokenAndClient(token, client);
+		org.assertj.core.api.Assertions.assertThat(paymentMethod).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(paymentMethod.getToken()).isEqualTo(token);
+		org.assertj.core.api.Assertions.assertThat(paymentMethod.getBrand()).isEqualTo("VISA");
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"elenanito, pm_1Ggr7GDfDQNZdQMbCcCoxzEI"
+	})
+	@Transactional
+	public void shouldNotFindByTokenAndClient(final String name, final String token) {
+
+		Client client = this.clientService.findClientByUsername(name);
+		PaymentMethod paymentMethod = this.paymentMethodService.findByTokenAndClient(token, client);
+		org.assertj.core.api.Assertions.assertThat(paymentMethod).isNull();
 	}
 
 	@ParameterizedTest
@@ -56,7 +85,7 @@ public class PaymentMethodServiceTests {
 		"tok_visa, pepegotera"
 	})
 	@Transactional
-	public void shouldSaveMedicine(final String token, final String name) {
+	public void shouldSavePaymentMethod(final String token, final String name) {
 		Client client = this.clientService.findClientByUsername(name);
 		Collection<PaymentMethod> paymentMethods = this.paymentMethodService.findByClient(client);
 
@@ -72,6 +101,30 @@ public class PaymentMethodServiceTests {
 
 		paymentMethods = this.paymentMethodService.findByClient(client);
 		org.assertj.core.api.Assertions.assertThat(paymentMethods.size()).isEqualTo(found + 1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"pm_1Ggr7GDfDQNZdQMbCcCoxzEI, pepegotera"
+	})
+	@Transactional
+	public void testIsDuplicated(final String token, final String name) throws Exception {
+		Client client = this.clientService.findClientByUsername(name);
+		Boolean isDuplicated = this.paymentMethodService.isDuplicated(client, stripeService.retrievePaymentMethod(token));
+
+		org.assertj.core.api.Assertions.assertThat(isDuplicated).isTrue();
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"pm_1Ggr7GDfDQNZdQMbCcCoxzEI, elenanito"
+	})
+	@Transactional
+	public void testIsNotDuplicated(final String token, final String name) throws Exception {
+		Client client = this.clientService.findClientByUsername(name);
+		Boolean isDuplicated = this.paymentMethodService.isDuplicated(client, stripeService.retrievePaymentMethod(token));
+
+		org.assertj.core.api.Assertions.assertThat(isDuplicated).isFalse();
 	}
 
 }

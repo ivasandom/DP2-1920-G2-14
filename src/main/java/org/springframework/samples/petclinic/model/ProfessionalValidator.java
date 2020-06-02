@@ -25,6 +25,7 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "document", "must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "must not be empty");
 
 
 		Professional professional = (Professional) obj;
@@ -43,14 +44,6 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 			}
 		}
 		
-//		if (!errors.hasFieldErrors("registrationDate")) {
-//			if (professional.getRegistrationDate().after(Calendar.getInstance().getTime())) {
-//				errors.rejectValue("registrationDate", "the date must be in past",
-//						new Object[] { "'registrationDate'" }, "the date must be in past");
-//
-//			}
-//		}
-		
 		if (!errors.hasFieldErrors("email")) {
 			if (!professional.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
 				errors.rejectValue("email", "choose the correct format",
@@ -59,13 +52,11 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 			}
 		}
 		
-//		if (!errors.hasFieldErrors("birthDate")) {
-//			if (professional.getBirthDate().after(Calendar.getInstance().getTime())) {
-//				errors.rejectValue("birthDate", "the date must be in past",
-//						new Object[] { "'birthDate'" }, "the date must be in past");
-//
-//			}
-//		}
+		if (!errors.hasFieldErrors("birthDate") && professional.getBirthDate().after(Calendar.getInstance().getTime())) {
+			errors.rejectValue("birthDate", "the date must be in past", new Object[] {
+				"'birthDate'"
+			}, "the date must be in past");
+		}
 	}
 
 }

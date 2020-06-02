@@ -4,6 +4,7 @@ package org.springframework.samples.petclinic.repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -46,4 +47,8 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
 	@Query("SELECT count(a) from Appointment a WHERE a.status = 'COMPLETED'")
 	Long getNumberOfCompletedAppointmentsByStatus();
+	
+	@Query("SELECT a from Appointment a WHERE a.date = :date AND a.startTime = :startTime AND a.professional = :professional")
+	Optional<Appointment> findAppointmentByDateTimeAndProfessional(@Param("date") LocalDate date, @Param("startTime") LocalTime startTime, 
+			@Param("professional") Professional professional);
 }
