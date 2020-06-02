@@ -31,6 +31,7 @@ import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
+import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
@@ -103,15 +104,10 @@ public class ProfessionalController {
 	}
 
 	@GetMapping(value = "")
-	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
-		if (professional.getCenter() == null || professional.getCenter().getId() == null) {
-			result.addError(new FieldError("professional", "center", "must not be empty"));
-		}
-		if (professional.getSpecialty() == null || professional.getSpecialty().getId() == null) {
-			result.addError(new FieldError("professional", "specialty", "must not be empty"));
-		}
-
-		if (result.hasErrors()) {
+	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
+		ProfessionalValidator proValidator = new ProfessionalValidator();
+		proValidator.validate(professional, result);
+		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {
 			model.put("professional", professional);
 			return "professionals/find";
 		} else {
@@ -174,5 +170,12 @@ public class ProfessionalController {
 		model.put("clients", clients);
 		return "professionals/clientList";
 	}
-
+	@GetMapping(value = {
+		"/professionals/proList"
+	})
+	public String professionalList(final Map<String, Object> model) {
+		Iterable<Professional> professionals = this.professionalService.findAll();
+		model.put("professionals", professionals);
+		return "professionals/proList";
+	}
 }
