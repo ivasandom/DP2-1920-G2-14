@@ -1,6 +1,5 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
-
 <%@ attribute name="currentPage" required="true" %>
 <%@ attribute name="pageTitle" required="false" %>
 <%@ attribute name="customScript" required="false" fragment="true"%>
@@ -9,14 +8,13 @@
 <html lang="en">
 <petclinic:head pageTitle="${pageTitle}" />
 
-<body>
+  <body>
 
   <petclinic:navbar currentPage="${currentPage}" />
   <div>
     <jsp:doBody />
     <petclinic:pivotal />
   </div>
-  
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"

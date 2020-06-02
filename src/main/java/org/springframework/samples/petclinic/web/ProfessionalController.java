@@ -148,8 +148,6 @@ public class ProfessionalController {
 		}
 	}
 
-
-
 	//Show de cliente para profesional
 	@GetMapping("/clients/{clientId}")
 	public ModelAndView showClient(@PathVariable("clientId") final int clientId, final ModelMap model) {
@@ -157,14 +155,14 @@ public class ProfessionalController {
 			ModelAndView mav = new ModelAndView("professionals/clientShow");
 			Collection<Medicine> medicines = this.appointmentService.findMedicines(clientId);
 			Collection<Desease> deseases = this.appointmentService.findDeseases(clientId);
-			
+
 			model.put("medicines", medicines);
 			model.put("deseases", deseases);
 			model.put("client", client);
 			return mav;
-			
+
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
-		
+
 	}
 
 	//List de clientes para profesional
@@ -174,5 +172,12 @@ public class ProfessionalController {
 		model.put("clients", clients);
 		return "professionals/clientList";
 	}
-
+	@GetMapping(value = {
+		"/proList"
+	})
+	public String professionalList(final Map<String, Object> model) {
+		Iterable<Professional> professionals = this.professionalService.findAll();
+		model.put("professionals", professionals);
+		return "professionals/proList";
+	}
 }

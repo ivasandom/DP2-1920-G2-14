@@ -7,7 +7,7 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:layout currentPage="appointments">
+<petclinic:layoutPro currentPage="appointments">
 
     <div class="container">
         <h2 class="my-5">Consultation Mode</h2>
@@ -143,4 +143,4 @@
 
 
     </div>
-</petclinic:layout>
+</petclinic:layoutPro>

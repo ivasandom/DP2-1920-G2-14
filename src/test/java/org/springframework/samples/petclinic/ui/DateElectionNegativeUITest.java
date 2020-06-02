@@ -34,6 +34,9 @@ public class DateElectionNegativeUITest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
+		String value = System.getenv("webdriver.gecko.driver");
+
+		System.setProperty("webdriver.gecko.driver", value);
 		this.driver = new FirefoxDriver();
 		this.baseUrl = "https://www.google.com/";
 		this.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
