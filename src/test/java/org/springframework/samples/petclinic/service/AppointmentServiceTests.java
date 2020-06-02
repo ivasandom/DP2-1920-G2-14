@@ -403,7 +403,6 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-
 	@CsvSource({
 		"123, pepegotera", "122, pepegotera"
 	})
@@ -412,7 +411,7 @@ public class AppointmentServiceTests {
 
 		Client client = this.clientService.findClientByUsername(username);
 
-		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
 		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
 
 		int count = appointments.size();
@@ -437,7 +436,6 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-
 	@CsvSource({
 		"124", "126"
 	})
