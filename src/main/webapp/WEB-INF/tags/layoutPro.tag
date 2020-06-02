@@ -66,7 +66,7 @@ body {
 
 	    <div class="bg-light border-right" id="sidebar-wrapper">
 	      <div class="list-group list-group-flush">
-	        <a href="/professionals/clientList" class="list-group-item list-group-item-action bg-light">Clients</a>
+	        <a href="/professionals/clients" class="list-group-item list-group-item-action bg-light">Clients</a>
             <a href="/professionals/proList" class="list-group-item list-group-item-action bg-light">Professionals</a>
 	      </div>
 	    </div>

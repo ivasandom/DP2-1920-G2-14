@@ -31,7 +31,6 @@ import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
-import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
@@ -103,7 +102,6 @@ public class ProfessionalController {
 		return "professionals/find";
 	}
 
-
 	@GetMapping(value = "")
 	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		if (professional.getCenter() == null || professional.getCenter().getId() == null) {
@@ -150,8 +148,6 @@ public class ProfessionalController {
 		}
 	}
 
-
-
 	//Show de cliente para profesional
 	@GetMapping("/clients/{clientId}")
 	public ModelAndView showClient(@PathVariable("clientId") final int clientId, final ModelMap model) {
@@ -159,14 +155,14 @@ public class ProfessionalController {
 			ModelAndView mav = new ModelAndView("professionals/clientShow");
 			Collection<Medicine> medicines = this.appointmentService.findMedicines(clientId);
 			Collection<Desease> deseases = this.appointmentService.findDeseases(clientId);
-			
+
 			model.put("medicines", medicines);
 			model.put("deseases", deseases);
 			model.put("client", client);
 			return mav;
-			
+
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
-		
+
 	}
 
 	//List de clientes para profesional
@@ -177,7 +173,7 @@ public class ProfessionalController {
 		return "professionals/clientList";
 	}
 	@GetMapping(value = {
-		"/professionals/proList"
+		"/proList"
 	})
 	public String professionalList(final Map<String, Object> model) {
 		Iterable<Professional> professionals = this.professionalService.findAll();

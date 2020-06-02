@@ -121,7 +121,7 @@
                                     </tr>
                                 </table>
                                 <%-- <a class="btn btn-sm btn-primary mb-3" href="#professionals/clientList" role="button">View clinical history </a>--%>
-                                <spring:url value="/professionals/{clientId}" var="proUrl">
+                                <spring:url value="/professionals/clients/{clientId}" var="proUrl">
                         	    	<spring:param name="clientId" value="${appointment.client.id}" />
 		                        </spring:url>
 		                         <a class="btn btn-primary btn-sm" href="${fn:escapeXml(proUrl)}">
