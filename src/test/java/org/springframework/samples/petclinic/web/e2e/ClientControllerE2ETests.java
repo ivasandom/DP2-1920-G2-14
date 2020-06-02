@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.petclinic.model.DocumentType;
-import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -45,9 +43,8 @@ class ClientControllerE2ETests {
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders.post("/clients/new").param("firstName", "Pepe").param("lastName", "Gotera").with(SecurityMockMvcRequestPostProcessors.csrf()).param("email", "pepegotera@gmail.com").param("birthdate", "1955-12-4")
-			//			.param("registrationDate", "2015-07-23")
-			.param("document", "10203040T").param("documentType", "NIF").param("healthInsurance", "SANTANDER").param("healthCardNumber", "01234567890").param("user.username", "1234567890").param("user.password", "1234567890"))
-			.andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/"));
+			.param("birthDate", "1998-07-23").param("document", "10203040T").param("documentType", "NIF").param("healthInsurance", "SANTANDER").param("healthCardNumber", "01234567890").param("user.username", "1234567890")
+			.param("user.password", "1234567890")).andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/"));
 
 	}
 

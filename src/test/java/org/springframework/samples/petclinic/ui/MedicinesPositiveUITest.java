@@ -51,11 +51,12 @@ public class MedicinesPositiveUITest {
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("professional1");
-		this.driver.findElement(By.id("command")).submit();
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.linkText("Consultation mode")).click();
-		this.driver.findElement(By.linkText("Clients")).click();
-		this.driver.findElement(By.linkText("Pepe Gotera")).click();
-		Assert.assertEquals("Diagnosis", this.driver.findElement(By.xpath("//h2[2]")).getText());
+		this.driver.findElement(By.linkText("> Start consultation")).click();
+		this.driver.findElement(By.linkText("View clinical history")).click();
+		Assert.assertEquals("Medicine", this.driver.findElement(By.xpath("//dt")).getText());
+
 	}
 
 	@AfterEach

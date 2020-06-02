@@ -55,6 +55,9 @@ public class EmailPositiveUITest {
 		this.driver.findElement(By.id("document")).click();
 		this.driver.findElement(By.id("document")).clear();
 		this.driver.findElement(By.id("document")).sendKeys("17457215K");
+		this.driver.findElement(By.id("birthDate")).click();
+		this.driver.findElement(By.id("birthDate")).clear();
+		this.driver.findElement(By.id("birthDate")).sendKeys("1983-05-25");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Mapfre");
 		this.driver.findElement(By.xpath("//option[@value='MAPFRE']")).click();

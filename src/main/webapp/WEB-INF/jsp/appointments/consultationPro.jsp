@@ -126,6 +126,7 @@
 		                        </spring:url>
 		                         <a class="btn btn-primary btn-sm" href="${fn:escapeXml(proUrl)}">
 	                            <c:out value="View clinical history" /></a>
+
                             </div>
 
                         </div>

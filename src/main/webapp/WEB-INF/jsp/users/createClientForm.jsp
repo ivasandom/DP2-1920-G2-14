@@ -52,7 +52,7 @@
 	        			<petclinic:inputField label="Health Card Number" name="healthCardNumber"/>
 	        		</div>
 	        	</div>  
-	            <petclinic:inputField label="Email" name="email" type="email"/>
+	            <petclinic:inputField label="Email" name="email" type="text"/>
 	            <petclinic:inputField label="Username" name="user.username"/>
 	            <petclinic:inputField label="Password" name="user.password" type="password"/>
 	
