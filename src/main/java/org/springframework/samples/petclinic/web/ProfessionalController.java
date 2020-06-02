@@ -102,7 +102,7 @@ public class ProfessionalController {
 		return "professionals/find";
 	}
 
-
+	@GetMapping(value = "")
 	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		if (professional.getCenter() == null || professional.getCenter().getId() == null) {
 			result.addError(new FieldError("professional", "center", "must not be empty"));
