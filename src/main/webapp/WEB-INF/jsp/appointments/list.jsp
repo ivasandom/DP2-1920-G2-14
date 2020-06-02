@@ -15,10 +15,6 @@
         <tr>
             <th>Date</th>
             <th>Time</th>
-            <th>Center</th>
-            <th>Professional</th>
-            <th>Specialty</th>
-            <th>Type</th>
             <th></th>
         </tr>
         </thead>
@@ -27,10 +23,6 @@
             <tr>
                <td>${appointment.date}</td>
                <td>${appointment.startTime}</td>
-               <td>${appointment.center.address}</td>
-               <td>${appointment.professional.fullName}</td>
-               <td>${appointment.specialty.name}</td>
-               <td>${appointment.type}</td>
                <td>
                 <spring:url value="/appointments/{appointmentId}/details" var="appointmentUrl">
                       <spring:param name="appointmentId" value="${appointment.id}"/>

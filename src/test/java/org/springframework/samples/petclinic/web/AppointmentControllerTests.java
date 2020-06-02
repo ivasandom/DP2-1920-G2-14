@@ -46,6 +46,7 @@ import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.BillService;
@@ -100,6 +101,8 @@ public class AppointmentControllerTests {
 	private MockMvc mockMvc;
 
 	private Appointment appointment;
+	
+	private ListAppointmentsClient listAppointmentsClient;
 
 	private Professional professional;
 
@@ -230,7 +233,7 @@ public class AppointmentControllerTests {
 		given(this.professionalService.findById(TEST_PROFESSIONAL_ID)).willReturn(Optional.of(this.professional));
 		
 		given(this.appointmentService.findAppointmentByUserId(this.client.getId()))
-				.willReturn(Lists.newArrayList(this.appointment));
+				.willReturn(Lists.newArrayList(this.listAppointmentsClient));
 		given(this.appointmentService.findTodayPendingByProfessionalId(this.professional.getId()))
 				.willReturn(Lists.newArrayList(this.appointment));
 		given(this.appointmentService.findTodayCompletedByProfessionalId(this.professional.getId()))
