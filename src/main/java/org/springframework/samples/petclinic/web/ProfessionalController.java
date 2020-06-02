@@ -45,6 +45,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -102,10 +103,20 @@ public class ProfessionalController {
 	}
 
 	@GetMapping(value = "/professionals")
+<<<<<<< HEAD
 	public String processFindForm(@Valid final Professional professional, final BindingResult result, final Map<String, Object> model) {
 		ProfessionalValidator proValidator = new ProfessionalValidator();
 		proValidator.validate(professional, result);
 		if (result.hasFieldErrors("center") || result.hasFieldErrors("specialty")) {
+=======
+	public String processFindForm(final Professional professional, final BindingResult result, final Map<String, Object> model) {
+		if (professional.getCenter() == null || professional.getCenter().getId() == null)
+			result.addError(new FieldError("professional", "center", "must not be empty"));
+		if (professional.getSpecialty() == null || professional.getSpecialty().getId() == null)
+			result.addError(new FieldError("professional", "specialty", "must not be empty"));
+		
+		if (result.hasErrors()) {
+>>>>>>> branch 'Paco' of https://github.com/ivasandom/DP2-1920-G2-14.git
 			model.put("professional", professional);
 			return "professionals/find";
 		} else {

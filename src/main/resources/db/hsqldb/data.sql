@@ -57,7 +57,7 @@ INSERT INTO diagnosis (id, date, description) VALUES (6, '2020-03-05', 'descript
 INSERT INTO diagnosis (id, date, description) VALUES (7, '2020-03-14', 'description 7');
 
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    1, 1, 'professional1', 'Guillermo', 'Díaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
+    1, 1, 'professional1', 'Guillermo', 'Diaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
 );
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
     2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F'

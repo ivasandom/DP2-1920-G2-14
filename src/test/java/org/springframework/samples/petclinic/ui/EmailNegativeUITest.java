@@ -56,7 +56,7 @@ public class EmailNegativeUITest {
 		this.driver.findElement(By.id("document")).sendKeys("12343213J");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Cigna");
-		this.driver.findElement(By.xpath("//option[@value='Cigna']")).click();
+		this.driver.findElement(By.xpath("//option[@value='CIGNA']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("43235");

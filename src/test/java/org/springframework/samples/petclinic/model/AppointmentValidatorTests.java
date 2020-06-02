@@ -48,6 +48,10 @@ public class AppointmentValidatorTests {
 		Specialty specialty = new Specialty();
 		specialty.setName("dermatology");
 		this.appointment.setSpecialty(specialty);
+		
+		Client client = new Client();
+		client.setEmail("client@gmail.com");
+		this.appointment.setClient(client);
 
 		Professional professional = new Professional();
 		professional.setCenter(center);

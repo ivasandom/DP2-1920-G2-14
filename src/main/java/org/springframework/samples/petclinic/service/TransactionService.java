@@ -26,18 +26,12 @@ public class TransactionService {
 		this.transactionRepository.save(transaction);
 	}
 
-	@Transactional(readOnly = true)
 	public Iterable<Transaction> listTransactions() throws DataAccessException {
 		return this.transactionRepository.findAll();
 	}
 	
-	@Transactional(readOnly = true)
-	public Transaction findById(int id) throws DataAccessException {
-		Optional<Transaction> optional = this.transactionRepository.findById(id);
-		if (optional.isEmpty()) {
-			return null;
-		}
-		return optional.get();
+	public Optional<Transaction> findById(int id) throws DataAccessException {
+		return this.transactionRepository.findById(id);
 	}
 	
 

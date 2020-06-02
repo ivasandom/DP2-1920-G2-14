@@ -90,10 +90,11 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsStartTimeByProfessionalAndDate() {
 		Professional professional = this.professionalService.findById(1).get();
-		LocalDate date = LocalDate.of(2020, 12, 12);
+		LocalDate date = LocalDate.of(2020, 05, 04);
 		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 
-		Assertions.assertThat(startTimes.size()).isEqualTo(1);
+		Assertions.assertThat(startTimes.iterator().next().getHour()).isEqualTo(8);
+		Assertions.assertThat(startTimes.iterator().next().getMinute()).isEqualTo(00);
 	}
 
 	@ParameterizedTest
@@ -114,11 +115,11 @@ public class AppointmentServiceTests {
 		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
-		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
+		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 05, 04));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
 	}
 
 	@Test
@@ -135,7 +136,8 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
-	void shouldFindTodayPendingAppointmentsByProfessionalId() {
+	@Transactional
+	public void shouldFindTodayPendingAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -158,7 +160,8 @@ public class AppointmentServiceTests {
 	}
 
 	@Test
-	void shouldFindTodayCompletedAppointmentsByProfessionalId() {
+	@Transactional
+	public void shouldFindTodayCompletedAppointmentsByProfessionalId() {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -185,7 +188,7 @@ public class AppointmentServiceTests {
 		"pepegotera, 2020-05-04, 08:00, test"
 	})
 	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
-		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1);
+		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1).get();
 
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
@@ -197,7 +200,7 @@ public class AppointmentServiceTests {
 		appointment.setClient(client);
 		appointment.setSpecialty(specialty);
 		appointment.setDate(date);
-		appointment.setStatus(AppointmentStatus.PENDING);
+		appointment.setStatus(AppointmentStatus.COMPLETED);
 		appointment.setStartTime(startTime);
 		appointment.setReason(reason);
 
@@ -216,9 +219,7 @@ public class AppointmentServiceTests {
 		"-1", "1000", "1000000000"
 	})
 	void shouldNotFindAppointmentWithWrongId(final int id) {
-		org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> {
-			this.appointmentService.findAppointmentById(id);
-		});
+		Assertions.assertThat(this.appointmentService.findAppointmentById(id).isPresent()).isEqualTo(false);
 	}
 
 	@Test

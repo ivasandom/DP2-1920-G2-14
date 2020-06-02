@@ -18,10 +18,10 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 	@Query("SELECT a.startTime FROM Appointment a WHERE a.date = :date and a.professional = :professional")
 	Collection<LocalTime> findAppointmentStartTimesByProfessionalAndDate(@Param("date") LocalDate date, @Param("professional") Professional professional);
 
-	@Query("SELECT a FROM Appointment a WHERE a.client.id = :id ORDER BY a.date")
+	@Query("SELECT a FROM Appointment a WHERE a.client.id = :id ORDER BY a.id")
 	Collection<Appointment> findAppointmentByClientId(@Param("id") int clientId);
 
-	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id")
+	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id ORDER BY a.id")
 	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);
 
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id AND a.date = current_date() AND a.status != 'COMPLETED' ORDER BY a.status DESC,  a.startTime ASC")

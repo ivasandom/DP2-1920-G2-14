@@ -37,7 +37,7 @@ public class ProfessionalServiceTests {
 	}
 	
 	@ParameterizedTest
-	@CsvSource({"Guillermo Díaz"})
+	@CsvSource({"Guillermo Diaz"})
 	@Transactional
 	public void shouldFindProfessionalById(final String name) {
 		Professional pro = this.professionalService.findById(1).get();
@@ -45,7 +45,7 @@ public class ProfessionalServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({"Guillermo Díaz"})
+	@CsvSource({"Guillermo Diaz"})
 	@Transactional
 	public void shouldNotFindProfessionalById(final String name) {
 		Professional pro = this.professionalService.findById(2).get();
@@ -75,7 +75,7 @@ public class ProfessionalServiceTests {
 		Specialty spe = specialtyService.findSpecialtyById(1).get();
 		Center cen = centerService.findCenterById(1).get();
 		Iterable<Professional> pros = professionalService.findProfessionalBySpecialtyAndCenter(spe.getId(), cen.getId());
-		Assertions.assertEquals(pros.iterator().next().getFullName(), "Guillermo Díaz");
+		Assertions.assertEquals(pros.iterator().next().getFullName(), "Guillermo Diaz");
 	}
 
 	@ParameterizedTest

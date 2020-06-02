@@ -133,8 +133,8 @@ class ProfessionalControllerTests {
 	void testProcessFindFormSuccess() throws Exception {
 
 		this.mockMvc.perform(get("/professionals")
-							.queryParam("center", "1")
-							.queryParam("specialty", "1"))
+							.queryParam("center.id", "1")
+							.queryParam("specialty.id", "1"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("professionals/list"));
 	}
