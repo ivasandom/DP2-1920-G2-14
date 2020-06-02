@@ -77,6 +77,11 @@
 	                </td>
 	        	</tr>
 			</c:forEach>
+			<c:if test="${empty medicines}">
+                <tr style="text-align:center;">
+                	<td colspan="5">No hay datos</td>
+                </tr>
+            </c:if>
 		</table>
 	    
 	    <h2 class="my-5">Deseases</h2>
@@ -91,6 +96,11 @@
 	                </td>
 	        	</tr>
 			</c:forEach>
+			<c:if test="${empty deseases}">
+                <tr style="text-align:center;">
+                	<td colspan="5">No hay datos</td>
+                </tr>
+            </c:if>
 		</table>
 	    </div>
 

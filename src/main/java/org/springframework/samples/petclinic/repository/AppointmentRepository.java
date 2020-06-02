@@ -21,7 +21,7 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 	@Query("SELECT a FROM Appointment a WHERE a.client.id = :id ORDER BY a.date")
 	Collection<Appointment> findAppointmentByClientId(@Param("id") int clientId);
 
-	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id")
+	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id ORDER BY a.id")
 	Collection<Appointment> findAppointmentByProfessionalId(@Param("id") int professionalId);
 
 	@Query("SELECT a FROM Appointment a WHERE a.professional.id = :id AND a.date = current_date() AND a.status != 'COMPLETED' ORDER BY a.status DESC,  a.startTime ASC")
@@ -35,13 +35,13 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
 	@Query("SELECT DISTINCT a.diagnosis.deseases FROM Appointment a WHERE a.client.id = :id")
 	Collection<Desease> findDeseases(@Param("id") int clientId);
-	
+
 	@Query("SELECT count(a) from Appointment a WHERE a.status = 'PENDING'")
 	Long getNumberOfPendingAppointmentsByStatus();
-	
+
 	@Query("SELECT count(a) from Appointment a WHERE a.status = 'ABSENT'")
 	Long getNumberOfAbsentAppointmentsByStatus();
-	
+
 	@Query("SELECT count(a) from Appointment a WHERE a.status = 'COMPLETED'")
 	Long getNumberOfCompletedAppointmentsByStatus();
 }

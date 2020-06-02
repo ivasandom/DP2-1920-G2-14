@@ -54,9 +54,12 @@ public class EmailNegativeUITest {
 		this.driver.findElement(By.id("lastName")).sendKeys("Sanz");
 		this.driver.findElement(By.id("document")).clear();
 		this.driver.findElement(By.id("document")).sendKeys("12343213J");
+		this.driver.findElement(By.id("birthDate")).click();
+		this.driver.findElement(By.id("birthDate")).clear();
+		this.driver.findElement(By.id("birthDate")).sendKeys("1983-05-25");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Cigna");
-		this.driver.findElement(By.xpath("//option[@value='Cigna']")).click();
+		this.driver.findElement(By.xpath("//option[@value='CIGNA']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("43235");
@@ -67,7 +70,7 @@ public class EmailNegativeUITest {
 		this.driver.findElement(By.id("user.password")).clear();
 		this.driver.findElement(By.id("user.password")).sendKeys("marisan");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("must not be empty", this.driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[4]/div")).getText());
+		Assert.assertEquals("must not be empty", this.driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[5]/div")).getText());
 	}
 
 	@AfterEach

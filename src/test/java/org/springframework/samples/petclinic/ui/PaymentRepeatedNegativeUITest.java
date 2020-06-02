@@ -1,8 +1,6 @@
 
 package org.springframework.samples.petclinic.ui;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -57,9 +55,12 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.id("document")).click();
 		this.driver.findElement(By.id("document")).clear();
 		this.driver.findElement(By.id("document")).sendKeys("12343213J");
+		this.driver.findElement(By.id("birthDate")).click();
+		this.driver.findElement(By.id("birthDate")).clear();
+		this.driver.findElement(By.id("birthDate")).sendKeys("1983-05-25");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Caser");
-		this.driver.findElement(By.xpath("//option[@value='Caser']")).click();
+		this.driver.findElement(By.xpath("//option[@value='CASER']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("12346");
@@ -80,10 +81,10 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("raulperez");
-	    driver.findElement(By.xpath("//button[@type='submit']")).click();
-	    driver.findElement(By.id("navbarDropdown")).click();
-	    driver.findElement(By.linkText("My payment methods")).click();
-		this.driver.findElement(By.linkText("+ Add method")).click();
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
+		this.driver.findElement(By.id("navbarDropdown")).click();
+		this.driver.findElement(By.linkText("My payment methods")).click();
+		this.driver.findElement(By.linkText("+ Add card")).click();
 		this.driver.switchTo().frame(1);
 		this.driver.findElement(By.name("cardnumber")).click();
 		this.driver.findElement(By.name("cardnumber")).clear();
@@ -96,7 +97,7 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.name("postal")).sendKeys("41012");
 		this.driver.switchTo().defaultContent();
 		this.driver.findElement(By.id("add-button")).click();
-		this.driver.findElement(By.linkText("+ Add method")).click();
+		this.driver.findElement(By.linkText("+ Add card")).click();
 		this.driver.switchTo().frame(1);
 		this.driver.findElement(By.name("cardnumber")).click();
 		this.driver.findElement(By.name("cardnumber")).clear();
@@ -109,8 +110,8 @@ public class PaymentRepeatedNegativeUITest {
 		this.driver.findElement(By.name("postal")).sendKeys("41012");
 		this.driver.switchTo().defaultContent();
 		this.driver.findElement(By.id("add-button")).click();
-	    driver.findElement(By.id("token.errors")).click();
-	    assertEquals("Card already exists.", driver.findElement(By.id("token.errors")).getText());
+		this.driver.findElement(By.id("token.errors")).click();
+		Assert.assertEquals("Card already exists.", this.driver.findElement(By.id("token.errors")).getText());
 	}
 
 	@AfterEach

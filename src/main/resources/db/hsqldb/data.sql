@@ -57,7 +57,7 @@ INSERT INTO diagnosis (id, date, description) VALUES (6, '2020-03-05', 'descript
 INSERT INTO diagnosis (id, date, description) VALUES (7, '2020-03-14', 'description 7');
 
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    1, 1, 'professional1', 'Guillermo', 'Díaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
+    1, 1, 'professional1', 'Guillermo', 'Diaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
 );
 INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
     2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F'
@@ -421,6 +421,8 @@ INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id
 INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (2, 'Seguros Adeslas S.A.', '50906030', 3, '150.0', '0.21', 2, 'ADESLAS', '2020-05-06 15:00:00');
 INSERT INTO bills (id, name, document, document_type, price, iva, appointment_id, health_insurance, created_at) VALUES (3, 'Seguros Adeslas S.A.', '50906030', 3, '70.0', '0.21', 3, 'ADESLAS', '2020-05-07 15:00:00');
 
+
+INSERT INTO transactions (type, amount, token, success, refunded, status, bill_id) VALUES (0, '1000.0', 'CASH', 1, 0, 'succeeded', 1);
 --INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (2, 1, 3, 3, '2020-12-12', '08:45');
 -- INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:00');
 -- INSERT INTO appointments (client_id, center_id, specialty_id, professional_id, date, start_time) VALUES (1, 1, 1, 1, '2020-12-12', '09:15');
