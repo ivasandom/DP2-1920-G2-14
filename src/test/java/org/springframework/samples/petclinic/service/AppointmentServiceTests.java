@@ -3,13 +3,8 @@ package org.springframework.samples.petclinic.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -22,27 +17,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
-import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Diagnosis;
-import org.springframework.samples.petclinic.model.DocumentType;
-import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
-import org.springframework.samples.petclinic.model.Transaction;
-import org.springframework.samples.petclinic.model.TransactionType;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
+import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -141,7 +130,8 @@ public class AppointmentServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldFindTodayPendingAppointmentsByProfessionalId() {
+	public void shouldFindTodayPendingAppointmentsByProfessionalId()
+			throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -165,7 +155,8 @@ public class AppointmentServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldFindTodayCompletedAppointmentsByProfessionalId() {
+	public void shouldFindTodayCompletedAppointmentsByProfessionalId()
+			throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -238,7 +229,8 @@ public class AppointmentServiceTests {
 	@ParameterizedTest
 	@CsvSource({ "pepegotera, 2020-11-11, 10:15" })
 	@Transactional
-	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) {
+	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime)
+			throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 
@@ -261,11 +253,38 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.size()).isEqualTo(found + 1);
 	}
 
+	@Test
+	@Transactional
+	public void shouldNotSaveAppointment() throws DataAccessException, ProfessionalBusyException {
+		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
+		int found = appointments.size();
+
+		Optional<Appointment> a = this.appointmentService.findAppointmentById(1);
+
+		Appointment appointment = new Appointment();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(a.get().getProfessional());
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setDate(a.get().getDate());
+		appointment.setSpecialty(specialty);
+		appointment.setStartTime(a.get().getStartTime());
+
+		org.junit.jupiter.api.Assertions.assertThrows(ProfessionalBusyException.class,
+				() -> this.appointmentService.saveAppointment(appointment));
+
+		appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
+		Assertions.assertThat(appointments.size()).isEqualTo(found);
+	}
+
 	@ParameterizedTest
 	@CsvSource({ "pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test" })
 	@Transactional
 	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date,
-			final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) {
+			final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription)
+			throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
@@ -344,13 +363,12 @@ public class AppointmentServiceTests {
 			this.appointmentService.delete(app.get());
 		}, "You cannot delete a passed appointment");
 	}
-	
-	
+
 	@Test
 	@Transactional
-	void testGetNumberOfPendingAppointments() {
+	void testGetNumberOfPendingAppointments() throws DataAccessException, ProfessionalBusyException {
 		Long pendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
-		
+
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -360,20 +378,20 @@ public class AppointmentServiceTests {
 		appointment.setCenter(center);
 		appointment.setClient(client);
 		appointment.setSpecialty(specialty);
-		
+
 		appointment.setStatus(AppointmentStatus.PENDING);
 		this.appointmentService.saveAppointment(appointment);
-		
+
 		Assertions.assertThat(pendingAppointments).isEqualTo(127L);
 		Long newPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
 		Assertions.assertThat(newPendingAppointments).isEqualTo(pendingAppointments + 1L);
 	}
-	
+
 	@Test
 	@Transactional
-	void testGetNumberOfAbsentAppointments() {
+	void testGetNumberOfAbsentAppointments() throws DataAccessException, ProfessionalBusyException {
 		Long absentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
-		
+
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -383,20 +401,20 @@ public class AppointmentServiceTests {
 		appointment.setCenter(center);
 		appointment.setClient(client);
 		appointment.setSpecialty(specialty);
-		
+
 		appointment.setStatus(AppointmentStatus.ABSENT);
 		this.appointmentService.saveAppointment(appointment);
-		
+
 		Assertions.assertThat(absentAppointments).isEqualTo(0L);
 		Long newAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
 		Assertions.assertThat(newAbsentAppointments).isEqualTo(absentAppointments + 1L);
 	}
-	
+
 	@Test
 	@Transactional
-	void testGetNumberOfCompletedAppointments() {
+	void testGetNumberOfCompletedAppointments() throws DataAccessException, ProfessionalBusyException {
 		Long completedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
-		
+
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -406,13 +424,26 @@ public class AppointmentServiceTests {
 		appointment.setCenter(center);
 		appointment.setClient(client);
 		appointment.setSpecialty(specialty);
-		
+
 		appointment.setStatus(AppointmentStatus.COMPLETED);
 		this.appointmentService.saveAppointment(appointment);
-		
+
 		Assertions.assertThat(completedAppointments).isEqualTo(3L);
 		Long newCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
 		Assertions.assertThat(newCompletedAppointments).isEqualTo(completedAppointments + 1L);
+
+	}
+
+	@Test
+	@Transactional
+	public void shouldFindAppointmentByDateTimeAndProfessional() throws DataAccessException, ProfessionalBusyException {
+		Appointment appointment = this.appointmentService.findAppointmentById(1).get();
+
+		Optional<Appointment> a = this.appointmentService.findAppointmentByDateTimeAndProfessional(
+				appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
+
+		Assertions.assertThat(a).isPresent();
+		Assertions.assertThat(a.get()).isEqualTo(appointment);
 		
 	}
 

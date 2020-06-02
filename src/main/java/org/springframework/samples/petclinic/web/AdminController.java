@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
+import org.springframework.samples.petclinic.model.AppointmentType;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.BillTransactionValidator;
@@ -53,6 +54,7 @@ import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.TransactionService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
+import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -430,7 +432,24 @@ public class AdminController {
 			return "admin/appointments/form";
 		} else {
 			appointment.setId(appointmentId);
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				Iterable<Client> clients = this.clientService.findAll();
+				Iterable<Professional> professionals = this.professionalService.findAll();
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("appointment", appointment);
+				model.put("clients", clients);
+				model.put("professionals", professionals);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("statusChoices", AppointmentStatus.values());
+				return "admin/appointments/form";
+			}
 			return "redirect:/admin/appointments/" + appointmentId;
 		}
 	}
@@ -478,7 +497,24 @@ public class AdminController {
 			model.put("statusChoices", AppointmentStatus.values());
 			return "admin/appointments/form";
 		} else {
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				Iterable<Client> clients = this.clientService.findAll();
+				Iterable<Professional> professionals = this.professionalService.findAll();
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("appointment", appointment);
+				model.put("clients", clients);
+				model.put("professionals", professionals);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("statusChoices", AppointmentStatus.values());
+				return "admin/appointments/form";
+			}
 			return "redirect:/admin/appointments";
 		}
 	}

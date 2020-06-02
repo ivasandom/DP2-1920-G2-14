@@ -19,19 +19,17 @@ package org.springframework.samples.petclinic.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +45,6 @@ import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.Medicine;
-import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
@@ -60,6 +57,7 @@ import org.springframework.samples.petclinic.service.DeseaseService;
 import org.springframework.samples.petclinic.service.MedicineService;
 import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
+import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,7 +75,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("appointments")
@@ -180,14 +177,21 @@ public class AppointmentController {
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
-			System.out.println(result.getFieldErrors());
 			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
 			return "appointments/new";
 		} else {
 			// Save appointment if valid
 			appointment.setStatus(AppointmentStatus.PENDING);
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				model.put("types", AppointmentType.values());
+				model.put("appointment", appointment);
+				return "appointments/new";
+			}
 			return "redirect:/appointments";
 		}
 	}
@@ -198,7 +202,11 @@ public class AppointmentController {
 			if (appointment.getStatus() != AppointmentStatus.COMPLETED) {
 				appointment.setStatus(AppointmentStatus.ABSENT);
 			}
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (DataAccessException | ProfessionalBusyException e) {
+				return "redirect:/errors";
+			}
 			return "redirect:/appointments/pro";
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
@@ -266,8 +274,13 @@ public class AppointmentController {
 					a.setDiagnosis(appointment.getDiagnosis());
 					a.setStatus(AppointmentStatus.COMPLETED);
 
-					this.appointmentService.saveAppointment(a);
-					this.billService.saveBill(bill);
+					try {
+						this.appointmentService.saveAppointment(a);
+						this.billService.saveBill(bill);
+					} catch (DataAccessException | ProfessionalBusyException e) {
+						return "redirect:/errors";
+					}
+					
 					return "redirect:/appointments/pro";
 				}
 
