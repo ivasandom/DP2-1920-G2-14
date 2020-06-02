@@ -25,10 +25,7 @@
         <c:forEach items="${professionals}" var="professional">
             <tr>
                 <td>
-                    <spring:url value="/professionals/{professionalId}" var="proUrl">
-                        <spring:param name="professionalId" value="${professional.id}"/>
-                    </spring:url>
-                    <a href="${fn:escapeXml(proUrl)}"><c:out value="${professional.firstName} ${professional.lastName}"/></a>
+                    <c:out value="${professional.firstName} ${professional.lastName}"/>
                 </td>
                 
                 <td>
@@ -40,7 +37,7 @@
                 </td>
                 
                 <td>
-                    <c:out value="${professional.center}"/>
+                    <c:out value="${professional.center.address}"/>
                 </td>     
 
                 

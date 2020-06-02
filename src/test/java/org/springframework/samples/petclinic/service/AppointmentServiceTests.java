@@ -37,6 +37,7 @@ import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Transaction;
 import org.springframework.samples.petclinic.model.TransactionType;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,7 +113,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsByClientId() {
 
-		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(1);
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
@@ -402,7 +403,6 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-
 	@CsvSource({
 		"123, pepegotera", "122, pepegotera"
 	})
@@ -411,7 +411,7 @@ public class AppointmentServiceTests {
 
 		Client client = this.clientService.findClientByUsername(username);
 
-		Collection<Appointment> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
 		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
 
 		int count = appointments.size();
@@ -436,7 +436,6 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-
 	@CsvSource({
 		"124", "126"
 	})

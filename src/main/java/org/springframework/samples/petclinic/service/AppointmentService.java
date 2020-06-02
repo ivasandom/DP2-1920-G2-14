@@ -16,6 +16,7 @@ import org.springframework.samples.petclinic.model.PaymentMethod;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Transaction;
 import org.springframework.samples.petclinic.model.TransactionType;
+import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
 import org.springframework.samples.petclinic.repository.AppointmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class AppointmentService {
 		return this.appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 	}
 
-	public Collection<Appointment> findAppointmentByUserId(final int id) {
+	public Collection<ListAppointmentsClient> findAppointmentByUserId(final int id) {
 		return this.appointmentRepository.findAppointmentByClientId(id);
 	}
 

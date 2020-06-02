@@ -25,7 +25,6 @@ public class ClientValidator implements org.springframework.validation.Validator
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "must not be empty");
 
-
 		Client client = (Client) obj;
 
 		if (client.getHealthCardNumber() == null) {
@@ -34,56 +33,38 @@ public class ClientValidator implements org.springframework.validation.Validator
 		}
 
 		if (!errors.hasFieldErrors("healthInsurance") && !errors.hasFieldErrors("healthCardNumber")) {
-			if (client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)
-					&& !client.getHealthCardNumber().isEmpty()) {
-				errors.rejectValue("healthCardNumber",
-						"you cannot write a health card number if you don't have health insurance",
-						new Object[] { "'healthCardNumber'" },
-						"you cannot write a health card number if you don't have health insurance");
-			} else if (!client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE)
-					&& client.getHealthCardNumber().isEmpty()) {
-				errors.rejectValue("healthCardNumber", "you must write your health card number",
-						new Object[] { "'healthCardNumber'" }, "you must write your health card number");
+			if (client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && !client.getHealthCardNumber().isEmpty()) {
+				errors.rejectValue("healthCardNumber", "you cannot write a health card number if you don't have health insurance", new Object[] {
+					"'healthCardNumber'"
+				}, "you cannot write a health card number if you don't have health insurance");
+			} else if (!client.getHealthInsurance().equals(HealthInsurance.I_DO_NOT_HAVE_INSURANCE) && client.getHealthCardNumber().isEmpty()) {
+				errors.rejectValue("healthCardNumber", "you must write your health card number", new Object[] {
+					"'healthCardNumber'"
+				}, "you must write your health card number");
 			}
 
 		}
 
-		if (!errors.hasFieldErrors("user.password")) {
-			if (client.getUser().getPassword().length() < 6 || client.getUser().getPassword().length() > 15) {
-				errors.rejectValue("user.password", "password must be between 6 and 15 characters",
-						new Object[] { "'user.password'" }, "password must be between 6 and 15 characters");
-
-			}
+		if (!errors.hasFieldErrors("user.password") && (client.getUser().getPassword().length() < 6 || client.getUser().getPassword().length() > 15)) {
+			errors.rejectValue("user.password", "password must be between 6 and 15 characters", new Object[] {
+				"'user.password'"
+			}, "password must be between 6 and 15 characters");
 		}
-		
-		if (!errors.hasFieldErrors("documentType")) {
-			if (client.getDocumentType().equals(DocumentType.CIF)) {
-				errors.rejectValue("documentType", "invalid natural person document type");
-			}
-		}
-		
-		if (!errors.hasFieldErrors("birthDate")) {
-			if (client.getBirthDate().after(Calendar.getInstance().getTime())) {
-				errors.rejectValue("birthDate", "the date must be in past",
-						new Object[] { "'birthDate'" }, "the date must be in past");
 
-			}
+		if (!errors.hasFieldErrors("documentType") && client.getDocumentType().equals(DocumentType.CIF)) {
+			errors.rejectValue("documentType", "invalid natural person document type");
 		}
-		
-//		if (!errors.hasFieldErrors("registrationDate")) {
-//			if (client.getRegistrationDate().after(Calendar.getInstance().getTime())) {
-//				errors.rejectValue("registrationDate", "the date must be in past",
-//						new Object[] { "'registrationDate'" }, "the date must be in past");
-//
-//			}
-//		}
-		
-		if (!errors.hasFieldErrors("email")) {
-			if (!client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
-				errors.rejectValue("email", "choose the correct format",
-						new Object[] { "'email'" }, "choose the correct format");
 
-			}
+		if (!errors.hasFieldErrors("birthDate") && client.getBirthDate().after(Calendar.getInstance().getTime())) {
+			errors.rejectValue("birthDate", "the date must be in past", new Object[] {
+				"'birthDate'"
+			}, "the date must be in past");
+		}
+
+		if (!errors.hasFieldErrors("email") && !client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
+			errors.rejectValue("email", "choose the correct format", new Object[] {
+				"'email'"
+			}, "choose the correct format");
 		}
 	}
 
