@@ -1,6 +1,8 @@
 
 package org.springframework.samples.petclinic.ui;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -62,7 +64,7 @@ public class ManageAppointmentsCreatePositiveUITest {
 		new Select(this.driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
 		this.driver.findElement(By.id("professional")).click();
-		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Díaz");
+		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Diaz");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[3]")).click();
 		this.driver.findElement(By.id("reason")).click();
 		this.driver.findElement(By.id("reason")).clear();
@@ -78,7 +80,7 @@ public class ManageAppointmentsCreatePositiveUITest {
 		this.driver.findElement(By.xpath("//div[@id='ui-datepicker-div']/div/a[2]/span")).click();
 		this.driver.findElement(By.linkText("6")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("2021-01-06", this.driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td")).getText());
+		assertEquals("08:00", driver.findElement(By.xpath("//table[@id='ownersTable']/tbody/tr/td[2]")).getText());;
 	}
 
 	@AfterEach

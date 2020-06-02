@@ -51,7 +51,7 @@
                   </div>
                 </div>
                 <h5>Login</h5>
-                <petclinic:inputField label="Email" name="email" type="email" />
+                <petclinic:inputField label="Email" name="email" type="text" />
                 <petclinic:inputField label="Username" name="user.username" />
                 <petclinic:inputField label="Password" type="password" name="user.password" />
               </div>

@@ -51,11 +51,11 @@ public class DeseasesNegativeUITest {
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("professional1");
-		this.driver.findElement(By.id("command")).submit();
-		this.driver.findElement(By.linkText("Consultation mode")).click();
-		this.driver.findElement(By.linkText("Clients")).click();
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
+		this.driver.findElement(By.id("navbarDropdown")).click();
+		this.driver.findElement(By.linkText("Client List")).click();
 		this.driver.findElement(By.linkText("Miguel Perez")).click();
-		Assert.assertEquals("Deseases", this.driver.findElement(By.xpath("//h2[3]")).getText());
+		Assert.assertEquals("No hay datos", this.driver.findElement(By.xpath("//table[3]/tbody/tr/td")).getText());
 	}
 
 	@AfterEach

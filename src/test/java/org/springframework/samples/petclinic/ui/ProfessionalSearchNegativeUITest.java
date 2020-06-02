@@ -52,7 +52,7 @@ public class ProfessionalSearchNegativeUITest {
 		this.driver.findElement(By.id("password")).click();
 		this.driver.findElement(By.id("password")).clear();
 		this.driver.findElement(By.id("password")).sendKeys("elenanito");
-		this.driver.findElement(By.id("command")).submit();
+		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.linkText("Find professionals")).click();
 		this.driver.findElement(By.id("center")).click();
 		new Select(this.driver.findElement(By.id("center"))).selectByVisibleText("Sevilla");

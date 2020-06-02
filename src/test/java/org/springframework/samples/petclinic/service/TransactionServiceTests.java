@@ -29,7 +29,7 @@ public class TransactionServiceTests {
 	@Transactional
 	public void testCountWithInitialData() {
 		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		Assertions.assertEquals(transactions.size(), 0);
+		Assertions.assertEquals(transactions.size(), 1);
 	}
 	
 	@ParameterizedTest

@@ -44,7 +44,7 @@ public class ClientServiceTests {
 		"Gotera"
 	})
 	public void shouldFindClientById(final String name) {
-		Client cli = this.clientService.findClientById(1);
+		Client cli = this.clientService.findClientById(1).get();
 		Assertions.assertTrue(cli.getLastName().equals(name));
 	}
 

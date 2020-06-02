@@ -34,8 +34,13 @@ public class StripeService {
 		 * Retrieve payment method to store details in database
 		 */
 		
-		PaymentMethod paymentMethod = PaymentMethod.retrieve(paymentMethodToken);
-		return paymentMethod;
+		try {
+			PaymentMethod paymentMethod = PaymentMethod.retrieve(paymentMethodToken);
+			return paymentMethod;
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 	
 	public SetupIntent setupIntent(String customerId) throws Exception {

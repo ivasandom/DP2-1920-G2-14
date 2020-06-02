@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.web;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,10 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,10 +31,7 @@ import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.stripe.model.Customer;
 
@@ -84,10 +82,10 @@ class ClientControllerTests {
 		pepe.setHealthCardNumber("1234567890");
 		pepe.setStripeId("1");
 		
-		BDDMockito.given(this.clinicService.findClientById(ClientControllerTests.TEST_CLIENT_ID)).willReturn(this.pepe);
-		BDDMockito.given(this.appointmentService.findAppointmentById(ClientControllerTests.TEST_APPOINMENT_ID))
-				.willReturn(new Appointment());
-		BDDMockito.given(this.stripeService.createCustomer(this.pepe.getEmail())).willReturn(new Customer());
+		given(this.clinicService.findClientById(ClientControllerTests.TEST_CLIENT_ID)).willReturn(Optional.of(this.pepe));
+		given(this.appointmentService.findAppointmentById(ClientControllerTests.TEST_APPOINMENT_ID))
+				.willReturn(Optional.of(new Appointment()));
+		given(this.stripeService.createCustomer(this.pepe.getEmail())).willReturn(new Customer());
 
 	}
 
@@ -110,7 +108,6 @@ class ClientControllerTests {
 						.param("lastName", "Gotera")
 						.param("email", "pepegotera@gmail.com")
 						.param("birthDate", "1955-12-4")
-						// .param("registrationDate", "2015-07-23")
 						.param("document", "10203040T")
 						.param("documentType", "NIF")
 						.param("healthInsurance", HealthInsurance.MAPFRE.name())
@@ -131,7 +128,6 @@ class ClientControllerTests {
 						.param("firstName", "Pepe").param("lastName", "Gotera")
 						.param("email", "pepegoteragmail.com")
 						.param("birthdate", "1955-12-4")
-						// .param("registrationDate", "2015-07-23")
 						.param("document", "")
 						.param("healthInsurance", "")
 						.param("healthCardNumber", "123456789")
