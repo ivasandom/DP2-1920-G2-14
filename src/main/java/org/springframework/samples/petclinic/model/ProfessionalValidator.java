@@ -15,8 +15,8 @@ public class ProfessionalValidator implements org.springframework.validation.Val
 
 	@Override
 	public void validate(final Object obj, final Errors errors) {
-		ValidationUtils.rejectIfEmpty(errors, "center", "center must no be empty");
-		ValidationUtils.rejectIfEmpty(errors, "specialty", "specialty must no be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "center", "center must no be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "specialty", "specialty must no be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.username", "username must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.password", "password must not be empty");
 		ValidationUtils.rejectIfEmpty(errors, "collegiateNumber", "must not be empty");

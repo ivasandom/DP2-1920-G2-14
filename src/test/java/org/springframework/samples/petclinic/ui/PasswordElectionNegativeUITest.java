@@ -54,9 +54,12 @@ public class PasswordElectionNegativeUITest {
 		this.driver.findElement(By.id("lastName")).sendKeys("Doblas");
 		this.driver.findElement(By.id("document")).clear();
 		this.driver.findElement(By.id("document")).sendKeys("87234561P");
+		this.driver.findElement(By.id("birthDate")).click();
+		this.driver.findElement(By.id("birthDate")).clear();
+		this.driver.findElement(By.id("birthDate")).sendKeys("1983-05-25");
 		this.driver.findElement(By.id("healthInsurance")).click();
 		new Select(this.driver.findElement(By.id("healthInsurance"))).selectByVisibleText("Fiatc");
-		this.driver.findElement(By.xpath("//option[@value='Fiatc']")).click();
+		this.driver.findElement(By.xpath("//option[@value='FIATC']")).click();
 		this.driver.findElement(By.id("healthCardNumber")).click();
 		this.driver.findElement(By.id("healthCardNumber")).clear();
 		this.driver.findElement(By.id("healthCardNumber")).sendKeys("4325");
@@ -70,7 +73,7 @@ public class PasswordElectionNegativeUITest {
 		this.driver.findElement(By.id("user.password")).clear();
 		this.driver.findElement(By.id("user.password")).sendKeys("rubd");
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Assert.assertEquals("password must be between 6 and 15 characters", this.driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[6]/div")).getText());
+		Assert.assertEquals("password must be between 6 and 15 characters", this.driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[7]/div")).getText());
 	}
 
 	@AfterEach

@@ -34,6 +34,9 @@ public class ReasonElectionNegativeUITest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
+		String value = System.getenv("webdriver.gecko.driver");
+
+		System.setProperty("webdriver.gecko.driver", value);
 		this.driver = new FirefoxDriver();
 		this.baseUrl = "https://www.google.com/";
 		this.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -57,13 +60,13 @@ public class ReasonElectionNegativeUITest {
 		new Select(this.driver.findElement(By.id("specialty"))).selectByVisibleText("dermatology");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[2]")).click();
 		this.driver.findElement(By.id("professional")).click();
-		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Díaz");
+		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Diaz");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[3]")).click();
 		this.driver.findElement(By.id("date")).click();
 		this.driver.findElement(By.linkText("30")).click();
 		this.driver.findElement(By.xpath("//button[@type='submit']")).click();
 		this.driver.findElement(By.id("professional")).click();
-		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Díaz");
+		new Select(this.driver.findElement(By.id("professional"))).selectByVisibleText("Guillermo Diaz");
 		this.driver.findElement(By.xpath("(//option[@value='1'])[3]")).click();
 		Assert.assertEquals("reason must no be empty.appointment.reason", this.driver.findElement(By.xpath("//div[@id='appointment-date-group']/div/div")).getText());
 	}

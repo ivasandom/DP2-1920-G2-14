@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -16,10 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -117,6 +119,12 @@ public class AppointmentControllerTests {
 	private PaymentMethod paymentMethod;
 
 	private static final int TEST_APPOINTMENT_ID = 1;
+	
+	private static final int TEST_PROFESSIONAL_ID = 1;
+	
+	private static final int TEST_SPECIALTY_ID = 1;	
+	
+	private static final int TEST_CENTER_ID = 1;
 
 	@BeforeEach
 	void setup() throws Exception {
@@ -128,9 +136,9 @@ public class AppointmentControllerTests {
 		user.setPassword("frankcuesta");
 
 		User user2 = new User();
-		this.user.setEnabled(true);
-		this.user.setUsername("manucar");
-		this.user.setPassword("manucar");
+		user2.setEnabled(true);
+		user2.setUsername("manucar");
+		user2.setPassword("manucar");
 
 		Date registrationDate = new Date(03 / 03 / 2020);
 		client = new Client();
@@ -181,15 +189,15 @@ public class AppointmentControllerTests {
 		diagnosis.setDescription("test");
 
 		Center center = new Center();
-		center.setId(1);
+		center.setId(TEST_CENTER_ID);
 		center.setAddress("Sevilla");
 
 		specialty = new Specialty();
-		specialty.setId(AppointmentControllerTests.TEST_APPOINTMENT_ID);
+		specialty.setId(TEST_SPECIALTY_ID);
 		specialty.setName("dermatology");
 
 		professional = new Professional();
-		professional.setId(AppointmentControllerTests.TEST_APPOINTMENT_ID);
+		professional.setId(TEST_PROFESSIONAL_ID);
 		professional.setCenter(center);
 		professional.setSpecialty(specialty);
 		professional.setFirstName("Guillermo");
@@ -218,28 +226,54 @@ public class AppointmentControllerTests {
 		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		Mockito.when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(authentication);
-
-		given(this.clientService.findClientByUsername("client")).willReturn(this.client);
+		
+		given(this.clientService.findClientByUsername("frankcuesta")).willReturn(this.client);
+		
 		given(this.professionalService.findProByUsername("professional")).willReturn(this.professional);
+		given(this.professionalService.findById(TEST_PROFESSIONAL_ID)).willReturn(Optional.of(this.professional));
+		
 		given(this.appointmentService.findAppointmentByUserId(this.client.getId()))
 				.willReturn(Lists.newArrayList(this.listAppointmentsClient));
 		given(this.appointmentService.findTodayPendingByProfessionalId(this.professional.getId()))
 				.willReturn(Lists.newArrayList(this.appointment));
 		given(this.appointmentService.findTodayCompletedByProfessionalId(this.professional.getId()))
 				.willReturn(Lists.newArrayList(this.appointment));
-		given(this.appointmentService.findAppointmentById(this.appointment.getId())).willReturn(appointment);
-		given(this.medicineService.findMedicines()).willReturn(Lists.newArrayList(this.medicine));
-		given(this.deseaseService.findAll()).willReturn(Lists.newArrayList(this.desease));
-		given(this.deseaseService.findAll()).willReturn(Lists.newArrayList(this.desease));
-		given(this.stripeService
-				.retrievePaymentMethod(paymentMethods.stream().collect(Collectors.toList()).get(0).getToken()))
-						.willReturn(new com.stripe.model.PaymentMethod());
+		given(this.appointmentService.findAppointmentById(this.appointment.getId())).willReturn(Optional.of(appointment));
+		given(this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(appointment.getDate(), appointment.getProfessional())).willReturn(Lists.newArrayList(appointment.getStartTime()));
 		
-		// BDDMockito.given(this.appointmentService.findTodayPendingByProfessionalId(AppointmentControllerTest.TEST_APPOINTMENT_ID)).willReturn(Lists.newArrayList(this.app,
-		// new Appointment()));
+		given(this.medicineService.findMedicines()).willReturn(Lists.newArrayList(this.medicine));
+		
+		given(this.deseaseService.findAll()).willReturn(Lists.newArrayList(this.desease));
 
+		
+		given(this.centerService.findCenterById(TEST_CENTER_ID)).willReturn(Optional.of(center));
+		
+		given(this.specialtyService.findSpecialtyById(TEST_SPECIALTY_ID)).willReturn(Optional.of(specialty));
+		
 	}
+	
+	@WithMockUser(value = "frankcuesta")
+	@Test
+	void testlistAppointments() throws Exception {
 
+		this.mockMvc.perform(get("/appointments"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("appointments"))
+				.andExpect(view().name("appointments/list"));
+	}
+	
+	@WithMockUser(value = "professional")
+	@Test
+	void testListAppointmentsProfessional() throws Exception {
+
+		this.mockMvc.perform(get("/appointments/pro"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("nextAppointment"))
+				.andExpect(model().attributeExists("pendingAppointments"))
+				.andExpect(model().attributeExists("completedAppointments"))
+				.andExpect(view().name("appointments/pro"));
+	}
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
@@ -250,45 +284,20 @@ public class AppointmentControllerTests {
 				.andExpect(view().name("appointments/new"));
 	}
 
-	@WithMockUser(value = "spring")
+	@WithMockUser(value = "frankcuesta")
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
 		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
 		
 		this.mockMvc.perform(post("/appointments/new")
 						.with(csrf())
-						.param("Date", dia)
+						.param("date", dia)
 						.param("reason", "my head hurts")
 						.param("startTime", hora)
-						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
-						.param("client.type.name", "revision")
-						.param("center.address", "Sevilla")
-						.param("specialty.name", sp)
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K"))
+						.param("center.id", "1")
+						.param("specialty.id", "1")
+						.param("professional.id", "1"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/appointments"));
 	}
@@ -298,368 +307,132 @@ public class AppointmentControllerTests {
 	void testProcessCreationFormHasErrors() throws Exception {
 		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
 		
 		this.mockMvc.perform(post("/appointments/new")
 						.with(csrf())
-						.param("Date", dia)
+						.param("date", dia)
 						.param("startTime", hora)
-						.param("client.document", "29334456")
 						.param("reason", "my head hurts")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
-						.param("client.type.name", "revision")
-						.param("center.address", "Sevilla")
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K"))
+						.param("center.id", "")
+						.param("professional.id", ""))
+				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("appointment"))
-				.andExpect(model().attributeHasFieldErrors("appointment", "specialty"))
-				.andExpect(status().isOk())
+				.andExpect(model().attributeHasFieldErrors("appointment", "center", "professional", "specialty"))
 				.andExpect(view().name("appointments/new"));
-	}
-
-	@WithMockUser(value = "client")
-	@Test
-	void testlistAppointments() throws Exception {
-
-		this.mockMvc.perform(get("/appointments"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("appointments/list"));
-	}
-
-	@WithMockUser(value = "professional")
-	@Test
-	void testListAppointmentsProfessional() throws Exception {
-
-		this.mockMvc.perform(get("/appointments/pro"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("appointments/pro"));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testMarkAbsent() throws Exception {
-		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-		Set<Appointment> s = new HashSet<>();
-
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
 		this.mockMvc
-				.perform(post("/appointments/{appointmentId}/absent", AppointmentControllerTests.TEST_APPOINTMENT_ID)
-						.with(csrf())
-						.param("Date", dia)
-						.param("reason", "my head hurts")
-						.param("startTime", hora)
-						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
-						.param("client.type.name", "revision")
-						.param("center.address", "Sevilla")
-						.param("specialty.name", sp)
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K"))
+				.perform(post("/appointments/{appointmentId}/absent", TEST_APPOINTMENT_ID)
+						.with(csrf()))					
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
-	@WithMockUser(username = "manucar", authorities = { "professional" })
+	@WithMockUser(username = "manucar")
 	@Test
-	void testShowVisits() throws Exception {
-		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+	void testAppointmentConsultationForm() throws Exception {
+		this.mockMvc.perform(get("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(model().attributeExists("medicineList", "appointment", "deseaseList"))
+				.andExpect(view().name("appointments/consultationPro"));
 
-		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
-
-		Medicine med = new Medicine();
-		med.setName("paracetamol");
-		med.setPrice(12.);
-		String medName = med.getName();
-		String medPrice = Double.toString(med.getPrice());
-		Collection<Desease> deseases = new ArrayList<>();
-		Desease des = new Desease();
-		des.setName("Acné");
-		deseases.add(des);
-		String desName = des.getName();
-
-		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID)
-						.with(csrf())
-						.param("Date", dia)
-						.param("reason", "my head hurts")
-						.param("startTime", hora)
-						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
-						.param("client.type.name", "revision")
-						.param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'")
-						.param("client.paymentMethod.brand", "visa")
-						.param("center.address", "Sevilla")
-						.param("specialty.name", sp)
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K")
-						.param("diagnosis.Date", dia2)
-						.param("diagnosis.description", "healthy")
-						.param("diagnosis.medicine.name", medName)
-						.param("diagnosis.medicine.price", medPrice)
-						.param("diagnosis.desease.name", desName)
-						.param("bill.price", "10")
-						.param("status", AppointmentStatus.COMPLETED.toString()))
-				.andExpect(status().is2xxSuccessful());
-//				.andExpect(view().name("appointments/consultationPro"));
+	}
+	
+	@WithMockUser(username = "manucar")
+	@Test
+	void testAppointmentConsultationFormCompletedRedirect() throws Exception {
+		this.appointment.setStatus(AppointmentStatus.COMPLETED);
+		
+		this.mockMvc.perform(get("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessUpdateAppFormSuccess() throws Exception {
-		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-
-		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		Specialty specialty = new Specialty();
-		specialty.setName("dermatology");
-		String sp = specialty.getName();
-
-		Specialty specialty2 = new Specialty();
-		specialty2.setName("dermatology");
-		String sp2 = specialty2.getName();
-
-		Medicine med = new Medicine();
-		med.setName("paracetamol");
-		med.setPrice(12.);
-		String medName = med.getName();
-		String medPrice = Double.toString(med.getPrice());
-		Collection<Desease> deseases = new ArrayList<>();
-		Desease des = new Desease();
-		des.setName("Acné");
-		deseases.add(des);
-		String desName = des.getName();
-
-		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",AppointmentControllerTests.TEST_APPOINTMENT_ID)
+	void testProcessAppointmentConsultationFormSuccess() throws Exception {
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",TEST_APPOINTMENT_ID)
 						.with(csrf())
-						.param("Date", dia)
-						.param("reason", "my head hurts")
-						.param("startTime", hora)
-						.param("client.document", "29334456")
-						.param("client.documentType", DocumentType.NIF.toString())
-						.param("client.email", "frankcuesta@gmail.com")
-						.param("client.firstName", "Frank")
-						.param("client.healthCardNumber", "0000000003")
-						.param("client.healthInsurance", HealthInsurance.ADESLAS.name())
-						.param("client.lastName", "Cuesta")
-						.param("client.user.username", "frankcuesta")
-						.param("client.user.password", "frankcuesta")
-						.param("type", AppointmentType.ANALISIS.name())
-						.param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'")
-						.param("client.paymentMethod.brand", "visa")
-						.param("center.address", "Sevilla")
-						.param("specialty.name", sp)
-						.param("professional.center.address", "Sevilla")
-						.param("professional.specialty.name", sp2)
-						.param("professional.firstName", "Manuel")
-						.param("professional.lastName", "Carrasco")
-						.param("professional.email", "mancar@gmail.com")
-						.param("professional.document", "29334485")
-						.param("professional.documentType", "NIF")
-						.param("professional.collegiateNumber", "413123122K")
-						.param("diagnosis.Date", dia2)
 						.param("diagnosis.description", "healthy")
-						.param("diagnosis.medicine.name", medName)
-						.param("diagnosis.medicine.price", medPrice)
-						.param("diagnosis.desease.name", desName)
+						.param("diagnosis.medicines.id", "1")
+						.param("diagnosis.deseases.id", "1")
 						.param("bill.price", "10")
-						.param("status", AppointmentStatus.COMPLETED.toString()));
-//				.andExpect(status().is3xxRedirection())
-//				.andExpect(view().name("redirect:/appointments/pro"));
+						.param("bill.iva", "21"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessAppointmentConsultationFormHasErrors() throws Exception {
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",TEST_APPOINTMENT_ID)
+						.with(csrf())
+						.param("bill.price", "-10")
+						.param("bill.iva", "500"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(model().attributeHasFieldErrors("appointment", 
+						"diagnosis.description", "diagnosis.medicines", "diagnosis.deseases", "bill.price", "bill.iva"))
+				.andExpect(view().name("appointments/consultationPro"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessAppointmentConsultationFormCompletedRedirect() throws Exception {
+		appointment.setStatus(AppointmentStatus.COMPLETED);
+		
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",TEST_APPOINTMENT_ID)
+						.with(csrf()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
-//	@WithMockUser(value = "spring")
-//	@Test
-//	void testProcessUpdateAppFormHasErrors() throws Exception {
-//		String dia = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//		String dia2 = LocalDate.of(2020, 05, 9).format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-//
-//		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-//
-//		Specialty specialty = new Specialty();
-//		specialty.setName("dermatology");
-//		String sp = specialty.getName();
-//
-//		Specialty specialty2 = new Specialty();
-//		specialty2.setName("dermatology");
-//		String sp2 = specialty2.getName();
-//
-//		Medicine med = new Medicine();
-//		med.setName("paracetamol");
-//		med.setPrice(12.);
-//		String medName = med.getName();
-//		String medPrice = Double.toString(med.getPrice());
-//		Collection<Desease> deseases = new ArrayList<>();
-//		Desease des = new Desease();
-//		des.setName("Acné");
-//		deseases.add(des);
-//		String desName = des.getName();
-//
-//		this.mockMvc
-//			.perform(post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(csrf()).param("Date", dia).param("reason", "my head hurts")
-//				.with(csrf()).param("startTime", hora).param("client.document", "29334456").param("client.documentType", DocumentType.NIF.toString()).param("client.email", "frankcuesta@gmail.com")
-//				.param("client.firstName", "Frank").param("client.healthCardNumber", "0000000003").param("client.healthInsurance", HealthInsurance.ADESLAS.name()).param("client.lastName", "Cuesta").param("client.user.username", "frankcuesta")
-//				.param("client.user.password", "frankcuesta").param("client.type.name", "revision").param("client.paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI'").param("client.paymentMethod.brand", "visa").param("center.address", "Sevilla")
-//				.param("professional.center.address", "Sevilla").param("professional.specialty.name", sp2).param("professional.firstName", "Manuel").param("professional.lastName", "Carrasco").param("professional.email", "mancar@gmail.com")
-//				.param("professional.document", "29334485").param("professional.documentType", "NIF").param("professional.collegiateNumber", "413123122K").param("diagnosis.Date", dia2).param("diagnosis.description", "healthy")
-//				.param("diagnosis.medicine.name", medName).param("diagnosis.medicine.price", medPrice).param("diagnosis.desease.name", desName).param("receipt.price", "10").param("status", AppointmentStatus.COMPLETED.toString()))
-//			.andExpect(model().attributeHasErrors("appointment")).andExpect(model().attributeHasFieldErrors("appointment", "specialty"))
-//			.andExpect(view().name("appointments/consultationPro"));
-//	}
-
-//	@WithMockUser(username = "frankcuesta", authorities = {
-//		"client"
-//	})
-//	@Test
-//	void shouldShowAppointmentDetails() throws Exception {
-//		this.specialty.setId(1);
-//		this.specialty.setName("dermatology");
-//		this.appointment.setSpecialty(this.specialty);
-//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
-//
-//		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(status().isOk()).andExpect(flash().attributeCount(1))
-//			.andExpect(view().name("appointments/details"));
-//	}
-
-//	@WithMockUser(username = "frankcuesta", authorities = {
-//		"client"
-//	})
-//	@Test
-//	void shouldNotShowAppointmentDetails() throws Exception {
-//		this.specialty.setId(1);
-//		this.specialty.setName("dermatology");
-//		this.appointment.setSpecialty(this.specialty);
-//		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID)).thenReturn(this.appointment);
-//
-//		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(status().isOk()).andExpect(flash().attributeCount(1))
-//			.andExpect(view().name("appointments/details"));
-//	}
-
-	@WithMockUser(username = "frankcuesta", authorities = { "client" })
+	@WithMockUser(username = "frankcuesta")
 	@Test
-	void shouldShowAppointmentDetails() throws Exception {
-		this.specialty.setId(1);
-		this.specialty.setName("dermatology");
-		this.user.setUsername("frankcuesta");
-		this.client.setUser(this.user);
-		this.appointment.setSpecialty(this.specialty);
-		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
-
-		this.mockMvc.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID))
+	void testShouldShowAppointment() throws Exception {
+		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
 				.andExpect(status().isOk())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(view().name("appointments/details"));
 	}
 
-	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@WithMockUser(username = "pepegotera")
 	@Test
-	void shouldNotShowAppointmentDetails() throws Exception {
-		this.specialty.setId(1);
-		this.specialty.setName("dermatology");
-		this.user.setUsername("frankcuesta");
-		this.client.setUser(this.user);
-		this.appointment.setSpecialty(this.specialty);
-		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
-
-		this.mockMvc
-				.perform(get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID))
+	void testShouldNotShowAppointment() throws Exception {
+		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("message", "You cannot show another user's appointment"))
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("errors/generic"));
 	}
 
-	@WithMockUser(username = "frankcuesta", authorities = { "client" })
+	@WithMockUser(username = "frankcuesta")
 	@Test
-	void shouldDeleteAppointment() throws Exception {
-		this.user.setUsername("frankcuesta");
-		this.client.setUser(this.user);
-		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
-		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
-
-		this.mockMvc
-				.perform(get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/appointments"));
+	void testShouldDeleteAppointment() throws Exception {
+		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments"));
 	}
 
-	@WithMockUser(username = "pepegotera", authorities = { "client" })
+	@WithMockUser(username = "pepegotera")
 	@Test
-	void shouldNotDeleteAppointmentOfOtherUser() throws Exception {
-		this.user.setUsername("frankcuesta");
-		this.client.setUser(this.user);
-		Mockito.when(this.appointmentService.findAppointmentById(AppointmentControllerTests.TEST_APPOINTMENT_ID))
-				.thenReturn(this.appointment);
-		Mockito.doNothing().when(this.appointmentService).delete(this.appointment);
-
-		this.mockMvc
-				.perform(get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID))
+	void testShouldNotDeleteAppointmentOfOtherUser() throws Exception {
+		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("message", "You cannot delete another user's appointment"))
-				.andExpect(view().name("exception"));
+				.andExpect(view().name("errors/generic"));
+	}
+	
+	@WithMockUser(username = "spring")
+	@Test
+	void testBusyStartTimes() throws Exception {
+		this.mockMvc.perform(get("/appointments/busy")
+							.queryParam("date", "09/05/2020")
+							.queryParam("professionalId", "1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0]", Matchers.is("10:15:00")));
 	}
 
 }

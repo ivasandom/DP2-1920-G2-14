@@ -70,13 +70,7 @@
                             </div>
                             <p class="mb-1 text-center">Charge patient</p>
                         </a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-summary"
-                            role="tab" aria-controls="summary">
-                            <div class="justify-content-between">
-                                <h5 class="mb-1 text-center">4. Summary</h5>
-                            </div>
-                            <p class="mb-1 text-center">Ready, go!</p>
-                        </a>
+
                     </div>
                 </div>
 
@@ -120,7 +114,10 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <button class="btn btn-sm btn-primary mb-3" disabled>View clinical history </button>
+                                <spring:url value="/professionals/clients/{clientId}" var="clientUrl">
+                        			<spring:param name="clientId" value="${appointment.client.id}"/>
+                    			</spring:url>
+                    			<a href="${fn:escapeXml(clientUrl)}" class="btn btn-sm btn-primary mb-3">View clinical history</a>
                             </div>
 
                         </div>
@@ -179,10 +176,6 @@
                            
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="list-summary" role="tabpanel"
-                            aria-labelledby="list-summary-list">
-                            <p>Summary</p>
-                        </div>
                   
                 </div>
 
@@ -191,7 +184,7 @@
 
             </div>
             <div
-                style="position:fixed;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
+                style="position:relative;bottom:0; background:white;border-top:2px solid #ddd;width:calc(100% - 240px);padding:20px;">
                 <div class="text-right">
                     <a href="/appointments/pro" class="btn btn-outline-secondary">BACK</a>
                     <button class="btn btn-primary" type="submit">SAVE & CLOSE</button>

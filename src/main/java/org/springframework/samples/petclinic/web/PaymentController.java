@@ -26,7 +26,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.samples.petclinic.model.Client;
-import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.PaymentMethodService;
 import org.springframework.samples.petclinic.service.StripeService;
@@ -48,22 +47,20 @@ import com.stripe.model.PaymentMethod;
 public class PaymentController {
 
 	@Value("${STRIPE_PUBLIC_KEY}")
-	private String					API_PUBLIC_KEY;
-	
-	private static final String		VIEWS_PAYMENT_METHOD_FORM	= "payments/paymentMethodForm";
+	private String API_PUBLIC_KEY;
 
-	private PaymentMethodService	paymentMethodService;
-	private ClientService			clientService;
-	private StripeService			stripeService;
-	private BillService				billService;
+	private static final String VIEWS_PAYMENT_METHOD_FORM = "payments/paymentMethodForm";
 
+	private PaymentMethodService paymentMethodService;
+	private ClientService clientService;
+	private StripeService stripeService;
 
 	@Autowired
-	public PaymentController(final PaymentMethodService paymentMethodService, final StripeService stripeService, final ClientService clientService, final BillService billService) {
+	public PaymentController(final PaymentMethodService paymentMethodService, final StripeService stripeService,
+			final ClientService clientService) {
 		this.paymentMethodService = paymentMethodService;
 		this.stripeService = stripeService;
 		this.clientService = clientService;
-		this.billService = billService;
 	}
 
 	@InitBinder
@@ -85,14 +82,14 @@ public class PaymentController {
 		org.springframework.samples.petclinic.model.PaymentMethod paymentMethod = new org.springframework.samples.petclinic.model.PaymentMethod();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Client currentClient = this.clientService.findClientByUsername(auth.getName());
-		
+
 		String stripeCustomerId = currentClient.getStripeId();
 		if (stripeCustomerId == null) {
 			stripeCustomerId = this.stripeService.createCustomer(currentClient.getEmail()).getId();
 			currentClient.setStripeId(stripeCustomerId);
 			this.clientService.saveClient(currentClient);
 		}
-		
+
 		String intentClientSecret = this.stripeService.setupIntent(stripeCustomerId).getClientSecret();
 		model.put("intentClientSecret", intentClientSecret);
 		model.put("paymentMethod", paymentMethod);
@@ -100,49 +97,42 @@ public class PaymentController {
 
 		return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
 	}
-	
-	
-	private Boolean isMethodDuplicated(Client currentClient, PaymentMethod paymentMethod) throws Exception {
-		/*
-		 * Service..
-		 */
-		Collection<org.springframework.samples.petclinic.model.PaymentMethod> paymentsClient = this.paymentMethodService.findByClient(currentClient);
-		Collection<PaymentMethod> stripePays = new ArrayList<>();
-		for (int i = 0; i < paymentsClient.size(); i++) {
-			PaymentMethod paymentStripe = this.stripeService.retrievePaymentMethod(paymentsClient.stream().collect(Collectors.toList()).get(i).getToken());
-			stripePays.add(paymentStripe);
-		}
-		return paymentsClient.size() != 0 && stripePays.stream().map(x -> x.getCard().getFingerprint()).collect(Collectors.toSet()).contains(paymentMethod.getCard().getFingerprint());
-	}
-		
-		
-	
+
 	@PostMapping(value = "/new-method")
-	public String processCreditCardForm(@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result, final ModelMap model) throws Exception {
+	public String processPaymentMethodForm(
+			@Valid final org.springframework.samples.petclinic.model.PaymentMethod method, final BindingResult result,
+			final ModelMap model) throws Exception {
 		if (result.hasErrors()) {
-			System.out.println(result.getAllErrors());
-			return "redirect:/error";
+			result.rejectValue("token", "invalid", "Invalid payment method.");
+			return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
 		} else {
 			// Check payment method token sent by user is valid
 			PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(method.getToken());
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			Client currentClient = this.clientService.findClientByUsername(auth.getName());
 			// Check payment method is not duplicated
-			if (isMethodDuplicated(currentClient, paymentMethod)) {
-				String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId()).getClientSecret();
+			if (paymentMethod == null || this.paymentMethodService.isDuplicated(currentClient, paymentMethod)) {
+				String intentClientSecret = this.stripeService.setupIntent(currentClient.getStripeId())
+						.getClientSecret();
 				model.put("intentClientSecret", intentClientSecret);
 				model.put("paymentMethod", method);
 				model.put("apiKey", this.API_PUBLIC_KEY);
 
-				result.rejectValue("token", "duplicated", "Card already exists.");
-				return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
-			} else {
-				if (paymentMethod != null) {
-					method.setClient(this.clientService.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
-					method.setBrand(paymentMethod.getCard().getBrand().toUpperCase());
-					method.setLast4(paymentMethod.getCard().getLast4());
-					this.paymentMethodService.savePaymentMethod(method);
+				if (paymentMethod == null) {
+					result.rejectValue("token", "invalid", "Invalid payment method.");
+				} else {
+					result.rejectValue("token", "duplicated", "Card already exists.");
 				}
+
+				return PaymentController.VIEWS_PAYMENT_METHOD_FORM;
+
+			} else {
+
+				method.setClient(this.clientService
+						.findClientByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+				method.setBrand(paymentMethod.getCard().getBrand().toUpperCase());
+				method.setLast4(paymentMethod.getCard().getLast4());
+				this.paymentMethodService.savePaymentMethod(method);
 			}
 		}
 

@@ -4,6 +4,7 @@ package org.springframework.samples.petclinic.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -71,8 +72,8 @@ public class AppointmentService {
 		return this.appointmentRepository.findTodayCompletedByProfessionalId(id);
 	}
 
-	public Appointment findAppointmentById(final int id) {
-		return this.appointmentRepository.findById(id).get();
+	public Optional<Appointment> findAppointmentById(final int id) {
+		return this.appointmentRepository.findById(id);
 	}
 
 	public Collection<Medicine> findMedicines(final int id) {

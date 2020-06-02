@@ -70,13 +70,6 @@
                             </div>
                             <p class="mb-1 text-center">Payment details</p>
                         </a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-summary"
-                            role="tab" aria-controls="summary">
-                            <div class="justify-content-between">
-                                <h5 class="mb-1 text-center">4. Summary</h5>
-                            </div>
-                            <p class="mb-1 text-center">Ready, go!</p>
-                        </a>
                     </div>
                 </div>
 
@@ -137,8 +130,8 @@
 	    <h4>Deseases</h4>
 	    
 	    <table class="table table-striped">
-	        <c:if test="${not empty deseases}">
-	        <c:forEach var="desease" items="${deseases}">
+	        <c:if test="${not empty appointment.diagnosis and not empty appointment.diagnosis.deseases}">
+	        <c:forEach var="desease" items="${appointment.diagnosis.deseases}">
 				<tr>
 	                <td valign="top">
 	                	<dl>
@@ -149,7 +142,7 @@
 	        	</tr>
 			</c:forEach>
 			</c:if>
-			<c:if test="${empty deseases}">
+			<c:if test="${empty appointment.diagnosis or empty appointment.diagnosis.deseases}">
                 	<tr style="text-align:center;">
                 		<td colspan="5">No hay datos</td>
                 	</tr>
@@ -159,8 +152,8 @@
 	    <div class="form-group">
 	    <h4>Medicines</h4>
 		 	<table class="table table-striped">
-	        <c:if test="${not empty medicines}">
-	        <c:forEach var="medicine" items="${medicines}">
+	        <c:if test="${not empty appointment.diagnosis and not empty appointment.diagnosis.medicines}">
+	        <c:forEach var="medicine" items="${appointment.diagnosis.medicines}">
 				<tr>
 	                <td valign="top">
 	                    <dl>
@@ -171,7 +164,7 @@
 	        	</tr>
 			</c:forEach>
 			</c:if>
-			<c:if test="${empty medicines}">
+			<c:if test="${empty appointment.diagnosis or empty appointment.diagnosis.medicines}">
                 	<tr style="text-align:center;">
                 		<td colspan="5">No hay datos</td>
                 	</tr>
@@ -184,7 +177,7 @@
                             aria-labelledby="list-billing-list">
 
             <div class="form-group">                        
-            <h4>Receipt</h4>
+            <h4>Bill</h4>
 		 	<table class="table table-striped">
 	        <c:if test="${not empty appointment.bill}">
 	        <tr>
@@ -192,7 +185,22 @@
                                         <td>
                                             <c:out value="${appointment.bill.price}" />
                                         </td>
+                                        
+                                    </tr> <tr>
+                                    <th>IVA</th>
+                                        <td>
+                                            <c:out value="${appointment.bill.iva}%" />
+                                        </td>
+                                        
                                     </tr>
+                                     <tr>
+                                    <th>Final price</th>
+                                        <td>
+                                            <c:out value="${appointment.bill.finalPrice}" />
+                                        </td>
+                                        
+                                    </tr>
+                                    
 			</c:if>
 			<c:if test="${empty appointment.bill}">
                 	<tr style="text-align:center;">
@@ -202,10 +210,6 @@
 				</table>
 				</div>
 			</div>
-                        <div class="tab-pane fade" id="list-summary" role="tabpanel"
-                            aria-labelledby="list-summary-list">
-                            <p>Summary</p>
-                        </div>
 
                 </div>
 
