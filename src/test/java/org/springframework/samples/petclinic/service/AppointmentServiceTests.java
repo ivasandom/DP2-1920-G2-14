@@ -49,38 +49,37 @@ import com.stripe.model.PaymentMethod;
 public class AppointmentServiceTests {
 
 	@Autowired
-	protected AppointmentService	appointmentService;
+	protected AppointmentService appointmentService;
 
 	@Autowired
-	protected ProfessionalService	professionalService;
+	protected ProfessionalService professionalService;
 
 	@Autowired
-	protected CenterService			centerService;
+	protected CenterService centerService;
 
 	@Autowired
-	protected ClientService			clientService;
+	protected ClientService clientService;
 
 	@Autowired
-	protected SpecialtyService		specialtyService;
+	protected SpecialtyService specialtyService;
 
 	@Autowired
-	protected MedicineService		medicineService;
+	protected MedicineService medicineService;
 
 	@Autowired
-	protected DeseaseService		deseaseService;
+	protected DeseaseService deseaseService;
 
 	@Autowired
-	protected DiagnosisService		diagnosisService;
+	protected DiagnosisService diagnosisService;
 
 	@Autowired
-	protected StripeService			stripeService;
+	protected StripeService stripeService;
 
 	@Autowired
-	protected TransactionService	transactionService;
+	protected TransactionService transactionService;
 
 	@Value("${STRIPE_PUBLIC_KEY}")
-	private String					API_PUBLIC_KEY;
-
+	private String API_PUBLIC_KEY;
 
 	@Test
 	void shouldFindAllAppointments() {
@@ -92,19 +91,19 @@ public class AppointmentServiceTests {
 	void shouldFindAppointmentsStartTimeByProfessionalAndDate() {
 		Professional professional = this.professionalService.findById(1).get();
 		LocalDate date = LocalDate.of(2020, 05, 04);
-		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date,
+				professional);
 
 		Assertions.assertThat(startTimes.iterator().next().getHour()).isEqualTo(8);
 		Assertions.assertThat(startTimes.iterator().next().getMinute()).isEqualTo(00);
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07"
-	})
+	@CsvSource({ "1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07" })
 	void shouldNotFindAppointmentsStartTimeByWrongProfessionalAndDate(final int professionalId, final LocalDate date) {
 		Professional professional = this.professionalService.findById(professionalId).get();
-		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date,
+				professional);
 
 		Assertions.assertThat(startTimes.size()).isEqualTo(0);
 
@@ -113,14 +112,16 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsByClientId() {
 
-		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(1);
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByClientId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate())
+				.isEqualTo(LocalDate.of(2020, 02, 20));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime())
+				.isEqualTo(LocalTime.of(8, 30));
 	}
 
 	@Test
@@ -131,8 +132,10 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 45));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 12));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate())
+				.isEqualTo(LocalDate.of(2020, 02, 12));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime())
+				.isEqualTo(LocalTime.of(8, 15));
 
 	}
 
@@ -185,10 +188,9 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-05-04, 08:00, test"
-	})
-	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
+	@CsvSource({ "pepegotera, 2020-05-04, 08:00, test" })
+	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime,
+			final String reason) {
 		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1).get();
 
 		Appointment appointment = new Appointment();
@@ -216,9 +218,7 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"-1", "1000", "1000000000"
-	})
+	@CsvSource({ "-1", "1000", "1000000000" })
 	void shouldNotFindAppointmentWithWrongId(final int id) {
 		Assertions.assertThat(this.appointmentService.findAppointmentById(id).isPresent()).isEqualTo(false);
 	}
@@ -236,9 +236,7 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-11-11, 10:15"
-	})
+	@CsvSource({ "pepegotera, 2020-11-11, 10:15" })
 	@Transactional
 	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
@@ -264,11 +262,10 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test"
-	})
+	@CsvSource({ "pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test" })
 	@Transactional
-	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date, final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) {
+	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date,
+			final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
@@ -286,7 +283,8 @@ public class AppointmentServiceTests {
 		appointment.setSpecialty(specialty);
 		appointment.setStartTime(startTime);
 
-		//Now the service will call the save method of diagnosis service to save this diagnosis
+		// Now the service will call the save method of diagnosis service to save this
+		// diagnosis
 		Diagnosis diagnosis = new Diagnosis();
 		diagnosis.setDate(diagnosisDate);
 		diagnosis.setDescription(diagnosisDescription);
@@ -304,114 +302,14 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"2020-11-11, 11:15"
-	})
-	@Transactional
-	public void shouldChargeAppointment(final LocalDate date, final LocalTime startTime) throws Exception {
-		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		int found = transactions.size();
-
-		Appointment appointment = new Appointment();
-		Professional professional = this.professionalService.findById(1).get();
-		Center center = this.centerService.findCenterById(1).get();
-
-		Client client = new Client();
-		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
-		client.setBirthDate(birthdate);
-		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.NIF);
-		client.setEmail("frankcuesta@gmail.com");
-		client.setFirstName("Frank");
-		client.setHealthCardNumber("0000000003");
-		client.setHealthInsurance(HealthInsurance.ADESLAS);
-		client.setLastName("Cuesta");
-		Date registrationDate = new Date(2020 - 03 - 03);
-		client.setRegistrationDate(registrationDate);
-
-		Set<Appointment> appointments = Collections.emptySet();
-		client.setAppointments(appointments);
-
-		User user = new User();
-		user.setEnabled(true);
-		user.setUsername("frankcuesta");
-		user.setPassword("frankcuesta");
-		client.setUser(user);
-		client.setStripeId("cus_HCu4aQVElVti9J");
-
-		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
-		//System.out.println("================================================" + paymentMethods.stream().collect(Collectors.toList()).get(0));
-		appointment.setProfessional(professional);
-		appointment.setCenter(center);
-		appointment.setClient(client);
-		appointment.setDate(date);
-		appointment.setSpecialty(specialty);
-		appointment.setStartTime(startTime);
-		appointment.setReason("test");
-
-		//Bill must be created for the method
-		Bill bill = new Bill();
-		bill.setIva(0.21);
-		bill.setName(appointment.getClient().getFullName());
-		bill.setDocument(appointment.getClient().getDocument());
-		bill.setDocumentType(appointment.getClient().getDocumentType());
-		bill.setPrice(100.);
-		appointment.setBill(bill);
-
-		//		Map<String, Object> card2 = new HashMap<>();
-		//		Map<String, Object> billingDetails = new HashMap<>();
-		//		billingDetails.put("phone", "0000000000");
-		//		card2.put("number", "4242424242424242");
-		//		card2.put("exp_month", 5);
-		//		card2.put("exp_year", 2021);
-		//		card2.put("cvc", "314");
-		//		Map<String, Object> params3 = new HashMap<>();
-		//		params3.put("billing_details", billingDetails);
-		//		params3.put("type", "card");
-		//		params3.put("card", card2);
-
-		//com.stripe.model.PaymentMethod pay = com.stripe.model.PaymentMethod.create(params3);
-		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
-		PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(token1);
-		//		Set<PaymentMethod> paymentMethods = new HashSet<>();
-		//		PaymentMethod paymentMethod = new PaymentMethod();
-		//		paymentMethod.setToken(pay.getId());
-		//		paymentMethods.add(pay);
-		//		client.setPaymentMethods(paymentMethods);
-
-		//	PaymentIntentCreateParams params2 = PaymentIntentCreateParams.builder().setAmount(1099L).setCurrency("eur").addPaymentMethodType("card").setPaymentMethod(pay.getId()).putMetadata("order_id", "6735").build();
-
-		//	PaymentIntent paymentIntent = PaymentIntent.create(params2);
-		//		System.out.println("==========00" + paymentIntent);
-		//		System.out.println("9999999" + pay);
-
-		String costumerId = "cus_HCpLlL5UZqugk1";
-		PaymentIntent paymentIntent = this.stripeService.charge(paymentMethod.getId(), 100., costumerId);
-		//Later, we create a transaction
-		Transaction transaction = new Transaction();
-		transaction.setType(TransactionType.CHARGE);
-		transaction.setBill(appointment.getBill());
-		transaction.setToken(paymentIntent.getId());
-		transaction.setAmount((double) paymentIntent.getAmount() / 100);
-		transaction.setStatus(paymentIntent.getStatus());
-		transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
-		System.out.println("------------9" + transaction);
-		this.transactionService.saveTransaction(transaction);
-
-		transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		Assertions.assertThat(transactions.size()).isEqualTo(found + 1);
-	}
-
-	@ParameterizedTest
-	@CsvSource({
-		"123, pepegotera", "122, pepegotera"
-	})
+	@CsvSource({ "123, pepegotera", "122, pepegotera" })
 	@Transactional
 	void shouldDeleteAppointment(final int id, final String username) throws Exception {
 
 		Client client = this.clientService.findClientByUsername(username);
 
-		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		Collection<ListAppointmentsClient> appointments = this.appointmentService
+				.findAppointmentByClientId(client.getId());
 		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
 
 		int count = appointments.size();
@@ -420,7 +318,7 @@ public class AppointmentServiceTests {
 
 		this.appointmentService.delete(appointment.get());
 
-		appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		appointments = this.appointmentService.findAppointmentByClientId(client.getId());
 		org.assertj.core.api.Assertions.assertThat(appointments.size()).isEqualTo(count - 1);
 
 	}
@@ -436,17 +334,86 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"124", "126"
-	})
+	@CsvSource({ "124", "126" })
 	@Transactional
-	void shouldNotDeletePassedApp(final int id) throws Exception {
+	void shouldNotDeletePassedApplication(final int id) throws Exception {
 
 		Optional<Appointment> app = this.appointmentService.findAppointmentById(id);
 
 		org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {
 			this.appointmentService.delete(app.get());
 		}, "You cannot delete a passed appointment");
+	}
+	
+	
+	@Test
+	@Transactional
+	void testGetNumberOfPendingAppointments() {
+		Long pendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
+		
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+		
+		appointment.setStatus(AppointmentStatus.PENDING);
+		this.appointmentService.saveAppointment(appointment);
+		
+		Assertions.assertThat(pendingAppointments).isEqualTo(127L);
+		Long newPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
+		Assertions.assertThat(newPendingAppointments).isEqualTo(pendingAppointments + 1L);
+	}
+	
+	@Test
+	@Transactional
+	void testGetNumberOfAbsentAppointments() {
+		Long absentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
+		
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+		
+		appointment.setStatus(AppointmentStatus.ABSENT);
+		this.appointmentService.saveAppointment(appointment);
+		
+		Assertions.assertThat(absentAppointments).isEqualTo(0L);
+		Long newAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
+		Assertions.assertThat(newAbsentAppointments).isEqualTo(absentAppointments + 1L);
+	}
+	
+	@Test
+	@Transactional
+	void testGetNumberOfCompletedAppointments() {
+		Long completedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
+		
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+		
+		appointment.setStatus(AppointmentStatus.COMPLETED);
+		this.appointmentService.saveAppointment(appointment);
+		
+		Assertions.assertThat(completedAppointments).isEqualTo(3L);
+		Long newCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
+		Assertions.assertThat(newCompletedAppointments).isEqualTo(completedAppointments + 1L);
+		
 	}
 
 }

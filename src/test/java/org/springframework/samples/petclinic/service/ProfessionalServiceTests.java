@@ -24,7 +24,7 @@ import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.web.DuplicatedUsernameException;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

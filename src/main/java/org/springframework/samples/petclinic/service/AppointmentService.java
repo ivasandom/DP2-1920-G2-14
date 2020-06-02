@@ -56,7 +56,7 @@ public class AppointmentService {
 		return this.appointmentRepository.findAppointmentStartTimesByProfessionalAndDate(date, professional);
 	}
 
-	public Collection<ListAppointmentsClient> findAppointmentByUserId(final int id) {
+	public Collection<ListAppointmentsClient> findAppointmentByClientId(final int id) {
 		return this.appointmentRepository.findAppointmentByClientId(id);
 	}
 
@@ -94,28 +94,6 @@ public class AppointmentService {
 
 	}
 
-	@Transactional
-	public void chargeAppointment(final Appointment appointment) throws Exception {
-		if (appointment.getBill() != null && appointment.getBill().getPrice() != null && appointment.getBill().getPrice() > .0) {
-			Client client = appointment.getClient();
-			Collection<PaymentMethod> paymentMethods = client.getPaymentMethods();
-			
-			if (paymentMethods.size() > 0) {
-				PaymentMethod primary = paymentMethods.iterator().next();
-				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getBill().getFinalPrice(), appointment.getClient().getStripeId());
-				// Client charged successfully!
-				Transaction transaction = new Transaction();
-				transaction.setType(TransactionType.CHARGE);
-				transaction.setBill(appointment.getBill());
-				transaction.setToken(paymentIntent.getId());
-				transaction.setAmount((double) paymentIntent.getAmount() / 100);
-				transaction.setStatus(paymentIntent.getStatus());
-				transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
-				transaction.setBill(appointment.getBill());
-				this.transactionService.saveTransaction(transaction);
-			}
-		}
-	}
 
 	@Transactional
 	public void delete(final Appointment appointment) throws Exception {

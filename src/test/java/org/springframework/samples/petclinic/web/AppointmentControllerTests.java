@@ -138,7 +138,7 @@ public class AppointmentControllerTests {
 		BDDMockito.given(this.professionalService.findProByUsername("professional")).willReturn(this.professional);
 		BDDMockito.given(this.professionalService.findById(AppointmentControllerTests.TEST_PROFESSIONAL_ID)).willReturn(Optional.of(this.professional));
 
-		BDDMockito.given(this.appointmentService.findAppointmentByUserId(this.client.getId())).willReturn(Lists.newArrayList(this.listAppointmentsClient));
+		BDDMockito.given(this.appointmentService.findAppointmentByClientId(this.client.getId())).willReturn(Lists.newArrayList(this.listAppointmentsClient));
 		BDDMockito.given(this.appointmentService.findTodayPendingByProfessionalId(this.professional.getId())).willReturn(Lists.newArrayList(this.appointment));
 		BDDMockito.given(this.appointmentService.findTodayCompletedByProfessionalId(this.professional.getId())).willReturn(Lists.newArrayList(this.appointment));
 		BDDMockito.given(this.appointmentService.findAppointmentById(this.appointment.getId())).willReturn(Optional.of(this.appointment));

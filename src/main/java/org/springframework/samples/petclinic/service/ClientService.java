@@ -9,7 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.repository.ClientRepository;
-import org.springframework.samples.petclinic.web.DuplicatedUsernameException;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
