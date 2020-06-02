@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -43,7 +42,7 @@ public class AuthoritiesServiceTests {
 
 		this.authoritiesService.saveAuthorities(authorities);
 
-		Assertions.assertThat(AuthoritiesServiceTests.getLastElement(this.authoritiesService.findAll()).equals(authorities));
+		org.junit.jupiter.api.Assertions.assertEquals(AuthoritiesServiceTests.getLastElement(this.authoritiesService.findAll()), authorities);
 	}
 
 	public static <T> T getLastElement(final Iterable<T> elements) {
