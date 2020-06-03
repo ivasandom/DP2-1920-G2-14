@@ -30,6 +30,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
+	
+	private String admin = "admin";
+	
+	private String professional = "professional";
+	
+	private String client = "client";
 
 
 	@Override
@@ -39,17 +45,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/", "/oups").permitAll()
 			.antMatchers("/clients/**").permitAll()
-			.antMatchers("/admin/**").hasAnyAuthority("admin")
-			.antMatchers("/owners/**").hasAnyAuthority("owner", "admin")
+			.antMatchers("/admin/**").hasAnyAuthority(admin)
+			.antMatchers("/owners/**").hasAnyAuthority("owner", admin)
 			.antMatchers("/professionals/filter").permitAll()
 			.antMatchers("/professionals").permitAll()
 			.antMatchers("/professionals/find").permitAll()
-			.antMatchers("/professionals/**").hasAnyAuthority("professional", "admin")
-			.antMatchers("/appointments/pro").hasAnyAuthority("professional")
-			.antMatchers("/appointments/*/consultation").hasAnyAuthority("professional")
-			.antMatchers("/appointments/*/details").hasAnyAuthority("client")
-			.antMatchers("/appointments/*/absent").hasAnyAuthority("professional")
-			.antMatchers("/appointments/**").hasAnyAuthority("client")
+			.antMatchers("/professionals/**").hasAnyAuthority(professional, admin)
+			.antMatchers("/appointments/pro").hasAnyAuthority(professional)
+			.antMatchers("/appointments/*/consultation").hasAnyAuthority(professional)
+			.antMatchers("/appointments/*/details").hasAnyAuthority(client)
+			.antMatchers("/appointments/*/absent").hasAnyAuthority(professional)
+			.antMatchers("/appointments/**").hasAnyAuthority(client)
 			.antMatchers("/payments/**").permitAll()
 			.antMatchers("/vets/**")
 			.authenticated().anyRequest().denyAll()
