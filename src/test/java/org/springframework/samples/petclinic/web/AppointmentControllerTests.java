@@ -1,6 +1,14 @@
 
 package org.springframework.samples.petclinic.web;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -52,10 +60,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = AppointmentController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 public class AppointmentControllerTests {
@@ -158,24 +163,32 @@ public class AppointmentControllerTests {
 	@Test
 	void testlistAppointments() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("appointments"))
-			.andExpect(MockMvcResultMatchers.view().name("appointments/list"));
+		this.mockMvc.perform(get("/appointments"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("appointments"))
+				.andExpect(view().name("appointments/list"));
 	}
-
+	
 	@WithMockUser(value = "professional")
 	@Test
 	void testListAppointmentsProfessional() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/pro")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("nextAppointment"))
-			.andExpect(MockMvcResultMatchers.model().attributeExists("pendingAppointments")).andExpect(MockMvcResultMatchers.model().attributeExists("completedAppointments")).andExpect(MockMvcResultMatchers.view().name("appointments/pro"));
+		this.mockMvc.perform(get("/appointments/pro"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("nextAppointment"))
+				.andExpect(model().attributeExists("pendingAppointments"))
+				.andExpect(model().attributeExists("completedAppointments"))
+				.andExpect(view().name("appointments/pro"));
 	}
-
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitCreationForm() throws Exception {
 
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/new")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeExists("appointment"))
-			.andExpect(MockMvcResultMatchers.view().name("appointments/new"));
+		this.mockMvc.perform(get("/appointments/new"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("appointment"))
+				.andExpect(view().name("appointments/new"));
 	}
 
 	@WithMockUser(value = "frankcuesta")
@@ -183,9 +196,17 @@ public class AppointmentControllerTests {
 	void testProcessCreationFormSuccess() throws Exception {
 		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/appointments/new").with(SecurityMockMvcRequestPostProcessors.csrf()).param("date", dia).param("reason", "my head hurts").param("startTime", hora).param("center.id", "1").param("specialty.id", "1")
-			.param("professional.id", "1")).andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/appointments"));
+		
+		this.mockMvc.perform(post("/appointments/new")
+						.with(csrf())
+						.param("date", dia)
+						.param("reason", "my head hurts")
+						.param("startTime", hora)
+						.param("center.id", "1")
+						.param("specialty.id", "1")
+						.param("professional.id", "1"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments"));
 	}
 
 	@WithMockUser(value = "spring")
@@ -193,97 +214,132 @@ public class AppointmentControllerTests {
 	void testProcessCreationFormHasErrors() throws Exception {
 		String dia = LocalDate.of(2020, 12, 03).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		String hora = LocalTime.of(10, 15, 00).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-		this.mockMvc
-			.perform(MockMvcRequestBuilders.post("/appointments/new").with(SecurityMockMvcRequestPostProcessors.csrf()).param("date", dia).param("startTime", hora).param("reason", "my head hurts").param("center.id", "").param("professional.id", ""))
-			.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.model().attributeHasErrors("appointment")).andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("appointment", "center", "professional", "specialty"))
-			.andExpect(MockMvcResultMatchers.view().name("appointments/new"));
+		
+		this.mockMvc.perform(post("/appointments/new")
+						.with(csrf())
+						.param("date", dia)
+						.param("startTime", hora)
+						.param("reason", "my head hurts")
+						.param("center.id", "")
+						.param("professional.id", ""))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeHasErrors("appointment"))
+				.andExpect(model().attributeHasFieldErrors("appointment", "center", "professional", "specialty"))
+				.andExpect(view().name("appointments/new"));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testMarkAbsent() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/absent", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf())).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-			.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+		this.mockMvc
+				.perform(post("/appointments/{appointmentId}/absent", TEST_APPOINTMENT_ID)
+						.with(csrf()))					
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
-	@WithMockUser(username = "manucar")
+	@WithMockUser(username = "spring")
 	@Test
 	void testAppointmentConsultationForm() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-			.andExpect(MockMvcResultMatchers.model().attributeExists("medicineList", "appointment", "deseaseList")).andExpect(MockMvcResultMatchers.view().name("appointments/consultationPro"));
+		this.mockMvc.perform(get("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(model().attributeExists("medicineList", "appointment", "deseaseList"))
+				.andExpect(view().name("appointments/consultationPro"));
 
 	}
-
-	@WithMockUser(username = "manucar")
+	
+	@WithMockUser(username = "spring")
 	@Test
 	void testAppointmentConsultationFormCompletedRedirect() throws Exception {
 		this.appointment.setStatus(AppointmentStatus.COMPLETED);
-
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-			.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+		
+		this.mockMvc.perform(get("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessAppointmentConsultationFormSuccess() throws Exception {
-		this.mockMvc
-			.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf()).param("diagnosis.description", "healthy")
-				.param("diagnosis.medicines.id", "1").param("diagnosis.deseases.id", "1").param("bill.price", "10").param("bill.iva", "21"))
-			.andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",TEST_APPOINTMENT_ID)
+						.with(csrf())
+						.param("diagnosis.description", "healthy")
+						.param("diagnosis.medicines.id", "1")
+						.param("diagnosis.deseases.id", "1")
+						.param("bill.price", "10")
+						.param("bill.iva", "21"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 	}
-
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessAppointmentConsultationFormHasErrors() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf()).param("bill.price", "-10").param("bill.iva", "500"))
-			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("appointment", "diagnosis.description", "diagnosis.medicines", "diagnosis.deseases", "bill.price", "bill.iva"))
-			.andExpect(MockMvcResultMatchers.view().name("appointments/consultationPro"));
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation",TEST_APPOINTMENT_ID)
+						.with(csrf())
+						.param("bill.price", "-10")
+						.param("bill.iva", "500"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(model().attributeHasFieldErrors("appointment", 
+						"diagnosis.description", "bill.price", "bill.iva"))
+				.andExpect(view().name("appointments/consultationPro"));
 	}
-
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessAppointmentConsultationFormCompletedRedirect() throws Exception {
 		this.appointment.setStatus(AppointmentStatus.COMPLETED);
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/appointments/{appointmentId}/consultation", AppointmentControllerTests.TEST_APPOINTMENT_ID).with(SecurityMockMvcRequestPostProcessors.csrf()))
-			.andExpect(MockMvcResultMatchers.status().is3xxRedirection()).andExpect(MockMvcResultMatchers.view().name("redirect:/appointments/pro"));
+		
+		this.mockMvc.perform(post("/appointments/{appointmentId}/consultation", TEST_APPOINTMENT_ID)
+						.with(csrf()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments/pro"));
 	}
 
 	@WithMockUser(username = "frankcuesta")
 	@Test
 	void testShouldShowAppointment() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-			.andExpect(MockMvcResultMatchers.view().name("appointments/details"));
+		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
+				.andExpect(status().isOk())
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(view().name("appointments/details"));
 	}
 
 	@WithMockUser(username = "pepegotera")
 	@Test
 	void testShouldNotShowAppointment() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/{appointmentId}/details", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.model().attribute("message", "You cannot show another user's appointment")).andExpect(MockMvcResultMatchers.view().name("errors/generic"));
+		this.mockMvc.perform(get("/appointments/{appointmentId}/details", TEST_APPOINTMENT_ID))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute("message", "You cannot show another user's appointment"))
+				.andExpect(view().name("errors/generic"));
 	}
 
 	@WithMockUser(username = "frankcuesta")
 	@Test
 	void testShouldDeleteAppointment() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-			.andExpect(MockMvcResultMatchers.view().name("redirect:/appointments"));
+		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/appointments"));
 	}
 
 	@WithMockUser(username = "pepegotera")
 	@Test
 	void testShouldNotDeleteAppointmentOfOtherUser() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/delete/{appointmentId}", AppointmentControllerTests.TEST_APPOINTMENT_ID)).andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.model().attribute("message", "You cannot delete another user's appointment")).andExpect(MockMvcResultMatchers.view().name("errors/generic"));
+		this.mockMvc.perform(get("/appointments/delete/{appointmentId}", TEST_APPOINTMENT_ID))
+				.andExpect(status().isOk())
+				.andExpect(model().attribute("message", "You cannot delete another user's appointment"))
+				.andExpect(view().name("errors/generic"));
 	}
-
+	
 	@WithMockUser(username = "spring")
 	@Test
 	void testBusyStartTimes() throws Exception {
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/appointments/busy").queryParam("date", "09/05/2020").queryParam("professionalId", "1")).andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.jsonPath("$[0]", Matchers.is("10:15:00")));
+		this.mockMvc.perform(get("/appointments/busy")
+							.queryParam("date", "09/05/2020")
+							.queryParam("professionalId", "1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0]", Matchers.is("10:15:00")));
 	}
 
 	public void inicializar() {

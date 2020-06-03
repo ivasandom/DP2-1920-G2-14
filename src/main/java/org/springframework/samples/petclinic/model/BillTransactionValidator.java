@@ -18,8 +18,9 @@ public class BillTransactionValidator implements org.springframework.validation.
 
 		Transaction transaction = (Transaction) obj;
 		
-		if (!errors.hasFieldErrors("amount")) {
-			if (transaction.getAmount().compareTo(0.0) != 1) {
+		
+		if (!errors.hasFieldErrors("bill") && !errors.hasFieldErrors("amount")) {
+			if (transaction.getAmount().compareTo(0.0) < 1) {
 				errors.rejectValue("amount", "amount must be bigger than zero");
 			}
 			if (transaction.getAmount() > transaction.getBill().getFinalPrice() - transaction.getBill().getTotalPaid()) {
@@ -27,7 +28,7 @@ public class BillTransactionValidator implements org.springframework.validation.
 			}
 		}
 
-		if (!errors.hasFieldErrors("paymentMethod")) {
+		if (!errors.hasFieldErrors("bill") && !errors.hasFieldErrors("paymentMethod")) {
 			if (transaction.getPaymentMethod() == null || transaction.getPaymentMethod().getToken() == null
 					|| transaction.getPaymentMethod().getToken().isEmpty()) {
 				errors.rejectValue("paymentMethod.token", "payment method must be valid");

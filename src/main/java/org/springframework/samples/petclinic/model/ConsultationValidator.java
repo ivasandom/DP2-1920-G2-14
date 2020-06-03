@@ -15,21 +15,22 @@ public class ConsultationValidator implements Validator {
 	@Override
 	public void validate(final Object obj, final Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diagnosis.description", "description must no be empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diagnosis.deseases", "deseases must no be empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "diagnosis.medicines", "medicines must no be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bill.price", "price must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bill.iva", "iva must not be empty");
 
 		Appointment appointment = (Appointment) obj;
 
 		if (!errors.hasFieldErrors("bill.price")) {
-			if(appointment.getBill().getPrice() <= 0.) {
+			if (appointment.getBill().getPrice() <= 0.) {
 				errors.rejectValue("bill.price", "price must be positive");
 			}
 		}
-		
-		if (appointment.getBill().getIva() == null || appointment.getBill().getIva() < 0. || appointment.getBill().getIva() > 100.) {
-			errors.rejectValue("bill.iva", "iva must be between 0 and 100");
+
+		if (!errors.hasFieldErrors("bill.iva")) {
+			if (appointment.getBill().getIva() < 0. || appointment.getBill().getIva() > 100.) {
+				errors.rejectValue("bill.iva", "iva must be between 0 and 100");
+			}
 		}
+
 	}
 }

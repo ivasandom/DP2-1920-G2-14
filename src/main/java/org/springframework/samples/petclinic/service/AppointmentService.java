@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Medicine;
@@ -72,26 +73,28 @@ public class AppointmentService {
 	public Collection<Desease> findDeseases(final int id) {
 		return this.appointmentRepository.findDeseases(id);
 	}
-
-	public Optional<Appointment> findAppointmentByDateTimeAndProfessional(final LocalDate date, final LocalTime startTime, final Professional professional) {
-		return ((AppointmentService) this.appointmentRepository).findAppointmentByDateTimeAndProfessional(date, startTime, professional);
+	
+	public Optional<Appointment> findAppointmentByDateTimeAndProfessional(LocalDate date, LocalTime startTime, 
+			Professional professional) {
+		return this.appointmentRepository.findAppointmentByDateTimeAndProfessional(date, startTime, professional);
 	}
 
 	@Transactional
 	public void saveAppointment(final Appointment appointment) throws DataAccessException, ProfessionalBusyException {
-		Optional<Appointment> existAppointment = this.findAppointmentByDateTimeAndProfessional(appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
-
+		Optional<Appointment> existAppointment = this.findAppointmentByDateTimeAndProfessional(appointment.getDate(), appointment.getStartTime(), 
+				appointment.getProfessional());
+		
 		if (existAppointment.isPresent() && !existAppointment.get().getId().equals(appointment.getId())) {
 			throw new ProfessionalBusyException();
 		} else {
 			this.appointmentRepository.save(appointment);
-
 			if (appointment.getDiagnosis() != null) {
 				this.diagnosisService.saveDiagnosis(appointment.getDiagnosis());
 			}
 		}
 
 	}
+
 
 	@Transactional
 	public void delete(final Appointment appointment) throws Exception {

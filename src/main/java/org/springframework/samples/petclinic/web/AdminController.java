@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
+import org.springframework.samples.petclinic.model.AppointmentType;
 import org.springframework.samples.petclinic.model.AppointmentValidator;
 import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.BillTransactionValidator;
@@ -43,6 +43,7 @@ import org.springframework.samples.petclinic.model.ProfessionalValidator;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Transaction;
 import org.springframework.samples.petclinic.model.TransactionType;
+import org.springframework.samples.petclinic.projections.BilledPerDay;
 import org.springframework.samples.petclinic.service.AppointmentService;
 import org.springframework.samples.petclinic.service.BillService;
 import org.springframework.samples.petclinic.service.CenterService;
@@ -52,6 +53,8 @@ import org.springframework.samples.petclinic.service.ProfessionalService;
 import org.springframework.samples.petclinic.service.SpecialtyService;
 import org.springframework.samples.petclinic.service.StripeService;
 import org.springframework.samples.petclinic.service.TransactionService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
+import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -109,11 +112,11 @@ public class AdminController {
 		Integer numProfessionals = this.professionalService.professionalCount();
 		Integer numAppointments = this.appointmentService.appointmentCount();
 		Double totalBilled = this.billService.getTotalBilled();
-		Object[] billedPerDay = this.billService.getBilledPerDay();
+		Collection<BilledPerDay> billedPerDay = this.billService.getBilledPerDay();
 		Long numCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
 		Long numPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
 		Long numAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
-		System.out.println(Arrays.toString(billedPerDay));
+
 		model.put("numClients", numClients);
 		model.put("numProfessionals", numProfessionals);
 		model.put("numAppointments", numAppointments);
@@ -158,7 +161,7 @@ public class AdminController {
 
 	@PostMapping("/clients/{clientId}/edit")
 	public String processClientEditForm(@Valid final Client client, final BindingResult result,
-			@PathVariable("clientId") final int clientId, final ModelMap model) throws Exception {
+			@PathVariable("clientId") final int clientId, final ModelMap model) {
 		ClientValidator clientValidator = new ClientValidator();
 		clientValidator.validate(client, result);
 
@@ -169,7 +172,18 @@ public class AdminController {
 			return "admin/clients/form";
 		} else {
 			client.setId(clientId);
-			this.clientService.saveClient(client);
+			
+			try {
+				this.clientService.saveClient(client);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				model.put("client", client);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				model.put("healthInsurances", HealthInsurance.values());
+				return "admin/clients/form";
+			}
+			
 			return "redirect:/admin/clients/" + clientId;
 		}
 	}
@@ -196,7 +210,17 @@ public class AdminController {
 			model.put("healthInsurances", HealthInsurance.values());
 			return "admin/clients/form";
 		} else {
-			this.clientService.saveClient(client);
+			try {
+				this.clientService.saveClient(client);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				model.put("client", client);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				model.put("healthInsurances", HealthInsurance.values());
+				return "admin/clients/form";
+			}
+			
 			return "redirect:/admin/clients";
 		}
 	}
@@ -255,7 +279,6 @@ public class AdminController {
 		professionalValidator.validate(professional, result);
 
 		if (result.hasErrors()) {
-			System.out.println("errors" + result.getFieldErrors());
 			Iterable<Center> centers = this.centerService.findAll();
 			Iterable<Specialty> specialties = this.specialtyService.findAll();
 
@@ -266,7 +289,21 @@ public class AdminController {
 			return "admin/professionals/form";
 		} else {
 			professional.setId(professionalId);
-			this.professionalService.saveProfessional(professional);
+			try {
+				this.professionalService.saveProfessional(professional);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("professional", professional);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				return "admin/professionals/form";
+			}
+			
 			return "redirect:/admin/professionals/" + professionalId;
 		}
 	}
@@ -304,7 +341,22 @@ public class AdminController {
 			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			return "admin/professionals/form";
 		} else {
-			this.professionalService.saveProfessional(professional);
+			
+			try {
+				this.professionalService.saveProfessional(professional);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("professional", professional);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				return "admin/professionals/form";
+			}
+			
 			return "redirect:/admin/professionals";
 		}
 	}
@@ -380,7 +432,24 @@ public class AdminController {
 			return "admin/appointments/form";
 		} else {
 			appointment.setId(appointmentId);
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				Iterable<Client> clients = this.clientService.findAll();
+				Iterable<Professional> professionals = this.professionalService.findAll();
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("appointment", appointment);
+				model.put("clients", clients);
+				model.put("professionals", professionals);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("statusChoices", AppointmentStatus.values());
+				return "admin/appointments/form";
+			}
 			return "redirect:/admin/appointments/" + appointmentId;
 		}
 	}
@@ -428,7 +497,24 @@ public class AdminController {
 			model.put("statusChoices", AppointmentStatus.values());
 			return "admin/appointments/form";
 		} else {
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				Iterable<Client> clients = this.clientService.findAll();
+				Iterable<Professional> professionals = this.professionalService.findAll();
+				Iterable<Center> centers = this.centerService.findAll();
+				Iterable<Specialty> specialties = this.specialtyService.findAll();
+
+				model.put("appointment", appointment);
+				model.put("clients", clients);
+				model.put("professionals", professionals);
+				model.put("centers", centers);
+				model.put("specialties", specialties);
+				model.put("statusChoices", AppointmentStatus.values());
+				return "admin/appointments/form";
+			}
 			return "redirect:/admin/appointments";
 		}
 	}
@@ -442,7 +528,7 @@ public class AdminController {
 				try {
 					this.appointmentService.delete(appointment);
 				} catch (Exception e) {
-					new Exception();
+					return "redirect:/error";
 				}
 			}
 			return "redirect:/admin/appointments";
@@ -586,7 +672,7 @@ public class AdminController {
 
 					transactionRefund.setAmount(stripeRefund.getAmount() * 0.01);
 					transactionRefund.setToken(stripeRefund.getId());
-					transactionRefund.setSuccess(stripeRefund.getStatus() == "succeeded");
+					transactionRefund.setSuccess(stripeRefund.getStatus().equals("succeeded"));
 					transactionRefund.setStatus(stripeRefund.getStatus());
 				}
 

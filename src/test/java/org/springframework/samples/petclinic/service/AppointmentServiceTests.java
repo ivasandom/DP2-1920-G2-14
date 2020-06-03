@@ -28,6 +28,7 @@ import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
 import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,38 +38,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class AppointmentServiceTests {
 
 	@Autowired
-	protected AppointmentService	appointmentService;
+	protected AppointmentService appointmentService;
 
 	@Autowired
-	protected ProfessionalService	professionalService;
+	protected ProfessionalService professionalService;
 
 	@Autowired
-	protected CenterService			centerService;
+	protected CenterService centerService;
 
 	@Autowired
-	protected ClientService			clientService;
+	protected ClientService clientService;
 
 	@Autowired
-	protected SpecialtyService		specialtyService;
+	protected SpecialtyService specialtyService;
 
 	@Autowired
-	protected MedicineService		medicineService;
+	protected MedicineService medicineService;
 
 	@Autowired
-	protected DeseaseService		deseaseService;
+	protected DeseaseService deseaseService;
 
 	@Autowired
-	protected DiagnosisService		diagnosisService;
+	protected DiagnosisService diagnosisService;
 
 	@Autowired
-	protected StripeService			stripeService;
+	protected StripeService stripeService;
 
 	@Autowired
-	protected TransactionService	transactionService;
+	protected TransactionService transactionService;
 
 	@Value("${STRIPE_PUBLIC_KEY}")
-	private String					API_PUBLIC_KEY;
-
+	private String API_PUBLIC_KEY;
 
 	@Test
 	void shouldFindAllAppointments() {
@@ -80,19 +80,19 @@ public class AppointmentServiceTests {
 	void shouldFindAppointmentsStartTimeByProfessionalAndDate() {
 		Professional professional = this.professionalService.findById(1).get();
 		LocalDate date = LocalDate.of(2020, 05, 04);
-		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date,
+				professional);
 
 		Assertions.assertThat(startTimes.iterator().next().getHour()).isEqualTo(8);
 		Assertions.assertThat(startTimes.iterator().next().getMinute()).isEqualTo(00);
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07"
-	})
+	@CsvSource({ "1, 2020-04-05", "2, 2020-04-06", "3, 2030-04-07" })
 	void shouldNotFindAppointmentsStartTimeByWrongProfessionalAndDate(final int professionalId, final LocalDate date) {
 		Professional professional = this.professionalService.findById(professionalId).get();
-		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional);
+		Collection<LocalTime> startTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date,
+				professional);
 
 		Assertions.assertThat(startTimes.size()).isEqualTo(0);
 
@@ -107,8 +107,10 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 00));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 20));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 30));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate())
+				.isEqualTo(LocalDate.of(2020, 02, 20));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime())
+				.isEqualTo(LocalTime.of(8, 30));
 	}
 
 	@Test
@@ -119,14 +121,17 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 12, 12));
 		Assertions.assertThat(appointments.iterator().next().getStartTime()).isEqualTo(LocalTime.of(8, 45));
 
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate()).isEqualTo(LocalDate.of(2020, 02, 12));
-		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime()).isEqualTo(LocalTime.of(8, 15));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getDate())
+				.isEqualTo(LocalDate.of(2020, 02, 12));
+		Assertions.assertThat(appointments.stream().skip(1).collect(Collectors.toList()).get(0).getStartTime())
+				.isEqualTo(LocalTime.of(8, 15));
 
 	}
 
 	@Test
 	@Transactional
-	public void shouldFindTodayPendingAppointmentsByProfessionalId() throws DataAccessException, ProfessionalBusyException {
+	public void shouldFindTodayPendingAppointmentsByProfessionalId()
+			throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -150,7 +155,8 @@ public class AppointmentServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldFindTodayCompletedAppointmentsByProfessionalId() throws DataAccessException, ProfessionalBusyException {
+	public void shouldFindTodayCompletedAppointmentsByProfessionalId()
+			throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -173,10 +179,9 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-05-04, 08:00, test"
-	})
-	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime, final String reason) {
+	@CsvSource({ "pepegotera, 2020-05-04, 08:00, test" })
+	void shouldFindAppointmentById(final String username, final LocalDate date, final LocalTime startTime,
+			final String reason) {
 		Appointment appointmentFromQuery = this.appointmentService.findAppointmentById(1).get();
 
 		Appointment appointment = new Appointment();
@@ -204,9 +209,7 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"-1", "1000", "1000000000"
-	})
+	@CsvSource({ "-1", "1000", "1000000000" })
 	void shouldNotFindAppointmentWithWrongId(final int id) {
 		Assertions.assertThat(this.appointmentService.findAppointmentById(id).isPresent()).isEqualTo(false);
 	}
@@ -224,11 +227,10 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-11-11, 10:15"
-	})
+	@CsvSource({ "pepegotera, 2020-11-11, 10:15" })
 	@Transactional
-	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) throws DataAccessException, ProfessionalBusyException {
+	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime)
+			throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 
@@ -270,18 +272,19 @@ public class AppointmentServiceTests {
 		appointment.setSpecialty(specialty);
 		appointment.setStartTime(a.get().getStartTime());
 
-		org.junit.jupiter.api.Assertions.assertThrows(ProfessionalBusyException.class, () -> this.appointmentService.saveAppointment(appointment));
 
+		org.junit.jupiter.api.Assertions.assertThrows(ProfessionalBusyException.class,
+				() -> this.appointmentService.saveAppointment(appointment));
 		appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		Assertions.assertThat(appointments.size()).isEqualTo(found);
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test"
-	})
+	@CsvSource({ "pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test" })
 	@Transactional
-	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date, final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) throws DataAccessException, ProfessionalBusyException {
+	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date,
+			final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription)
+			throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
@@ -318,15 +321,14 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"123, pepegotera", "122, pepegotera"
-	})
+	@CsvSource({ "123, pepegotera", "122, pepegotera" })
 	@Transactional
 	void shouldDeleteAppointment(final int id, final String username) throws Exception {
 
 		Client client = this.clientService.findClientByUsername(username);
 
-		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByClientId(client.getId());
+		Collection<ListAppointmentsClient> appointments = this.appointmentService
+				.findAppointmentByClientId(client.getId());
 		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
 
 		int count = appointments.size();
@@ -351,9 +353,7 @@ public class AppointmentServiceTests {
 	}
 
 	@ParameterizedTest
-	@CsvSource({
-		"124", "126"
-	})
+	@CsvSource({ "124", "126" })
 	@Transactional
 	void shouldNotDeletePassedApplication(final int id) throws Exception {
 
@@ -438,12 +438,12 @@ public class AppointmentServiceTests {
 	@Transactional
 	public void shouldFindAppointmentByDateTimeAndProfessional() throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = this.appointmentService.findAppointmentById(1).get();
-
-		Optional<Appointment> a = this.appointmentService.findAppointmentByDateTimeAndProfessional(appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
+		Optional<Appointment> a = this.appointmentService.findAppointmentByDateTimeAndProfessional(
+				appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
 
 		Assertions.assertThat(a).isPresent();
 		Assertions.assertThat(a.get()).isEqualTo(appointment);
-
+		
 	}
 
 }

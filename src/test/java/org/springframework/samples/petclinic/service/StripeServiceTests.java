@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.Refund;
 import com.stripe.model.SetupIntent;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -33,43 +34,82 @@ public class StripeServiceTests {
 	private String					API_PUBLIC_KEY;
 
 
-	//pm_1GeMrkDfDQNZdQMbRGxPDHlz
-
 	@Test
-	void shouldretrievePaymenMethod() throws Exception {
+	void shouldRetrievePaymentMethod() throws Exception {
 		String token1 = "pm_1GeMp7DfDQNZdQMbRXv4nR3i";
 		PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(token1);
-		System.out.println("=========" + paymentMethod + "=============*");
+		
 		Assertions.assertThat(paymentMethod).isNotNull();
+	}
+	
+	@Test
+	void shouldNotRetrievePaymenMethod() throws Exception {
+		String token1 = "not a valid payment method";
+		PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(token1);
+		
+		Assertions.assertThat(paymentMethod).isNull();;
 	}
 
 	@Test
-	void shouldsetupIntent() throws Exception {
+	void shouldSetupIntent() throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("customer", "cus_HCpLlL5UZqugk1");
 		SetupIntent intent = SetupIntent.create(params);
 		SetupIntent sI = this.stripeService.setupIntent("cus_HCpLlL5UZqugk1");
-		System.out.println(sI + "==========================");
+		
 		Assertions.assertThat(sI.getCustomer()).isEqualTo(intent.getCustomer());
 	}
 
 	@Test
 	void shouldCreateCostumer() throws Exception {
-		//		Map<String, Object> params = new HashMap<String, Object>();
 		String email = "frankcuesta@gmail.com";
-		//		params.put("email", email);
-		//		Customer costumer = Customer.create(params);
 		Customer c = this.stripeService.createCustomer(email);
+		
 		Assertions.assertThat(c).isNotNull();
+		Assertions.assertThat(c.getEmail()).isEqualTo(email);
 	}
 
 	@Test
 	void shouldCharge() throws Exception {
 		String costumerId = "cus_HCpLlL5UZqugk1";
 		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
+		
 		PaymentIntent pay = this.stripeService.charge(token1, 100., costumerId);
-		System.out.println("=====================" + pay);
 		Assertions.assertThat(pay).isNotNull();
+		Assertions.assertThat(pay.getAmount()).isEqualTo(10000);
+		Assertions.assertThat(pay.getStatus()).isEqualTo("succeeded");
+	}
+	
+	@Test
+	void shouldNotCharge() throws Exception {
+		String costumerId = "cus_HCpLlL5UZqugk1";
+		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
+
+		org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> this.stripeService.charge(token1, -100., costumerId));
+	}
+	
+	@Test
+	void shouldRefundCharge() throws Exception {
+		String costumerId = "cus_HCpLlL5UZqugk1";
+		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
+		
+		PaymentIntent pay = this.stripeService.charge(token1, 50., costumerId);
+		Refund paymentRefund = this.stripeService.refund(pay.getId());
+		
+		Assertions.assertThat(paymentRefund).isNotNull();
+		Assertions.assertThat(paymentRefund.getAmount()).isEqualTo(5000);
+	}
+	
+	@Test
+	void shouldNotRefundChargeTwice() throws Exception {
+		String costumerId = "cus_HCpLlL5UZqugk1";
+		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
+		
+		PaymentIntent pay = this.stripeService.charge(token1, 50., costumerId);
+		this.stripeService.refund(pay.getId());
+		
+		// Refunding twice should throw an exception
+		org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> this.stripeService.refund(pay.getId()));
 	}
 
 }

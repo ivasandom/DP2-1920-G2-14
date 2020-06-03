@@ -32,6 +32,7 @@ import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.service.AuthoritiesService;
 import org.springframework.samples.petclinic.service.ClientService;
 import org.springframework.samples.petclinic.service.StripeService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -89,14 +90,19 @@ public class ClientController {
 			model.put("client", client);
 			model.put("documentTypes", DocumentType.getNaturalPersonValues());
 			model.put("healthInsurances", HealthInsurance.values());
-			System.out.println(result.getFieldErrors());
-			System.out.println("hola");
 			return ClientController.VIEWS_CLIENTS_SIGN_UP;
 		} else {
-			//creating owner, user and authorities
-			String customerId = this.stripeService.createCustomer(client.getEmail()).getId();
-			client.setStripeId(customerId);
-			this.clientService.saveClient(client);
+			
+			try {
+				this.clientService.saveClient(client);
+			} catch (DuplicatedUsernameException e) {
+				result.rejectValue("user.username", "Already exists");
+				
+				model.put("client", client);
+				model.put("documentTypes", DocumentType.getNaturalPersonValues());
+				model.put("healthInsurances", HealthInsurance.values());
+				return ClientController.VIEWS_CLIENTS_SIGN_UP;
+			}
 
 			return "redirect:/";
 		}

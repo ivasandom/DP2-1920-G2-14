@@ -45,6 +45,7 @@ public class PaymentMethodService {
 	 * Given a client and a stripe payment method, check if card is not duplicated.
 	 * This doesn't check if token is duplicated but if the card is the same, without saving card detains in our 
 	 */
+	@Transactional
 	public Boolean isDuplicated(Client currentClient, com.stripe.model.PaymentMethod paymentMethod) throws Exception {
 		Collection<PaymentMethod> paymentMethodsClient = this.findByClient(currentClient);
 		Collection<com.stripe.model.PaymentMethod> stripePaymentMethods = new ArrayList<>();

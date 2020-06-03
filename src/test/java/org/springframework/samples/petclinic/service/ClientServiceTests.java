@@ -17,11 +17,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.DocumentType;
 import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedUsernameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +62,7 @@ public class ClientServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldSaveClient() {
+	public void shouldSaveClient() throws DataAccessException, DuplicatedUsernameException {
 		Collection<Client> clients = this.clientService.findAll();
 		int found = clients.size();
 
@@ -85,11 +87,57 @@ public class ClientServiceTests {
 		user.setUsername("frankcuesta");
 		user.setPassword("frankcuesta");
 		client.setUser(user);
-
+		
 		this.clientService.saveClient(client);
 		org.assertj.core.api.Assertions.assertThat(client.getId().longValue()).isNotEqualTo(0);
 
 		clients = this.clientService.findAll();
 		org.assertj.core.api.Assertions.assertThat(clients.size()).isEqualTo(found + 1);
+	}
+	
+	@Test
+	@Transactional
+	public void shouldNotSaveClientWithDuplicatedUsername() throws DataAccessException {
+		Collection<Client> clients = this.clientService.findAll();
+		int found = clients.size();
+
+		Client client = new Client();
+		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
+		client.setBirthDate(birthdate);
+		client.setDocument("29334456");
+		client.setDocumentType(DocumentType.NIF);
+		client.setEmail("frankcuesta@gmail.com");
+		client.setFirstName("Frank");
+		client.setHealthCardNumber("0000000003");
+		client.setHealthInsurance(HealthInsurance.ADESLAS);
+		client.setLastName("Cuesta");
+		Date registrationDate = new Date(2020 - 03 - 03);
+		client.setRegistrationDate(registrationDate);
+
+		Set<Appointment> appointments = Collections.emptySet();
+		client.setAppointments(appointments);
+
+		User user = new User();
+		user.setEnabled(true);
+		user.setUsername("pepegotera");
+		user.setPassword("pepegotera");
+		client.setUser(user);
+		
+		Assertions.assertThrows(DuplicatedUsernameException.class, () -> this.clientService.saveClient(client));
+
+		clients = this.clientService.findAll();
+		org.assertj.core.api.Assertions.assertThat(clients.size()).isEqualTo(found);
+	}
+	
+	@Test
+	@Transactional
+	void shouldDeleteAppointmentById() throws DataAccessException {
+		Collection<Client> clients = this.clientService.findAll();
+		int found = clients.size();
+		
+		this.clientService.deleteById(1);
+
+		clients = this.clientService.findAll();
+		org.assertj.core.api.Assertions.assertThat(clients.size()).isEqualTo(found - 1);
 	}
 }

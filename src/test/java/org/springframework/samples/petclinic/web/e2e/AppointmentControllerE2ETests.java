@@ -165,7 +165,7 @@ public class AppointmentControllerE2ETests {
 						.param("bill.iva", "500"))
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(model().attributeHasFieldErrors("appointment", 
-						"diagnosis.description", "diagnosis.medicines", "diagnosis.deseases", "bill.price", "bill.iva"))
+						"diagnosis.description", "bill.price", "bill.iva"))
 				.andExpect(view().name("appointments/consultationPro"));
 	}
 	

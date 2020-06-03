@@ -172,14 +172,21 @@ public class AppointmentController {
 		appointmentValidator.validate(appointment, result);
 
 		if (result.hasErrors()) {
-			System.out.println(result.getFieldErrors());
 			model.put("types", AppointmentType.values());
 			model.put("appointment", appointment);
 			return "appointments/new";
 		} else {
 			// Save appointment if valid
 			appointment.setStatus(AppointmentStatus.PENDING);
-			this.appointmentService.saveAppointment(appointment);
+			try {
+				this.appointmentService.saveAppointment(appointment);
+			} catch (ProfessionalBusyException b) {
+				result.rejectValue("startTime", "Unavailable professional, set other start time");
+				
+				model.put("types", AppointmentType.values());
+				model.put("appointment", appointment);
+				return "appointments/new";
+			}
 			return "redirect:/appointments";
 		}
 	}
@@ -264,8 +271,13 @@ public class AppointmentController {
 					} catch (DataAccessException | ProfessionalBusyException e) {
 						return "redirect:/errors";
 					}
-
-					return "redirect:/appointments/pro";
+					try {
+						this.appointmentService.saveAppointment(a);
+						this.billService.saveBill(bill);
+					} catch (DataAccessException | ProfessionalBusyException e) {
+						return "redirect:/errors";
+					}
+										return "redirect:/appointments/pro";
 				}
 
 			}

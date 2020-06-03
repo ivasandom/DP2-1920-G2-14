@@ -386,7 +386,7 @@ public class AdminControllerE2ETests {
 	void testProcessAppointmentEditFormSuccess() throws Exception {
 		this.mockMvc.perform(post("/admin/appointments/{appointmentId}/edit", TEST_APPOINTMENT_ID)
 						.with(csrf())
-						.param("date", "06/06/2020")
+						.param("date", "12/12/2020")
 						.param("startTime", "08:00:00")
 						.param("client.id", "1")
 						.param("professional.id", "1")

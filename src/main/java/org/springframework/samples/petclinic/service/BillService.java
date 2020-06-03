@@ -1,11 +1,13 @@
 
 package org.springframework.samples.petclinic.service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Bill;
+import org.springframework.samples.petclinic.projections.BilledPerDay;
 import org.springframework.samples.petclinic.repository.BillRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,7 @@ public class BillService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Object[] getBilledPerDay() throws DataAccessException {
+	public Collection<BilledPerDay> getBilledPerDay() throws DataAccessException {
 		return this.billRepository.getBilledPerDay();
 	}
 	

@@ -159,21 +159,6 @@ public class ClientValidatorTests {
 		assertThat(errors.getFieldError("documentType").getCode()).isEqualTo("must not be null");
 	}
 	
-//	@Test
-//	void shouldNotValidateWhenRegistrationDateIsInFuture() {
-//
-//		LocaleContextHolder.setLocale(Locale.ENGLISH);
-//		Client client = this.generateClient();
-//		Date registrationDate = new GregorianCalendar(2030, Calendar.FEBRUARY, 11).getTime();
-//		client.setRegistrationDate(registrationDate);
-//		System.out.println(client.getRegistrationDate());
-//		
-//		clientValidator.validate(client, errors);
-//		System.out.println(errors.getAllErrors());
-//		assertThat(errors.getErrorCount()).isEqualTo(1);
-//		assertThat(errors.getFieldError("registrationDate").getCode()).isEqualTo("the date must be in past");
-//	}
-	
 	@Test
 	void shouldValidateWhenRegistrationDateIsInPast() {
 
