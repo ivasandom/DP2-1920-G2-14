@@ -27,12 +27,12 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository	appointmentRepository;
-	
+
 
 	public int appointmentCount() {
 		return (int) this.appointmentRepository.count();
 	}
-	
+
 	@Autowired
 	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
@@ -88,7 +88,6 @@ public class AppointmentService {
 			throw new ProfessionalBusyException();
 		} else {
 			this.appointmentRepository.save(appointment);
-	
 			if (appointment.getDiagnosis() != null) {
 				this.diagnosisService.saveDiagnosis(appointment.getDiagnosis());
 			}
@@ -107,18 +106,17 @@ public class AppointmentService {
 		}
 		this.appointmentRepository.delete(appointment);
 	}
-	
+
 	public Long getNumberOfPendingAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();
 	}
-	
+
 	public Long getNumberOfAbsentAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();
 	}
-	
+
 	public Long getNumberOfCompletedAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();
 	}
-	
-	
+
 }

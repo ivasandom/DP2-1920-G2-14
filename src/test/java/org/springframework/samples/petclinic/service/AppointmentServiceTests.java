@@ -272,9 +272,9 @@ public class AppointmentServiceTests {
 		appointment.setSpecialty(specialty);
 		appointment.setStartTime(a.get().getStartTime());
 
+
 		org.junit.jupiter.api.Assertions.assertThrows(ProfessionalBusyException.class,
 				() -> this.appointmentService.saveAppointment(appointment));
-
 		appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		Assertions.assertThat(appointments.size()).isEqualTo(found);
 	}
@@ -438,7 +438,6 @@ public class AppointmentServiceTests {
 	@Transactional
 	public void shouldFindAppointmentByDateTimeAndProfessional() throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = this.appointmentService.findAppointmentById(1).get();
-
 		Optional<Appointment> a = this.appointmentService.findAppointmentByDateTimeAndProfessional(
 				appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
 

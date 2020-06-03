@@ -80,21 +80,19 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("appointments")
 public class AppointmentController {
 
-	private final AppointmentService appointmentService;
-	private final ProfessionalService professionalService;
-	private final SpecialtyService specialtyService;
-	private final ClientService clientService;
-	private final CenterService centerService;
-	private final MedicineService medicineService;
-	private final DeseaseService deseaseService;
-	private final BillService billService;
+	private final AppointmentService	appointmentService;
+	private final ProfessionalService	professionalService;
+	private final SpecialtyService		specialtyService;
+	private final ClientService			clientService;
+	private final CenterService			centerService;
+	private final MedicineService		medicineService;
+	private final DeseaseService		deseaseService;
+	private final BillService			billService;
+
 
 	@Autowired
-	public AppointmentController(final AppointmentService appointmentService,
-			final ProfessionalService professionalService, final SpecialtyService specialtyService,
-			final ClientService clientService, final CenterService centerService,
-			final AuthoritiesService authoritiesService, final MedicineService medicineService,
-			final DeseaseService deseaseService, final BillService billService) {
+	public AppointmentController(final AppointmentService appointmentService, final ProfessionalService professionalService, final SpecialtyService specialtyService, final ClientService clientService, final CenterService centerService,
+		final AuthoritiesService authoritiesService, final MedicineService medicineService, final DeseaseService deseaseService, final BillService billService) {
 		this.appointmentService = appointmentService;
 		this.professionalService = professionalService;
 		this.specialtyService = specialtyService;
@@ -139,11 +137,9 @@ public class AppointmentController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Professional currentPro = this.professionalService.findProByUsername(auth.getName());
 		Appointment nextAppointment = null;
-		Iterator<Appointment> todayPendingAppointments = this.appointmentService
-				.findTodayPendingByProfessionalId(currentPro.getId()).iterator();
+		Iterator<Appointment> todayPendingAppointments = this.appointmentService.findTodayPendingByProfessionalId(currentPro.getId()).iterator();
 		System.out.println(todayPendingAppointments);
-		Collection<Appointment> todayCompletedAppointments = this.appointmentService
-				.findTodayCompletedByProfessionalId(currentPro.getId());
+		Collection<Appointment> todayCompletedAppointments = this.appointmentService.findTodayCompletedByProfessionalId(currentPro.getId());
 
 		if (todayPendingAppointments.hasNext()) {
 			nextAppointment = todayPendingAppointments.next();
@@ -164,8 +160,7 @@ public class AppointmentController {
 	}
 
 	@PostMapping(value = "/new")
-	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result,
-			final ModelMap model) throws Exception {
+	public String processCreationForm(@Valid final Appointment appointment, final BindingResult result, final ModelMap model) throws Exception {
 
 		EntityUtils.setRelationshipAttribute(appointment, Professional.class, this.professionalService, "findById");
 		EntityUtils.setRelationshipAttribute(appointment, Center.class, this.centerService, "findCenterById");
@@ -210,10 +205,8 @@ public class AppointmentController {
 			return "redirect:/appointments/pro";
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
 	}
-
 	@GetMapping("/{appointmentId}/consultation")
-	public String appointmentConsultationForm(@PathVariable("appointmentId") final int appointmentId,
-			final Map<String, Object> model) throws Exception {
+	public String appointmentConsultationForm(@PathVariable("appointmentId") final int appointmentId, final Map<String, Object> model) throws Exception {
 
 		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
 			if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
@@ -232,8 +225,7 @@ public class AppointmentController {
 	}
 
 	@PostMapping(value = "/{appointmentId}/consultation")
-	public String processAppointmentConsultationForm(@Valid final Appointment appointment, final BindingResult result,
-			@PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
+	public String processAppointmentConsultationForm(@Valid final Appointment appointment, final BindingResult result, @PathVariable("appointmentId") final int appointmentId, final ModelMap model) throws Exception {
 
 		return this.appointmentService.findAppointmentById(appointmentId).map(a -> {
 
@@ -247,7 +239,7 @@ public class AppointmentController {
 					Iterable<Desease> deseases = this.deseaseService.findAll();
 					Collection<Medicine> medicines = this.medicineService.findMedicines();
 					BeanUtils.copyProperties(a, appointment, "bill", "diagnosis");
-					
+
 					model.put("medicineList", medicines);
 					model.put("deseaseList", deseases);
 					model.put("appointment", appointment);
@@ -273,15 +265,19 @@ public class AppointmentController {
 					appointment.getDiagnosis().setDate(LocalDate.now());
 					a.setDiagnosis(appointment.getDiagnosis());
 					a.setStatus(AppointmentStatus.COMPLETED);
-
 					try {
 						this.appointmentService.saveAppointment(a);
 						this.billService.saveBill(bill);
 					} catch (DataAccessException | ProfessionalBusyException e) {
 						return "redirect:/errors";
 					}
-					
-					return "redirect:/appointments/pro";
+					try {
+						this.appointmentService.saveAppointment(a);
+						this.billService.saveBill(bill);
+					} catch (DataAccessException | ProfessionalBusyException e) {
+						return "redirect:/errors";
+					}
+										return "redirect:/appointments/pro";
 				}
 
 			}
@@ -289,8 +285,7 @@ public class AppointmentController {
 	}
 
 	@GetMapping("/{appointmentId}/details")
-	public String showAppointment(@PathVariable("appointmentId") final int appointmentId,
-			final ModelMap model) {
+	public String showAppointment(@PathVariable("appointmentId") final int appointmentId, final ModelMap model) {
 
 		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -310,8 +305,7 @@ public class AppointmentController {
 	}
 
 	@GetMapping(path = "/delete/{appointmentId}")
-	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId,
-			final ModelMap modelMap) {
+	public String deleteAppointment(@PathVariable("appointmentId") final Integer appointmentId, final ModelMap modelMap) {
 
 		return this.appointmentService.findAppointmentById(appointmentId).map(appointment -> {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -335,16 +329,14 @@ public class AppointmentController {
 
 	@GetMapping(value = "busy")
 	@ResponseBody
-	public ResponseEntity<Object> getBusyStartTimes(
-			@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") final LocalDate date,
-			@RequestParam(name = "professionalId", required = false) final Integer professionalId, final Model model) {
+	public ResponseEntity<Object> getBusyStartTimes(@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") final LocalDate date, @RequestParam(name = "professionalId", required = false) final Integer professionalId,
+		final Model model) {
 
 		if (date != null && professionalId != null) {
 			Optional<Professional> professional = this.professionalService.findById(professionalId);
 			if (professional.isPresent()) {
-				Collection<LocalTime> busyStartTimes = this.appointmentService
-						.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
-				return new ResponseEntity<Object>(busyStartTimes, HttpStatus.OK);
+				Collection<LocalTime> busyStartTimes = this.appointmentService.findAppointmentStartTimesByProfessionalAndDate(date, professional.get());
+				return new ResponseEntity<>(busyStartTimes, HttpStatus.OK);
 			}
 		}
 
