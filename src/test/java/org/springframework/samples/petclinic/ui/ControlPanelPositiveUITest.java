@@ -63,6 +63,8 @@ public class ControlPanelPositiveUITest {
 		driver.findElement(By.id("document")).click();
 		driver.findElement(By.id("document")).clear();
 		driver.findElement(By.id("document")).sendKeys("27334456");
+		driver.findElement(By.id("birthDate")).clear();
+		driver.findElement(By.id("birthDate")).sendKeys("1993-05-07");
 		driver.findElement(By.id("collegiateNumber")).click();
 		driver.findElement(By.id("collegiateNumber")).clear();
 		driver.findElement(By.id("collegiateNumber")).sendKeys("000003");

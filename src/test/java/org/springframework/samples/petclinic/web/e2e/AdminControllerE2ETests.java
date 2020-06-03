@@ -520,6 +520,17 @@ public class AdminControllerE2ETests {
 	
 	@WithMockUser(value = "admin", authorities = {"admin"})
 	@Test
+	void testProcessBillChargeFormStripeCardSuccess() throws Exception {
+		this.mockMvc.perform(post("/admin/bills/{billId}/charge", TEST_BILL_ID)
+						.with(csrf())
+						.param("amount", "50")
+						.param("paymentMethod.token", "pm_1Ggr7GDfDQNZdQMbCcCoxzEI"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/admin/bills/" + TEST_BILL_ID));
+	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
 	void testProcessBillChargeFormHasErrors() throws Exception {
 		this.mockMvc.perform(post("/admin/bills/{billId}/charge", TEST_BILL_ID)
 						.with(csrf())
@@ -529,6 +540,22 @@ public class AdminControllerE2ETests {
 				.andExpect(model().attributeHasErrors("transaction"))
 				.andExpect(model().attributeHasFieldErrors("transaction", 
 						"amount", "paymentMethod.token"))
+				.andExpect(view().name("admin/bills/chargeForm"));
+	}
+	
+	@WithMockUser(value = "admin", authorities = {"admin"})
+	@Test
+	void testProcessBillChargeFormStripeCardFail() throws Exception {
+		/**
+		 * Cannot use a credit card from a different user
+		 */
+		this.mockMvc.perform(post("/admin/bills/{billId}/charge", TEST_BILL_ID)
+						.with(csrf())
+						.param("amount", "50")
+						.param("paymentMethod.token", "pm_1Gq1xODfDQNZdQMbPgQOqHui"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(model().attributeHasErrors("transaction"))
+				.andExpect(model().attributeHasFieldErrors("transaction", "paymentMethod.token"))
 				.andExpect(view().name("admin/bills/chargeForm"));
 	}
 	

@@ -16,10 +16,7 @@
 
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 

@@ -38,7 +38,7 @@
 	        
 	        <tr>
 	            <th>Health Insurance</th>
-	            <td><c:out value="${client.healthInsurance}"/></td>
+	            <td><c:out value="${client.healthInsurance.displayName}"/></td>
 	        </tr>
 	        
 	        <tr>
@@ -48,23 +48,9 @@
 
 
 	    </table>
-	
-<%-- 	    <spring:url value="{ownerId}/edit" var="editUrl"> --%>
-<%-- 	        <spring:param name="ownerId" value="${owner.id}"/> --%>
-<%-- 	    </spring:url> --%>
-<%-- 	    <a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Owner</a> --%>
-	
-<%-- 	    <spring:url value="{ownerId}/pets/new" var="addUrl"> --%>
-<%-- 	        <spring:param name="ownerId" value="${owner.id}"/> --%>
-<%-- 	    </spring:url> --%>
-<%-- 	    <a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a> --%>
-	
-<!-- 	    <br/> -->
-<!-- 	    <br/> -->
-<!-- 	    <br/> -->
 
 
-	    <h2 class="my-5">Diagnosis</h2>
+	    <h2 class="my-5">Previous prescription medicines</h2>
 	    
 	    <table class="table table-striped">
 	        <c:forEach var="medicine" items="${medicines}">

@@ -55,14 +55,14 @@ INSERT IGNORE INTO diagnosis (id, date, description) VALUES (5, '2020-02-07', 'd
 INSERT IGNORE INTO diagnosis (id, date, description) VALUES (6, '2020-03-05', 'description 6');
 INSERT IGNORE INTO diagnosis (id, date, description) VALUES (7, '2020-03-14', 'description 7');
 
-INSERT IGNORE INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    1, 1, 'professional1', 'Guillermo', 'Diaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F'
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number, birth_date) VALUES (
+    1, 1, 'professional1', 'Guillermo', 'Diaz', 'guillermodiaz@gmail.com', '13232123M', 1, '123123122-F', '1993-05-07'
 );
-INSERT IGNORE INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F'
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number, birth_date) VALUES (
+    2, 1, 'professional2', 'John', 'Wick', 'john.wick@gmail.com', '23232121M', 1, '233123122-F', '1993-05-07'
 );
-INSERT IGNORE INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number) VALUES (
-    1, 3, 'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, '413123122-K'
+INSERT INTO professionals (center_id, specialty_id, username, first_name, last_name, email, document, document_type, collegiate_number, birth_date) VALUES (
+    1, 3, 'professional3', 'Julio', 'Maldonado', 'julio.maldonado@gmail.com', '43232412J', 1, '413123122-K', '1993-05-07'
 );
 
 -- Medicines
