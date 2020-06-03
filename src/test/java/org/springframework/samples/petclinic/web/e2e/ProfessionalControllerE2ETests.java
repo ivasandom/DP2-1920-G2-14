@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.web.e2e;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -110,5 +111,15 @@ class ProfessionalControllerE2ETests {
 				.andExpect(model().attributeExists("clients"))
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(view().name("professionals/clientList"));
+	}
+	
+	@WithMockUser(value = "pepegotera", authorities = {"client"})
+	@Test
+	void testFilterJSON() throws Exception {
+		this.mockMvc.perform(get("/professionals/filter")
+							.queryParam("centerId", "1")
+							.queryParam("specialtyId", "1"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].fullName", Matchers.is("Guillermo Diaz")));
 	}
 }

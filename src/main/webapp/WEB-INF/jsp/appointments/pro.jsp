@@ -124,11 +124,7 @@
 	                            <span class="badge badge-success">${appointment.status}</span></td>
 	
 	                        <td>
-	                            <spring:url value="/appointments/{appointmentId}/consultation" var="appointmentUrl">
-	                                <spring:param name="appointmentId" value="${appointment.id}" />
-	                            </spring:url>
-	                            <a class="btn btn-secondary btn-sm" href="${fn:escapeXml(appointmentUrl)}">
-	                                <c:out value="> Edit consultation" /></a>
+	                           
 	                        </td>
 	                    </tr>
 	                </c:forEach>

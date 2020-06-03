@@ -124,8 +124,30 @@
                     
 <!--                     --------------------------------------- -->
 
-                   <div class="tab-pane fade" id="list-diagnosis" role="tabpanel"
+      <div class="tab-pane fade" id="list-diagnosis" role="tabpanel"
                             aria-labelledby="list-diagnosis-list">
+        <div class="form-group">
+	    <h4>Description</h4>
+	    
+	    <table class="table table-striped">
+	        <c:if test="${not empty appointment.diagnosis and not empty appointment.diagnosis.description}">
+				<tr>
+	                <td valign="top">
+	                	<dl>
+	                        <dd><c:out value="${appointment.diagnosis.description}"/></dd>
+
+	                    </dl>
+	                </td>
+	        	</tr>
+			</c:if>
+			<c:if test="${empty appointment.diagnosis or empty appointment.diagnosis.description}">
+                	<tr style="text-align:center;">
+                		<td colspan="5">No hay datos</td>
+                	</tr>
+            </c:if>
+		</table>
+		</div>
+		
 		<div class="form-group">
 	    <h4>Deseases</h4>
 	    
