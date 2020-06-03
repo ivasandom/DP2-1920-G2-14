@@ -37,12 +37,12 @@ public class AppointmentService {
 
 	@Autowired
 	private AppointmentRepository	appointmentRepository;
-	
+
 
 	public int appointmentCount() {
 		return (int) this.appointmentRepository.count();
 	}
-	
+
 	@Autowired
 	public AppointmentService(final AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
@@ -99,8 +99,8 @@ public class AppointmentService {
 		if (appointment.getBill() != null && appointment.getBill().getPrice() != null && appointment.getBill().getPrice() > .0) {
 			Client client = appointment.getClient();
 			Collection<PaymentMethod> paymentMethods = client.getPaymentMethods();
-			
-			if (paymentMethods.size() > 0) {
+
+			if (!paymentMethods.isEmpty()) {
 				PaymentMethod primary = paymentMethods.iterator().next();
 				PaymentIntent paymentIntent = this.stripeService.charge(primary.getToken(), appointment.getBill().getFinalPrice(), appointment.getClient().getStripeId());
 				// Client charged successfully!
@@ -127,18 +127,17 @@ public class AppointmentService {
 		}
 		this.appointmentRepository.delete(appointment);
 	}
-	
+
 	public Long getNumberOfPendingAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfPendingAppointmentsByStatus();
 	}
-	
+
 	public Long getNumberOfAbsentAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfAbsentAppointmentsByStatus();
 	}
-	
+
 	public Long getNumberOfCompletedAppointments() throws DataAccessException {
-		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();		
+		return this.appointmentRepository.getNumberOfCompletedAppointmentsByStatus();
 	}
-	
-	
+
 }
