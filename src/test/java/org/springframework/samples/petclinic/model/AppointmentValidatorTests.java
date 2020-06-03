@@ -26,6 +26,16 @@ public class AppointmentValidatorTests {
 	@Autowired
 	private Errors					errors;
 
+	private String					startTime				= "startTime";
+
+	private String					center					= "center";
+
+	private String					specialty				= "specialty";
+
+	private String					professional			= "professional";
+
+	private String					date					= "date";
+
 
 	@BeforeEach
 	private void generateAppointment() {
@@ -48,7 +58,7 @@ public class AppointmentValidatorTests {
 		Specialty specialty = new Specialty();
 		specialty.setName("dermatology");
 		this.appointment.setSpecialty(specialty);
-		
+
 		Client client = new Client();
 		client.setEmail("client@gmail.com");
 		this.appointment.setClient(client);
@@ -80,7 +90,7 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("date").getCode()).isEqualTo("date must no be empty");
+		Assertions.assertThat(this.errors.getFieldError(this.date).getCode()).isEqualTo("date must no be empty");
 	}
 
 	@Test
@@ -89,7 +99,7 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("startTime").getCode()).isEqualTo("start time must no be empty");
+		Assertions.assertThat(this.errors.getFieldError(this.startTime).getCode()).isEqualTo("start time must no be empty");
 	}
 
 	@Test
@@ -98,7 +108,7 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("center").getCode()).isEqualTo("center must no be empty");
+		Assertions.assertThat(this.errors.getFieldError(this.center).getCode()).isEqualTo("center must no be empty");
 	}
 
 	@Test
@@ -107,7 +117,7 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("specialty").getCode()).isEqualTo("specialty must no be empty");
+		Assertions.assertThat(this.errors.getFieldError(this.specialty).getCode()).isEqualTo("specialty must no be empty");
 	}
 
 	@Test
@@ -116,7 +126,7 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("professional").getCode()).isEqualTo("professional must no be empty");
+		Assertions.assertThat(this.errors.getFieldError(this.professional).getCode()).isEqualTo("professional must no be empty");
 	}
 
 	@ParameterizedTest
@@ -126,12 +136,12 @@ public class AppointmentValidatorTests {
 		"15:38",//
 		"18:54"
 	})
-	void shouldNotValidateStartTimeIsNotEvery15Minutes(final LocalTime startTime) {
-		this.appointment.setStartTime(startTime);
+	void shouldNotValidateStartTimeIsNotEvery15Minutes(final LocalTime stTime) {
+		this.appointment.setStartTime(stTime);
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("startTime").getCode()).isEqualTo("appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times");
+		Assertions.assertThat(this.errors.getFieldError(this.startTime).getCode()).isEqualTo("appointments last 15 minutes. Only XX:00, XX:15, XX:30, XX:45 are valid start times");
 	}
 
 	@ParameterizedTest
@@ -141,8 +151,8 @@ public class AppointmentValidatorTests {
 		"15:45",//
 		"18:00"
 	})
-	void shouldValidateStartTimeIsEvery15Minutes(final LocalTime startTime) {
-		this.appointment.setStartTime(startTime);
+	void shouldValidateStartTimeIsEvery15Minutes(final LocalTime stTime) {
+		this.appointment.setStartTime(stTime);
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(0);
@@ -154,12 +164,12 @@ public class AppointmentValidatorTests {
 		"20:30",//
 		"20:00"
 	})
-	void shouldNotValidateStartTimeIsNotInSchedule(final LocalTime startTime) {
-		this.appointment.setStartTime(startTime);
+	void shouldNotValidateStartTimeIsNotInSchedule(final LocalTime stTime) {
+		this.appointment.setStartTime(stTime);
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("startTime").getCode()).isEqualTo("our clinics are open from 8 a.m to 8 p.m");
+		Assertions.assertThat(this.errors.getFieldError(this.startTime).getCode()).isEqualTo("our clinics are open from 8 a.m to 8 p.m");
 	}
 
 	@ParameterizedTest
@@ -169,8 +179,8 @@ public class AppointmentValidatorTests {
 		"15:45",//
 		"19:45"
 	})
-	void shouldValidateStartTimeIsInSchedule(final LocalTime startTime) {
-		this.appointment.setStartTime(startTime);
+	void shouldValidateStartTimeIsInSchedule(final LocalTime stTime) {
+		this.appointment.setStartTime(stTime);
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(0);
@@ -182,15 +192,15 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("date").getCode()).isEqualTo("the date must be in future");
+		Assertions.assertThat(this.errors.getFieldError(this.date).getCode()).isEqualTo("the date must be in future");
 
 		// Yesterday
-		Date date = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000L);
-		this.appointment.setDate(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		Date date1 = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000L);
+		this.appointment.setDate(date1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("date").getCode()).isEqualTo("the date must be in future");
+		Assertions.assertThat(this.errors.getFieldError(this.date).getCode()).isEqualTo("the date must be in future");
 
 		// One second before now
 		Date date2 = new Date(System.currentTimeMillis() - 1);
@@ -198,14 +208,14 @@ public class AppointmentValidatorTests {
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("date").getCode()).isEqualTo("the date must be in future");
+		Assertions.assertThat(this.errors.getFieldError(this.date).getCode()).isEqualTo("the date must be in future");
 
 		// Min date
 		this.appointment.setDate(LocalDate.MIN);
 		this.appointmentValidator.validate(this.appointment, this.errors);
 
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("date").getCode()).isEqualTo("the date must be in future");
+		Assertions.assertThat(this.errors.getFieldError(this.date).getCode()).isEqualTo("the date must be in future");
 	}
 
 	@Test
@@ -220,7 +230,7 @@ public class AppointmentValidatorTests {
 
 		this.appointmentValidator.validate(this.appointment, this.errors);
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("center").getCode()).isEqualTo("appointment center must be equal to professional center");
+		Assertions.assertThat(this.errors.getFieldError(this.center).getCode()).isEqualTo("appointment center must be equal to professional center");
 	}
 
 	@ParameterizedTest
@@ -242,7 +252,7 @@ public class AppointmentValidatorTests {
 		System.out.println(this.appointment.getProfessional().getSpecialty().getName());
 		this.appointmentValidator.validate(this.appointment, this.errors);
 		Assertions.assertThat(this.errors.getErrorCount()).isEqualTo(1);
-		Assertions.assertThat(this.errors.getFieldError("specialty").getCode()).isEqualTo("appointment specialty must be equal to professional specialty");
+		Assertions.assertThat(this.errors.getFieldError(this.specialty).getCode()).isEqualTo("appointment specialty must be equal to professional specialty");
 
 	}
 }
