@@ -58,21 +58,21 @@ class ListMedicinesPerformanceTests extends Simulation {
 
 	object ClientList {
 		val clientList = exec(http("ClientList")
-			.get("/professionals/clientList")
+			.get("/professionals/clients")
 			.headers(headers_0))
 		.pause(2)
 	}
 
 	object Client1 {
 		val client1 = exec(http("Client1")
-			.get("/professionals/1")
+			.get("/professionals/clients/1")
 			.headers(headers_0))
 		.pause(12)
 	}
 
 	object Client2{
 		val client2 = exec(http("Client1")
-			.get("/professionals/clientList")
+			.get("/professionals/clients")
 			.headers(headers_0))
 	}
 
