@@ -3,13 +3,8 @@ package org.springframework.samples.petclinic.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -22,27 +17,20 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Appointment;
 import org.springframework.samples.petclinic.model.AppointmentStatus;
-import org.springframework.samples.petclinic.model.Bill;
 import org.springframework.samples.petclinic.model.Center;
 import org.springframework.samples.petclinic.model.Client;
 import org.springframework.samples.petclinic.model.Desease;
 import org.springframework.samples.petclinic.model.Diagnosis;
-import org.springframework.samples.petclinic.model.DocumentType;
-import org.springframework.samples.petclinic.model.HealthInsurance;
 import org.springframework.samples.petclinic.model.Medicine;
 import org.springframework.samples.petclinic.model.Professional;
 import org.springframework.samples.petclinic.model.Specialty;
-import org.springframework.samples.petclinic.model.Transaction;
-import org.springframework.samples.petclinic.model.TransactionType;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.projections.ListAppointmentsClient;
+import org.springframework.samples.petclinic.service.exceptions.ProfessionalBusyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -113,7 +101,7 @@ public class AppointmentServiceTests {
 	@Test
 	void shouldFindAppointmentsByClientId() {
 
-		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(1);
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByClientId(1);
 		Assertions.assertThat(appointments.size()).isEqualTo(124);
 
 		Assertions.assertThat(appointments.iterator().next().getDate()).isEqualTo(LocalDate.of(2020, 02, 02));
@@ -138,7 +126,7 @@ public class AppointmentServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldFindTodayPendingAppointmentsByProfessionalId() {
+	public void shouldFindTodayPendingAppointmentsByProfessionalId() throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -162,7 +150,7 @@ public class AppointmentServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldFindTodayCompletedAppointmentsByProfessionalId() {
+	public void shouldFindTodayCompletedAppointmentsByProfessionalId() throws DataAccessException, ProfessionalBusyException {
 		Appointment appointment = new Appointment();
 		Professional professional = this.professionalService.findById(1).get();
 		Center center = this.centerService.findCenterById(1).get();
@@ -240,7 +228,7 @@ public class AppointmentServiceTests {
 		"pepegotera, 2020-11-11, 10:15"
 	})
 	@Transactional
-	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) {
+	public void shouldSaveAppointment(final String username, final LocalDate date, final LocalTime startTime) throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 
@@ -263,12 +251,37 @@ public class AppointmentServiceTests {
 		Assertions.assertThat(appointments.size()).isEqualTo(found + 1);
 	}
 
+	@Test
+	@Transactional
+	public void shouldNotSaveAppointment() throws DataAccessException, ProfessionalBusyException {
+		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
+		int found = appointments.size();
+
+		Optional<Appointment> a = this.appointmentService.findAppointmentById(1);
+
+		Appointment appointment = new Appointment();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(a.get().getProfessional());
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setDate(a.get().getDate());
+		appointment.setSpecialty(specialty);
+		appointment.setStartTime(a.get().getStartTime());
+
+		org.junit.jupiter.api.Assertions.assertThrows(ProfessionalBusyException.class, () -> this.appointmentService.saveAppointment(appointment));
+
+		appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
+		Assertions.assertThat(appointments.size()).isEqualTo(found);
+	}
+
 	@ParameterizedTest
 	@CsvSource({
 		"pepegotera, 2020-11-11, 10:15, 2020-11-11, Diagnosis test"
 	})
 	@Transactional
-	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date, final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) {
+	public void shouldSaveAppointmentPlusDiagnosis(final String username, final LocalDate date, final LocalTime startTime, final LocalDate diagnosisDate, final String diagnosisDescription) throws DataAccessException, ProfessionalBusyException {
 		Collection<Appointment> appointments = (Collection<Appointment>) this.appointmentService.listAppointments();
 		int found = appointments.size();
 		Collection<Diagnosis> diagnosisCollection = (Collection<Diagnosis>) this.diagnosisService.findAll();
@@ -286,7 +299,8 @@ public class AppointmentServiceTests {
 		appointment.setSpecialty(specialty);
 		appointment.setStartTime(startTime);
 
-		//Now the service will call the save method of diagnosis service to save this diagnosis
+		// Now the service will call the save method of diagnosis service to save this
+		// diagnosis
 		Diagnosis diagnosis = new Diagnosis();
 		diagnosis.setDate(diagnosisDate);
 		diagnosis.setDescription(diagnosisDescription);
@@ -305,105 +319,6 @@ public class AppointmentServiceTests {
 
 	@ParameterizedTest
 	@CsvSource({
-		"2020-11-11, 11:15"
-	})
-	@Transactional
-	public void shouldChargeAppointment(final LocalDate date, final LocalTime startTime) throws Exception {
-		Collection<Transaction> transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		int found = transactions.size();
-
-		Appointment appointment = new Appointment();
-		Professional professional = this.professionalService.findById(1).get();
-		Center center = this.centerService.findCenterById(1).get();
-
-		Client client = new Client();
-		Date birthdate = new GregorianCalendar(1999, Calendar.FEBRUARY, 11).getTime();
-		client.setBirthDate(birthdate);
-		client.setDocument("29334456");
-		client.setDocumentType(DocumentType.NIF);
-		client.setEmail("frankcuesta@gmail.com");
-		client.setFirstName("Frank");
-		client.setHealthCardNumber("0000000003");
-		client.setHealthInsurance(HealthInsurance.ADESLAS);
-		client.setLastName("Cuesta");
-		Date registrationDate = new Date(2020 - 03 - 03);
-		client.setRegistrationDate(registrationDate);
-
-		Set<Appointment> appointments = Collections.emptySet();
-		client.setAppointments(appointments);
-
-		User user = new User();
-		user.setEnabled(true);
-		user.setUsername("frankcuesta");
-		user.setPassword("frankcuesta");
-		client.setUser(user);
-		client.setStripeId("cus_HCu4aQVElVti9J");
-
-		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
-		//System.out.println("================================================" + paymentMethods.stream().collect(Collectors.toList()).get(0));
-		appointment.setProfessional(professional);
-		appointment.setCenter(center);
-		appointment.setClient(client);
-		appointment.setDate(date);
-		appointment.setSpecialty(specialty);
-		appointment.setStartTime(startTime);
-		appointment.setReason("test");
-
-		//Bill must be created for the method
-		Bill bill = new Bill();
-		bill.setIva(0.21);
-		bill.setName(appointment.getClient().getFullName());
-		bill.setDocument(appointment.getClient().getDocument());
-		bill.setDocumentType(appointment.getClient().getDocumentType());
-		bill.setPrice(100.);
-		appointment.setBill(bill);
-
-		//		Map<String, Object> card2 = new HashMap<>();
-		//		Map<String, Object> billingDetails = new HashMap<>();
-		//		billingDetails.put("phone", "0000000000");
-		//		card2.put("number", "4242424242424242");
-		//		card2.put("exp_month", 5);
-		//		card2.put("exp_year", 2021);
-		//		card2.put("cvc", "314");
-		//		Map<String, Object> params3 = new HashMap<>();
-		//		params3.put("billing_details", billingDetails);
-		//		params3.put("type", "card");
-		//		params3.put("card", card2);
-
-		//com.stripe.model.PaymentMethod pay = com.stripe.model.PaymentMethod.create(params3);
-		String token1 = "pm_1GePiLDfDQNZdQMbExRewEOH";
-		PaymentMethod paymentMethod = this.stripeService.retrievePaymentMethod(token1);
-		//		Set<PaymentMethod> paymentMethods = new HashSet<>();
-		//		PaymentMethod paymentMethod = new PaymentMethod();
-		//		paymentMethod.setToken(pay.getId());
-		//		paymentMethods.add(pay);
-		//		client.setPaymentMethods(paymentMethods);
-
-		//	PaymentIntentCreateParams params2 = PaymentIntentCreateParams.builder().setAmount(1099L).setCurrency("eur").addPaymentMethodType("card").setPaymentMethod(pay.getId()).putMetadata("order_id", "6735").build();
-
-		//	PaymentIntent paymentIntent = PaymentIntent.create(params2);
-		//		System.out.println("==========00" + paymentIntent);
-		//		System.out.println("9999999" + pay);
-
-		String costumerId = "cus_HCpLlL5UZqugk1";
-		PaymentIntent paymentIntent = this.stripeService.charge(paymentMethod.getId(), 100., costumerId);
-		//Later, we create a transaction
-		Transaction transaction = new Transaction();
-		transaction.setType(TransactionType.CHARGE);
-		transaction.setBill(appointment.getBill());
-		transaction.setToken(paymentIntent.getId());
-		transaction.setAmount((double) paymentIntent.getAmount() / 100);
-		transaction.setStatus(paymentIntent.getStatus());
-		transaction.setSuccess(paymentIntent.getStatus().equals("succeeded"));
-		System.out.println("------------9" + transaction);
-		this.transactionService.saveTransaction(transaction);
-
-		transactions = (Collection<Transaction>) this.transactionService.listTransactions();
-		Assertions.assertThat(transactions.size()).isEqualTo(found + 1);
-	}
-
-	@ParameterizedTest
-	@CsvSource({
 		"123, pepegotera", "122, pepegotera"
 	})
 	@Transactional
@@ -411,7 +326,7 @@ public class AppointmentServiceTests {
 
 		Client client = this.clientService.findClientByUsername(username);
 
-		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		Collection<ListAppointmentsClient> appointments = this.appointmentService.findAppointmentByClientId(client.getId());
 		Optional<Appointment> appointment = this.appointmentService.findAppointmentById(id);
 
 		int count = appointments.size();
@@ -420,7 +335,7 @@ public class AppointmentServiceTests {
 
 		this.appointmentService.delete(appointment.get());
 
-		appointments = this.appointmentService.findAppointmentByUserId(client.getId());
+		appointments = this.appointmentService.findAppointmentByClientId(client.getId());
 		org.assertj.core.api.Assertions.assertThat(appointments.size()).isEqualTo(count - 1);
 
 	}
@@ -440,13 +355,95 @@ public class AppointmentServiceTests {
 		"124", "126"
 	})
 	@Transactional
-	void shouldNotDeletePassedApp(final int id) throws Exception {
+	void shouldNotDeletePassedApplication(final int id) throws Exception {
 
 		Optional<Appointment> app = this.appointmentService.findAppointmentById(id);
 
 		org.junit.jupiter.api.Assertions.assertThrows(Exception.class, () -> {
 			this.appointmentService.delete(app.get());
 		}, "You cannot delete a passed appointment");
+	}
+
+	@Test
+	@Transactional
+	void testGetNumberOfPendingAppointments() throws DataAccessException, ProfessionalBusyException {
+		Long pendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
+
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+
+		appointment.setStatus(AppointmentStatus.PENDING);
+		this.appointmentService.saveAppointment(appointment);
+
+		Assertions.assertThat(pendingAppointments).isEqualTo(127L);
+		Long newPendingAppointments = this.appointmentService.getNumberOfPendingAppointments();
+		Assertions.assertThat(newPendingAppointments).isEqualTo(pendingAppointments + 1L);
+	}
+
+	@Test
+	@Transactional
+	void testGetNumberOfAbsentAppointments() throws DataAccessException, ProfessionalBusyException {
+		Long absentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
+
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+
+		appointment.setStatus(AppointmentStatus.ABSENT);
+		this.appointmentService.saveAppointment(appointment);
+
+		Assertions.assertThat(absentAppointments).isEqualTo(0L);
+		Long newAbsentAppointments = this.appointmentService.getNumberOfAbsentAppointments();
+		Assertions.assertThat(newAbsentAppointments).isEqualTo(absentAppointments + 1L);
+	}
+
+	@Test
+	@Transactional
+	void testGetNumberOfCompletedAppointments() throws DataAccessException, ProfessionalBusyException {
+		Long completedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
+
+		Appointment appointment = new Appointment();
+		Professional professional = this.professionalService.findById(1).get();
+		Center center = this.centerService.findCenterById(1).get();
+		Client client = this.clientService.findClientByUsername("pepegotera");
+		Specialty specialty = this.specialtyService.findSpecialtyById(1).get();
+		appointment.setProfessional(professional);
+		appointment.setCenter(center);
+		appointment.setClient(client);
+		appointment.setSpecialty(specialty);
+
+		appointment.setStatus(AppointmentStatus.COMPLETED);
+		this.appointmentService.saveAppointment(appointment);
+
+		Assertions.assertThat(completedAppointments).isEqualTo(3L);
+		Long newCompletedAppointments = this.appointmentService.getNumberOfCompletedAppointments();
+		Assertions.assertThat(newCompletedAppointments).isEqualTo(completedAppointments + 1L);
+
+	}
+
+	@Test
+	@Transactional
+	public void shouldFindAppointmentByDateTimeAndProfessional() throws DataAccessException, ProfessionalBusyException {
+		Appointment appointment = this.appointmentService.findAppointmentById(1).get();
+
+		Optional<Appointment> a = this.appointmentService.findAppointmentByDateTimeAndProfessional(appointment.getDate(), appointment.getStartTime(), appointment.getProfessional());
+
+		Assertions.assertThat(a).isPresent();
+		Assertions.assertThat(a.get()).isEqualTo(appointment);
+
 	}
 
 }
