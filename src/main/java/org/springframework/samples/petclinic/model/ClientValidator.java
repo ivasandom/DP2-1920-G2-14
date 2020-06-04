@@ -8,6 +8,8 @@ import org.springframework.validation.ValidationUtils;
 
 public class ClientValidator implements org.springframework.validation.Validator {
 
+	private static final String EMAIL = "email";
+
 	@Override
 	public boolean supports(final Class<?> paramClass) {
 		return Client.class.equals(paramClass);
@@ -21,7 +23,7 @@ public class ClientValidator implements org.springframework.validation.Validator
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "document", "document must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "must not be empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "must not be empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, EMAIL, "must not be empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "documentType", "must not be null");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "must not be empty");
 
@@ -61,8 +63,8 @@ public class ClientValidator implements org.springframework.validation.Validator
 			}, "the date must be in past");
 		}
 
-		if (!errors.hasFieldErrors("email") && !client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
-			errors.rejectValue("email", "choose the correct format", new Object[] {
+		if (!errors.hasFieldErrors(EMAIL) && !client.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
+			errors.rejectValue(EMAIL, "choose the correct format", new Object[] {
 				"'email'"
 			}, "choose the correct format");
 		}

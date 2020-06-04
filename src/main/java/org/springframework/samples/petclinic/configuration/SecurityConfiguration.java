@@ -31,11 +31,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
 	
-	private String admin = "admin";
+	private static final String ADMIN = "admin";
 	
-	private String professional = "professional";
+	private static final String PROFESSIONAL = "professional";
 	
-	private String client = "client";
+	private static final String CLIENT = "client";
 
 
 	@Override
@@ -45,17 +45,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/", "/oups").permitAll()
 			.antMatchers("/clients/**").permitAll()
-			.antMatchers("/admin/**").hasAnyAuthority(admin)
-			.antMatchers("/owners/**").hasAnyAuthority("owner", admin)
+			.antMatchers("/admin/**").hasAnyAuthority(ADMIN)
+			.antMatchers("/owners/**").hasAnyAuthority("owner", ADMIN)
 			.antMatchers("/professionals/filter").permitAll()
 			.antMatchers("/professionals").permitAll()
 			.antMatchers("/professionals/find").permitAll()
-			.antMatchers("/professionals/**").hasAnyAuthority(professional, admin)
-			.antMatchers("/appointments/pro").hasAnyAuthority(professional)
-			.antMatchers("/appointments/*/consultation").hasAnyAuthority(professional)
-			.antMatchers("/appointments/*/details").hasAnyAuthority(client)
-			.antMatchers("/appointments/*/absent").hasAnyAuthority(professional)
-			.antMatchers("/appointments/**").hasAnyAuthority(client)
+			.antMatchers("/professionals/**").hasAnyAuthority(PROFESSIONAL, ADMIN)
+			.antMatchers("/appointments/pro").hasAnyAuthority(PROFESSIONAL)
+			.antMatchers("/appointments/*/consultation").hasAnyAuthority(PROFESSIONAL)
+			.antMatchers("/appointments/*/details").hasAnyAuthority(CLIENT)
+			.antMatchers("/appointments/*/absent").hasAnyAuthority(PROFESSIONAL)
+			.antMatchers("/appointments/**").hasAnyAuthority(CLIENT)
 			.antMatchers("/payments/**").permitAll()
 			.antMatchers("/vets/**")
 			.authenticated().anyRequest().denyAll()
