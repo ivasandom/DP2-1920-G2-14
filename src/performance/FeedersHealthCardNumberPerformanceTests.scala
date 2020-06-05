@@ -38,15 +38,14 @@ class FeedersHealthCardNumberPerformanceTests extends Simulation {
 	).pause(20)
 	}
 
-
-
 	object NewClient1 {
 		val newClient1 = exec(http("NewClientForm")
 			.get("/clients/new")
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.feed(csv("client_data.csv"))
+		 .doIf("${stoken.exists()}") {
+			feed(csv("client_data.csv"))
 			.exec(http("NewClient1")
 			.post("/clients/new")
 			.headers(headers_3)
@@ -61,6 +60,7 @@ class FeedersHealthCardNumberPerformanceTests extends Simulation {
 			.formParam("user.password", "${userPassword}")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+		 }
 	}
 
 	object NewClient2 {
@@ -69,7 +69,8 @@ class FeedersHealthCardNumberPerformanceTests extends Simulation {
 			.headers(headers_0)
 		.check(css("input[name=_csrf]", "value").saveAs("stoken"))
 		).pause(11)
-			.feed(csv("client_data.csv"))
+		 .doIf("${stoken.exists()}") {
+			feed(csv("client_data.csv"))
 			.exec(http("NewClient2")
 			.post("/clients/new")
 			.headers(headers_3)
@@ -83,6 +84,7 @@ class FeedersHealthCardNumberPerformanceTests extends Simulation {
 			.formParam("user.password", "${userPassword}")
 			.formParam("_csrf", "${stoken}") 
 			).pause(10)
+		 }
 	}
 
 	val healthCardNumberPositiveSnc = scenario("HealthCardNumberPositive").exec(Home.home,
