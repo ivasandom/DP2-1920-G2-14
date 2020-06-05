@@ -79,7 +79,7 @@ public class ControlPanelNegativeUITest {
 	    driver.findElement(By.id("user.password")).sendKeys("ortegaygasset1");
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
 	    driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[4]/div")).click();
-	    assertEquals("choose the correct format", driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[4]/div")).getText());
+	    assertEquals("choose the correct format", driver.findElement(By.xpath("//form[@id='add-owner-form']/div/div[5]/div")).getText());
 	}
 
 	@AfterEach
